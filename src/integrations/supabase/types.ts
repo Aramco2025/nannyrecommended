@@ -14,16 +14,333 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      availability: {
+        Row: {
+          created_at: string
+          day_of_week: number
+          end_time: string
+          id: string
+          sitter_id: string
+          start_time: string
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: number
+          end_time: string
+          id?: string
+          sitter_id: string
+          start_time: string
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          sitter_id?: string
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookings: {
+        Row: {
+          address: string | null
+          created_at: string
+          end_at: string
+          hourly_rate_aed: number
+          hours: number
+          id: string
+          notes: string | null
+          paid_at: string | null
+          parent_id: string
+          platform_fee_aed: number
+          sitter_id: string
+          sitter_payout_aed: number
+          start_at: string
+          status: Database["public"]["Enums"]["booking_status"]
+          stripe_session_id: string | null
+          subtotal_aed: number
+          total_aed: number
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          end_at: string
+          hourly_rate_aed: number
+          hours: number
+          id?: string
+          notes?: string | null
+          paid_at?: string | null
+          parent_id: string
+          platform_fee_aed: number
+          sitter_id: string
+          sitter_payout_aed: number
+          start_at: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_session_id?: string | null
+          subtotal_aed: number
+          total_aed: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          end_at?: string
+          hourly_rate_aed?: number
+          hours?: number
+          id?: string
+          notes?: string | null
+          paid_at?: string | null
+          parent_id?: string
+          platform_fee_aed?: number
+          sitter_id?: string
+          sitter_payout_aed?: number
+          start_at?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_session_id?: string | null
+          subtotal_aed?: number
+          total_aed?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loyalty: {
+        Row: {
+          completed_bookings: number
+          parent_id: string
+          tier: Database["public"]["Enums"]["loyalty_tier"]
+          updated_at: string
+        }
+        Insert: {
+          completed_bookings?: number
+          parent_id: string
+          tier?: Database["public"]["Enums"]["loyalty_tier"]
+          updated_at?: string
+        }
+        Update: {
+          completed_bookings?: number
+          parent_id?: string
+          tier?: Database["public"]["Enums"]["loyalty_tier"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          body: string
+          booking_id: string
+          created_at: string
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          booking_id: string
+          created_at?: string
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          booking_id?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          booking_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          parent_id: string
+          rating: number
+          sitter_id: string
+        }
+        Insert: {
+          booking_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          parent_id: string
+          rating: number
+          sitter_id: string
+        }
+        Update: {
+          booking_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          parent_id?: string
+          rating?: number
+          sitter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sitters: {
+        Row: {
+          area: string | null
+          bio: string | null
+          created_at: string
+          headline: string | null
+          hourly_rate_aed: number
+          id: string
+          is_active: boolean
+          languages: string[]
+          network_badge: Database["public"]["Enums"]["network_badge"]
+          photos: string[]
+          updated_at: string
+          user_id: string
+          verified: boolean
+          years_experience: number
+        }
+        Insert: {
+          area?: string | null
+          bio?: string | null
+          created_at?: string
+          headline?: string | null
+          hourly_rate_aed?: number
+          id?: string
+          is_active?: boolean
+          languages?: string[]
+          network_badge?: Database["public"]["Enums"]["network_badge"]
+          photos?: string[]
+          updated_at?: string
+          user_id: string
+          verified?: boolean
+          years_experience?: number
+        }
+        Update: {
+          area?: string | null
+          bio?: string | null
+          created_at?: string
+          headline?: string | null
+          hourly_rate_aed?: number
+          id?: string
+          is_active?: boolean
+          languages?: string[]
+          network_badge?: Database["public"]["Enums"]["network_badge"]
+          photos?: string[]
+          updated_at?: string
+          user_id?: string
+          verified?: boolean
+          years_experience?: number
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "parent" | "sitter" | "admin"
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+        | "declined"
+      loyalty_tier: "bronze" | "silver" | "gold" | "platinum"
+      network_badge: "none" | "trusted" | "premium" | "elite"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +467,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["parent", "sitter", "admin"],
+      booking_status: [
+        "pending",
+        "confirmed",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "declined",
+      ],
+      loyalty_tier: ["bronze", "silver", "gold", "platinum"],
+      network_badge: ["none", "trusted", "premium", "elite"],
+    },
   },
 } as const
