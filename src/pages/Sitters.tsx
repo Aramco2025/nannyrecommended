@@ -22,15 +22,13 @@ const filterChips = [
 const Sitters = () => {
   const [view, setView] = useState<"list" | "map">("list");
   const [active, setActive] = useState<string[]>([]);
+  const { data: sitters = [], isLoading } = useSitters();
 
   const toggle = (chip: string) =>
     setActive(a => (a.includes(chip) ? a.filter(c => c !== chip) : [...a, chip]));
 
   let visible = sitters;
-  if (active.includes("Verified+")) visible = visible.filter(s => s.verificationTier === "plus");
-  if (active.includes("Drives")) visible = visible.filter(s => s.drives);
-  if (active.includes("First-aid certified")) visible = visible.filter(s => s.firstAid);
-  if (active.includes("Recommended by friends")) visible = visible.filter(s => !!s.recommendedBy);
+  if (active.includes("Verified+")) visible = visible.filter(s => s.verified);
 
   return (
     <div className="min-h-screen bg-background">
