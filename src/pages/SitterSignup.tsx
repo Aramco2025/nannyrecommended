@@ -23,7 +23,7 @@ const SitterSignup = () => {
               Build a career with families who actually <span className="text-salmon">recommend you</span>.
             </h1>
             <p className="mt-4 max-w-lg text-base text-slate-grey">
-              Set your rate. Pick your hours. Keep 96% of every booking. We're built for sitters who take their work seriously.
+              Set your rate. Pick your hours. Keep 96% of every booking. Built for sitters who take their work seriously.
             </p>
             <ul className="mt-6 space-y-3">
               {benefits.map(b => (
@@ -34,41 +34,22 @@ const SitterSignup = () => {
             </ul>
           </div>
 
-          <form className="rounded-2xl border border-border bg-card p-6 shadow-card" onSubmit={e => e.preventDefault()}>
-            <h2 className="text-lg font-semibold text-pitch-black">Create your sitter profile</h2>
-            <p className="mt-1 text-xs text-slate-grey">Takes about 5 minutes. Free forever.</p>
-
-            <div className="mt-5 space-y-4">
-              <Field label="Full name"><Input placeholder="Sara Mitchell" /></Field>
-              <Field label="Email"><Input type="email" placeholder="sara@example.com" /></Field>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Hourly rate (AED)"><Input type="number" defaultValue={75} min={50} /></Field>
-                <Field label="Years of experience"><Input type="number" defaultValue={3} min={0} /></Field>
-              </div>
-              <Field label="Short bio">
-                <Textarea rows={3} placeholder="A sentence or two about you and how you work with kids." />
-              </Field>
-            </div>
-
-            <Button className="mt-6 w-full bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
-              Continue
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
+            <h2 className="text-lg font-semibold text-pitch-black">Get started</h2>
+            <p className="mt-1 text-sm text-slate-grey">Create your sitter account in under a minute, then build your profile from your dashboard.</p>
+            <Button asChild className="mt-5 w-full bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
+              <Link to="/auth?mode=signup&role=sitter">Create sitter account</Link>
             </Button>
-            <p className="mt-3 text-center text-xs text-slate-grey">By continuing you agree to our terms and trust standards.</p>
-          </form>
+            <Button asChild variant="ghost" className="mt-2 w-full">
+              <Link to="/auth?mode=signin">I already have an account</Link>
+            </Button>
+            <p className="mt-3 text-center text-xs text-slate-grey">Free forever. By continuing you agree to our terms.</p>
+          </div>
         </div>
       </main>
       <Footer />
     </div>
   );
 };
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="space-y-1.5">
-      <Label className="text-xs font-medium text-slate-grey">{label}</Label>
-      {children}
-    </div>
-  );
-}
 
 export default SitterSignup;
