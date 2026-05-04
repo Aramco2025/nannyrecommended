@@ -47,6 +47,15 @@ const Booking = () => {
       const subtotal = sitter.hourlyRate * hours;
       const fee = calculateFee(completedBookingsTogether, subtotal);
 
+      // 1. Mock card charge (replace with Stripe Checkout post-MVP)
+      const { chargeCard } = await import("@/lib/payments/stripe");
+      const charge = await chargeCard({
+        amountMinor: Math.round(fee.parentPays * 100),
+        currency: sitter.currency,
+      });
+      if (!charge.success) throw new Error("Card was declined");
+
+      // 2. Create the booking
       const { data, error } = await supabase.from("bookings").insert({
         parent_id: user.id,
         sitter_id: sitter.id,
@@ -61,9 +70,14 @@ const Booking = () => {
         status: "pending",
         address,
         notes,
+        payment_method_ref: charge.transactionId,
       }).select("id").single();
       if (error) throw error;
-      toast({ title: "Booking requested!", description: `${sitter.name} has been notified.` });
+
+      // 3. Mark funds held in escrow
+      await supabase.rpc("create_booking_escrow", { _booking: data.id });
+
+      toast({ title: "Booking confirmed", description: `Payment held safely until ${sitter.name.split(" ")[0]} completes the job.` });
       navigate("/account");
     } catch (err: any) {
       toast({ title: "Could not create booking", description: err.message, variant: "destructive" });
