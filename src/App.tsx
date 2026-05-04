@@ -54,6 +54,13 @@ import ParentAddress from "./pages/onboarding/parent/Address.tsx";
 import ParentConnect from "./pages/onboarding/parent/Connect.tsx";
 import ParentDone from "./pages/onboarding/parent/Done.tsx";
 import SitterEligibility from "./pages/sitter/apply/Eligibility.tsx";
+import SitterExperience from "./pages/sitter/apply/Experience.tsx";
+import SitterQualifications from "./pages/sitter/apply/Qualifications.tsx";
+import SitterIdUpload from "./pages/sitter/apply/IdUpload.tsx";
+import SitterReferences from "./pages/sitter/apply/References.tsx";
+import SitterBio from "./pages/sitter/apply/Bio.tsx";
+import SitterReview from "./pages/sitter/apply/Review.tsx";
+import SitterPending from "./pages/sitter/apply/Pending.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -116,6 +123,13 @@ const App = () => (
             <Route path="/onboarding/parent/connect" element={<ParentConnect />} />
             <Route path="/onboarding/parent/done" element={<ParentDone />} />
             <Route path="/sitter/apply/eligibility" element={<SitterEligibility />} />
+            <Route path="/sitter/apply/experience" element={<SitterExperience />} />
+            <Route path="/sitter/apply/qualifications" element={<SitterQualifications />} />
+            <Route path="/sitter/apply/id" element={<SitterIdUpload />} />
+            <Route path="/sitter/apply/references" element={<SitterReferences />} />
+            <Route path="/sitter/apply/bio" element={<SitterBio />} />
+            <Route path="/sitter/apply/review" element={<SitterReview />} />
+            <Route path="/sitter/apply/pending" element={<SitterPending />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
