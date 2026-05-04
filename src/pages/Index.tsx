@@ -78,7 +78,7 @@ const Index = () => {
             <div className="md:col-span-6 lg:col-span-5 relative">
               <div className="relative animate-fade-up">
                 <div className="relative overflow-hidden rounded-[2.5rem] bg-salmon-soft shadow-card-hover ring-8 ring-pure-white">
-                  <img src={heroFamily} alt="A family with their trusted nanny" className="aspect-[4/5] w-full object-cover" />
+                  <img src={heroFamily} alt="A family with their trusted nanny" className="aspect-[4/5] w-full object-cover object-[30%_center]" />
                 </div>
 
                 <div className="absolute -left-4 top-10 rotate-[-6deg] rounded-2xl bg-pure-white px-4 py-3 shadow-card-hover sm:-left-8">
