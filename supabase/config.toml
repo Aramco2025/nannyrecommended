@@ -4,4 +4,4 @@ project_id = "dwrejqdytmpdkcaoidbv"
 verify_jwt = false
 
 [functions.create-booking-checkout]
-verify_jwt = true
+verify_jwt = false
