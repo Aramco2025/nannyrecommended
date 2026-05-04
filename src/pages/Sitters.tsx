@@ -80,10 +80,6 @@ const Sitters = () => {
             />
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            {filterChips.map(chip => {
-              const isActive = active.includes(chip);
-              return (
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <button
               onClick={() => setTierFilter("any")}
