@@ -12,6 +12,8 @@ import Pricing from "./pages/Pricing.tsx";
 import HowItWorks from "./pages/HowItWorks.tsx";
 import SitterSignup from "./pages/SitterSignup.tsx";
 import Auth from "./pages/Auth.tsx";
+import Privacy from "./pages/Privacy.tsx";
+import Terms from "./pages/Terms.tsx";
 import Account from "./pages/Account.tsx";
 import SitterDashboard from "./pages/SitterDashboard.tsx";
 import SitterWallet from "./pages/SitterWallet.tsx";
@@ -46,6 +48,8 @@ const App = () => (
             <Route path="/admin/payouts" element={<AdminPayouts />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
