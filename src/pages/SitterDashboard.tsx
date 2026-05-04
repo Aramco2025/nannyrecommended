@@ -153,7 +153,7 @@ const SitterDashboard = () => {
                     </div>
                   )}
                   {b.status === "confirmed" && (
-                    <div className="mt-3"><Button size="sm" onClick={() => updateBookingStatus(b.id, "completed")}>Mark completed</Button></div>
+                    <div className="mt-3 text-xs text-slate-grey">Waiting for the parent to confirm completion. Payment releases to your wallet automatically.</div>
                   )}
                 </div>
               ))}
