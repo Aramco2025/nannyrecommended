@@ -14,6 +14,10 @@ import SitterSignup from "./pages/SitterSignup.tsx";
 import Auth from "./pages/Auth.tsx";
 import Account from "./pages/Account.tsx";
 import SitterDashboard from "./pages/SitterDashboard.tsx";
+import SitterWallet from "./pages/SitterWallet.tsx";
+import CashOut from "./pages/CashOut.tsx";
+import SitterPaymentSetup from "./pages/SitterPaymentSetup.tsx";
+import AdminPayouts from "./pages/AdminPayouts.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -34,6 +38,10 @@ const App = () => (
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/sitter/signup" element={<SitterSignup />} />
             <Route path="/sitter/dashboard" element={<SitterDashboard />} />
+            <Route path="/sitter/wallet" element={<SitterWallet />} />
+            <Route path="/sitter/wallet/cashout" element={<CashOut />} />
+            <Route path="/sitter/payment-setup" element={<SitterPaymentSetup />} />
+            <Route path="/admin/payouts" element={<AdminPayouts />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/account" element={<Account />} />
             <Route path="*" element={<NotFound />} />
