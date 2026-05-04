@@ -17,6 +17,7 @@ export type UISitter = {
   yearsExperience: number;
   languages: string[];
   headline: string;
+  tier: string | null;
 };
 
 const FALLBACK_PHOTO = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop";
