@@ -55,19 +55,37 @@ Deno.serve(async (req) => {
       }
 
       await admin.from("bookings").update({
-        status: "confirmed",
+        status: "pending",
         escrow_held: true,
         paid_at: new Date().toISOString(),
         payment_method_ref: session.payment_intent ?? session.id,
       }).eq("id", bookingId);
 
+      // Notify parent: payment received, awaiting sitter
       await admin.from("notifications").insert({
         user_id: booking.parent_id,
-        type: "booking_confirmed",
-        title: "Booking confirmed",
-        body: "Your payment is held safely. The sitter has been notified.",
+        type: "booking_awaiting_sitter",
+        title: "Payment received",
+        body: "We've notified the sitter. You'll hear back shortly.",
         link: "/account",
       });
+
+      // Notify sitter: new booking request to accept
+      const { data: bk } = await admin
+        .from("bookings").select("sitter_id,start_at,hours").eq("id", bookingId).maybeSingle();
+      if (bk) {
+        const { data: s } = await admin
+          .from("sitters").select("user_id").eq("id", bk.sitter_id).maybeSingle();
+        if (s?.user_id) {
+          await admin.from("notifications").insert({
+            user_id: s.user_id,
+            type: "booking_request",
+            title: "New booking request 🎉",
+            body: `A parent booked ${bk.hours}h. Accept to confirm.`,
+            link: "/sitter/dashboard",
+          });
+        }
+      }
     }
 
     if (event.type === "checkout.session.expired" || event.type === "transaction.payment_failed") {
