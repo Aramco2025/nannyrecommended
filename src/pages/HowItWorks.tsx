@@ -28,8 +28,8 @@ const columns = [
     accent: "success-green",
     steps: [
       { icon: Phone, title: "Real reference calls", body: "Our team personally calls referees for Verified+ sitters." },
-      { icon: FileCheck, title: "DBS / police clearance", body: "Verified through enhanced background checks per region." },
-      { icon: ShieldCheck, title: "Booking insurance", body: "Up to £500 / AED 2,500 cover on every Plus booking." },
+      { icon: FileCheck, title: "UAE police clearance", body: "Verified through enhanced background checks and visa status." },
+      { icon: ShieldCheck, title: "Booking insurance", body: "Up to AED 2,500 cover on every Plus booking." },
       { icon: HeartHandshake, title: "Recommendations", body: "See sitters trusted by parents at your school, nursery or workplace." },
     ],
   },

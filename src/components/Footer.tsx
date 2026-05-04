@@ -8,7 +8,7 @@ export function Footer() {
         <div className="md:col-span-2 space-y-3">
           <Logo />
           <p className="max-w-sm text-sm text-slate-grey">
-            Babysitters and nannies, recommended by people you trust. Built for parents in the UK and UAE.
+            Babysitters and nannies, recommended by people you trust. Built for parents across the UAE.
           </p>
         </div>
         <div>
@@ -32,7 +32,7 @@ export function Footer() {
       </div>
       <div className="border-t border-border/60">
         <div className="container flex flex-col items-start justify-between gap-2 py-6 text-xs text-slate-grey sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} NannyRecommended. UK & UAE.</span>
+          <span>© {new Date().getFullYear()} NannyRecommended. UAE.</span>
           <span>You only pay for what you book.</span>
         </div>
       </div>

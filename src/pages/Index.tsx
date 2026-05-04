@@ -21,7 +21,7 @@ const Index = () => {
             <div className="flex flex-col justify-center animate-fade-up">
               <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-slate-grey">
                 <span className="h-1.5 w-1.5 rounded-full bg-success-green" />
-                Now in London, Manchester & Dubai
+                Now in Dubai, Abu Dhabi & Sharjah
               </span>
               <h1 className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-pitch-black md:text-5xl lg:text-6xl">
                 Babysitters and nannies,<br />
@@ -35,7 +35,7 @@ const Index = () => {
                 <div className="flex flex-1 items-center gap-2 px-3">
                   <Search className="h-5 w-5 text-slate-grey" />
                   <Input
-                    placeholder="Postcode or area (e.g. SW11 or Dubai Marina)"
+                    placeholder="Area or community (e.g. Dubai Marina, Arabian Ranches)"
                     className="border-0 px-0 text-base shadow-none focus-visible:ring-0"
                   />
                 </div>
@@ -56,13 +56,13 @@ const Index = () => {
               <div className="absolute -right-8 top-8 h-72 w-72 rounded-full bg-salmon/15 blur-3xl" />
               <div className="relative grid grid-cols-2 gap-4 animate-fade-up">
                 <img
-                  src="https://images.unsplash.com/photo-1543342384-1f1350e27861?w=600&h=800&fit=crop"
+                  src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&h=800&fit=crop"
                   alt="Parent and child reading together"
                   className="aspect-[3/4] w-full rounded-2xl object-cover shadow-card-hover"
                 />
                 <div className="flex flex-col gap-4 pt-10">
                   <img
-                    src="https://images.unsplash.com/photo-1607582544291-9d31cc3df41a?w=600&h=600&fit=crop"
+                    src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=600&h=600&fit=crop"
                     alt="Sitter playing with children"
                     className="aspect-square w-full rounded-2xl object-cover shadow-card-hover"
                   />
@@ -70,10 +70,11 @@ const Index = () => {
                     <div className="text-xs font-medium text-success-green">Verified+</div>
                     <div className="mt-1 text-sm font-semibold text-pitch-black">Sara M. · 4.9 ★</div>
                     <div className="text-xs text-slate-grey">142 bookings · 0.8 km away</div>
-                    <div className="mt-3 text-sm font-semibold text-pitch-black">£15<span className="text-xs font-normal text-slate-grey">/hr</span></div>
+                    <div className="mt-3 text-sm font-semibold text-pitch-black">AED 75<span className="text-xs font-normal text-slate-grey">/hr</span></div>
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           </div>
         </section>
@@ -89,7 +90,7 @@ const Index = () => {
             <TrustPillar
               icon={ShieldCheck}
               title="Verified by real people"
-              description="Our team personally calls references, verifies first-aid, and checks DBS or police clearances."
+              description="Our team personally calls references, verifies first-aid, and checks UAE police clearances and visa status."
             />
             <TrustPillar
               icon={Wallet}

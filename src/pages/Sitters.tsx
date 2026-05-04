@@ -11,9 +11,10 @@ const filterChips = [
   "Available now",
   "Available this week",
   "Verified+",
-  "Has DBS",
+  "Police-cleared",
   "First-aid certified",
   "Drives",
+  "Live-in available",
   "Recommended by friends",
   "Speaks Arabic",
 ];
@@ -69,8 +70,8 @@ const Sitters = () => {
           <div className="mt-4 flex items-center gap-2 rounded-xl border border-border bg-off-white px-3 py-2">
             <Search className="h-4 w-4 text-slate-grey" />
             <Input
-              placeholder="Postcode or area"
-              defaultValue="SW11 5RX"
+              placeholder="Area or community (e.g. Dubai Marina)"
+              defaultValue="Dubai Marina"
               className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
             />
           </div>
@@ -118,7 +119,7 @@ const Sitters = () => {
                   style={p}
                 >
                   <div className="rounded-full bg-salmon px-2.5 py-1 text-xs font-semibold text-pure-white shadow-cta">
-                    £{[15, 18, 13, 16][i]}
+                    AED {[75, 90, 65, 80][i]}
                   </div>
                 </div>
               ))}

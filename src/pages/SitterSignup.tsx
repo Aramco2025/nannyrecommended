@@ -44,7 +44,7 @@ const SitterSignup = () => {
               <Field label="Full name"><Input placeholder="Sara Mitchell" /></Field>
               <Field label="Email"><Input type="email" placeholder="sara@example.com" /></Field>
               <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Hourly rate (£)"><Input type="number" defaultValue={15} min={12} /></Field>
+                <Field label="Hourly rate (AED)"><Input type="number" defaultValue={75} min={50} /></Field>
                 <Field label="Years of experience"><Input type="number" defaultValue={3} min={0} /></Field>
               </div>
               <Field label="Short bio">
