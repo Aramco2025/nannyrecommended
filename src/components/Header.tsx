@@ -10,8 +10,8 @@ const links = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-off-white/85 backdrop-blur-md">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-pure-white/90 backdrop-blur-md">
+      <div className="container flex h-20 items-center justify-between">
         <Logo />
         <nav className="hidden items-center gap-7 md:flex">
           {links.map(l => (
