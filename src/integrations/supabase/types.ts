@@ -531,6 +531,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_booking_escrow: { Args: { _booking: string }; Returns: undefined }
       ensure_wallet: { Args: { _user: string }; Returns: string }
       has_role: {
         Args: {
@@ -540,6 +541,20 @@ export type Database = {
         Returns: boolean
       }
       release_booking_escrow: { Args: { _booking: string }; Returns: undefined }
+      request_cash_out: {
+        Args: {
+          _airtime_operator?: string
+          _airtime_phone?: string
+          _amount: number
+          _bank_account_holder?: string
+          _bank_iban?: string
+          _exchange_house?: string
+          _method: Database["public"]["Enums"]["cash_out_method"]
+          _pickup_location_id?: string
+          _voucher_provider?: string
+        }
+        Returns: string
+      }
       wallet_credit: {
         Args: {
           _amount: number
