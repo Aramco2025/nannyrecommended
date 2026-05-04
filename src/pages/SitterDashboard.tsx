@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/fees";
+import { EarningsCalculator } from "@/components/sitter/EarningsCalculator";
 
 const profileSchema = z.object({
   headline: z.string().trim().max(120).optional(),
