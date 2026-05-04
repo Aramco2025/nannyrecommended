@@ -21,6 +21,12 @@ import CashOut from "./pages/CashOut.tsx";
 import SitterPaymentSetup from "./pages/SitterPaymentSetup.tsx";
 import SitterSetRate from "./pages/SitterSetRate.tsx";
 import AdminPayouts from "./pages/AdminPayouts.tsx";
+import TrustSafety from "./pages/TrustSafety.tsx";
+import About from "./pages/About.tsx";
+import Contact from "./pages/Contact.tsx";
+import FindNanny from "./pages/FindNanny.tsx";
+import NannyJobs from "./pages/NannyJobs.tsx";
+import Guides from "./pages/Guides.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -50,6 +56,12 @@ const App = () => (
             <Route path="/account" element={<Account />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/trust-safety" element={<TrustSafety />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/find-nanny" element={<FindNanny />} />
+            <Route path="/nanny-jobs" element={<NannyJobs />} />
+            <Route path="/guides" element={<Guides />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
