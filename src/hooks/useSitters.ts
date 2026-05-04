@@ -8,7 +8,7 @@ export function useSitters() {
     queryFn: async (): Promise<UISitter[]> => {
       const { data, error } = await supabase
         .from("sitters")
-        .select("*, profiles:user_id(full_name, avatar_url)")
+        .select("*")
         .eq("is_active", true)
         .order("rating", { ascending: false });
       if (error) throw error;
