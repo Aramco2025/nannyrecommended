@@ -77,25 +77,38 @@ const Account = () => {
               No bookings yet. <Link to="/sitters" className="text-pitch-black underline">Browse sitters</Link>.
             </div>
           )}
-          {(bookings ?? []).map(b => (
-            <div key={b.id} className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-card p-4 shadow-card">
-              <div className="flex items-center gap-3">
-                <img src={b.sitters?.photos?.[0] ?? ""} alt="" className="h-12 w-12 rounded-full bg-muted object-cover" />
-                <div>
-                  <div className="font-medium text-pitch-black">{b.sitters?.full_name ?? "Sitter"}</div>
-                  <div className="text-xs text-slate-grey">
-                    {new Date(b.start_at).toLocaleString()} · {b.hours}h
+          {(bookings ?? []).map(b => {
+            const canRelease = b.status === "confirmed" || b.status === "in_progress";
+            return (
+              <div key={b.id} className="rounded-2xl border border-border bg-card p-4 shadow-card">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <img src={b.sitters?.photos?.[0] ?? ""} alt="" className="h-12 w-12 rounded-full bg-muted object-cover" />
+                    <div>
+                      <div className="font-medium text-pitch-black">{b.sitters?.full_name ?? "Sitter"}</div>
+                      <div className="text-xs text-slate-grey">{new Date(b.start_at).toLocaleString()} · {b.hours}h</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-semibold text-pitch-black">{formatCurrency(Number(b.total_aed))}</div>
+                    <div className="mt-0.5 inline-flex rounded-full bg-off-white px-2 py-0.5 text-[11px] font-medium capitalize text-slate-grey">
+                      {b.status.replace("_", " ")}
+                    </div>
                   </div>
                 </div>
+                {canRelease && (
+                  <Button size="sm" className="mt-3 bg-success-green hover:bg-success-green/90 text-primary-foreground"
+                    onClick={async () => {
+                      const { error } = await supabase.rpc("release_booking_escrow", { _booking: b.id });
+                      if (error) return alert(error.message);
+                      setBookings(bs => (bs ?? []).map(x => x.id === b.id ? { ...x, status: "completed" } : x));
+                    }}>
+                    Confirm completion · release payment
+                  </Button>
+                )}
               </div>
-              <div className="text-right">
-                <div className="text-sm font-semibold text-pitch-black">{formatCurrency(Number(b.total_aed))}</div>
-                <div className="mt-0.5 inline-flex rounded-full bg-off-white px-2 py-0.5 text-[11px] font-medium capitalize text-slate-grey">
-                  {b.status.replace("_", " ")}
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </main>
       <Footer />
