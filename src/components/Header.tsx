@@ -19,6 +19,8 @@ const sitterLinks = [
 ];
 const parentLinks = [
   { to: "/sitters", label: "Find a sitter" },
+  { to: "/favourites", label: "Favourites" },
+  { to: "/friends", label: "Friends" },
   { to: "/parent/post-job", label: "Post a job" },
   { to: "/messages", label: "Inbox" },
 ];
