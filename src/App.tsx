@@ -17,6 +17,7 @@ import SitterDashboard from "./pages/SitterDashboard.tsx";
 import SitterWallet from "./pages/SitterWallet.tsx";
 import CashOut from "./pages/CashOut.tsx";
 import SitterPaymentSetup from "./pages/SitterPaymentSetup.tsx";
+import SitterSetRate from "./pages/SitterSetRate.tsx";
 import AdminPayouts from "./pages/AdminPayouts.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
