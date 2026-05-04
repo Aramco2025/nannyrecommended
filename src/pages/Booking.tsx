@@ -127,10 +127,14 @@ const Booking = () => {
                 completedBookingsTogether={completedBookingsTogether} currency={sitter.currency} />
             </div>
 
+            <div className="rounded-2xl border border-border bg-off-white p-4 text-xs text-slate-grey">
+              🔒 Your payment is held safely until the booking is complete. {sitter.name.split(" ")[0]} only gets paid when you confirm she showed up and did the job.
+            </div>
+
             <Button type="submit" disabled={busy} size="lg" className="w-full bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
-              {busy ? "Sending request…" : user ? "Request booking" : "Sign in to book"}
+              {busy ? "Processing payment…" : user ? "Confirm and pay" : "Sign in to book"}
             </Button>
-            <p className="text-center text-xs text-slate-grey">You won't be charged until {sitter.name.split(" ")[0]} accepts.</p>
+            <p className="text-center text-xs text-slate-grey">Test mode — no real card is charged.</p>
           </form>
 
           <aside className="hidden lg:block">
