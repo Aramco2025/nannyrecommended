@@ -17,6 +17,9 @@ import { PRICING_TIERS, SitterTier } from "@/lib/pricing/tiers";
 import {
   applyFilters, emptyFilters, FilterKey, LANGUAGES, LangKey, SitterFilters,
 } from "@/lib/sitterFilters";
+import { AvailabilityFilter, type SlotFilter } from "@/components/AvailabilityFilter";
+import { useAvailableSitters } from "@/hooks/useAvailableSitters";
+import { MobileTabBar } from "@/components/MobileTabBar";
 
 type Section = { title: string; items: { key: FilterKey; label: string }[] };
 
