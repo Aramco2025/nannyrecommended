@@ -24,7 +24,7 @@ export function useSitter(id: string | undefined) {
     queryFn: async (): Promise<UISitter | null> => {
       const { data, error } = await supabase
         .from("sitters")
-        .select("*, profiles:user_id(full_name, avatar_url)")
+        .select("*")
         .eq("id", id!)
         .maybeSingle();
       if (error) throw error;
