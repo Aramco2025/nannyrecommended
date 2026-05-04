@@ -26,6 +26,7 @@ const Booking = () => {
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
+  const [instant, setInstant] = useState(false);
 
   // simplified: assume 0 prior bookings together for this MVP
   const completedBookingsTogether = 0;
@@ -55,7 +56,22 @@ const Booking = () => {
       });
       if (!charge.success) throw new Error("Card was declined");
 
-      // 2. Create the booking
+      if (instant) {
+        // Instant booking via RPC — validates availability + clash, creates confirmed booking
+        const { data, error } = await supabase.rpc("create_instant_booking", {
+          _sitter_id: sitter.id,
+          _start_at: start.toISOString(),
+          _hours: hours,
+          _address: address || null,
+          _notes: notes || null,
+        });
+        if (error) throw error;
+        toast({ title: "Booked instantly!", description: `${sitter.name.split(" ")[0]} is confirmed for ${start.toLocaleString()}.` });
+        navigate(`/messages/${data}`);
+        return;
+      }
+
+      // 2. Standard pending booking
       const { data, error } = await supabase.from("bookings").insert({
         parent_id: user.id,
         sitter_id: sitter.id,
@@ -77,7 +93,7 @@ const Booking = () => {
       // 3. Mark funds held in escrow
       await supabase.rpc("create_booking_escrow", { _booking: data.id });
 
-      toast({ title: "Booking confirmed", description: `Payment held safely until ${sitter.name.split(" ")[0]} completes the job.` });
+      toast({ title: "Booking sent", description: `Payment held safely until ${sitter.name.split(" ")[0]} accepts.` });
       navigate("/account");
     } catch (err: any) {
       toast({ title: "Could not create booking", description: err.message, variant: "destructive" });
