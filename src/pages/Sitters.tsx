@@ -24,6 +24,8 @@ const filterChips = [
 const Sitters = () => {
   const [view, setView] = useState<"list" | "map">("list");
   const [active, setActive] = useState<string[]>([]);
+  const [tierFilter, setTierFilter] = useState<SitterTier | "any">("any");
+  const [priceRange, setPriceRange] = useState<[number, number]>([35, 140]);
   const { data: sitters = [], isLoading } = useSitters();
 
   const toggle = (chip: string) =>
@@ -31,6 +33,8 @@ const Sitters = () => {
 
   let visible = sitters;
   if (active.includes("Verified+")) visible = visible.filter(s => s.verified);
+  if (tierFilter !== "any") visible = visible.filter(s => s.tier === tierFilter);
+  visible = visible.filter(s => s.hourlyRate >= priceRange[0] && s.hourlyRate <= priceRange[1]);
 
   return (
     <div className="min-h-screen bg-background">
