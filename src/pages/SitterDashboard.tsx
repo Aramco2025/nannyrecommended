@@ -168,6 +168,9 @@ const SitterDashboard = () => {
                 </div>
               ))}
             </div>
+            <div className="mt-6">
+              <EarningsCalculator hourlyRate={Number(form.hourly_rate_aed) || 60} />
+            </div>
           </section>
         </div>
       </main>
