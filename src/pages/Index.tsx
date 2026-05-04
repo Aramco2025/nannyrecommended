@@ -30,12 +30,10 @@ const Index = () => {
                 Live across the UAE · 1,200+ verified sitters
               </span>
 
-              <h1 className="mt-6 font-display text-[2.75rem] font-bold leading-[0.95] tracking-tight text-pure-white sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+              <h1 className="mt-6 font-display text-6xl font-black leading-[0.9] tracking-tighter text-pure-white sm:text-7xl md:text-8xl lg:text-[7.5rem]">
                 Sitters
                 <br />
-                <span className="italic font-medium text-salmon">recommended</span>
-                <br />
-                by your village.
+                <span className="italic font-bold text-salmon">recommended</span>.
               </h1>
 
               <p className="mt-7 max-w-xl text-lg text-pure-white/70 md:text-xl">
@@ -112,11 +110,6 @@ const Index = () => {
                   </div>
                 </div>
 
-                {/* Floating stat chip */}
-                <div className="absolute -right-4 top-6 rounded-2xl bg-salmon px-4 py-3 text-pure-white shadow-cta rotate-3">
-                  <div className="text-2xl font-bold leading-none">96%</div>
-                  <div className="mt-1 text-[10px] uppercase tracking-wider opacity-90">Sitter take-home</div>
-                </div>
               </div>
             </div>
           </div>
