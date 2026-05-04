@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Search, ShieldCheck, Users, Wallet, ArrowRight } from "lucide-react";
+import { Search, ShieldCheck, Users, Wallet, ArrowRight, Star, MapPin } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { TrustPillar } from "@/components/TrustPillar";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSitters } from "@/hooks/useSitters";
 import { SitterCard } from "@/components/SitterCard";
+import heroFamily from "@/assets/hero-family.jpg";
 
 const Index = () => {
   const { data: featured } = useSitters();
@@ -16,63 +17,105 @@ const Index = () => {
 
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-warm" aria-hidden />
-          <div className="container relative grid gap-12 py-16 md:grid-cols-2 md:py-24 lg:py-32">
-            <div className="flex flex-col justify-center animate-fade-up">
-              <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-slate-grey">
+        <section className="relative overflow-hidden bg-pitch-black">
+          {/* Decorative blurs */}
+          <div className="pointer-events-none absolute -left-24 top-1/3 h-96 w-96 rounded-full bg-salmon/30 blur-[120px]" aria-hidden />
+          <div className="pointer-events-none absolute -right-24 -top-24 h-[28rem] w-[28rem] rounded-full bg-salmon/20 blur-[140px]" aria-hidden />
+
+          <div className="container relative grid gap-12 py-16 md:grid-cols-12 md:py-24 lg:py-32">
+            {/* Copy column */}
+            <div className="md:col-span-7 flex flex-col justify-center animate-fade-up">
+              <span className="inline-flex w-fit items-center gap-2 rounded-full border border-pure-white/15 bg-pure-white/5 px-3 py-1 text-xs font-medium text-pure-white/80 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-success-green" />
-                Available across the UAE
+                Live across the UAE · 1,200+ verified sitters
               </span>
-              <h1 className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-pitch-black md:text-5xl lg:text-6xl">
-                Babysitters and nannies,<br />
-                <span className="text-salmon">recommended</span> by people you trust.
+
+              <h1 className="mt-6 font-display text-[2.75rem] font-bold leading-[0.95] tracking-tight text-pure-white sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+                Sitters
+                <br />
+                <span className="italic font-medium text-salmon">recommended</span>
+                <br />
+                by your village.
               </h1>
-              <p className="mt-5 max-w-lg text-lg text-slate-grey">
-                Browse verified sitters near you — no sign-up wall, no hidden fees, and the longer you book the same sitter, the less we charge.
+
+              <p className="mt-7 max-w-xl text-lg text-pure-white/70 md:text-xl">
+                Browse verified babysitters and nannies trusted by parents at your school, nursery and community. No sign-up wall. No hidden fees.
               </p>
 
-              <form className="mt-8 flex flex-col gap-2 rounded-2xl border border-border bg-card p-2 shadow-card sm:flex-row" onSubmit={e => e.preventDefault()}>
+              <form
+                className="mt-9 flex flex-col gap-2 rounded-2xl border border-pure-white/10 bg-pure-white/95 p-2 shadow-cta sm:flex-row"
+                onSubmit={e => e.preventDefault()}
+              >
                 <div className="flex flex-1 items-center gap-2 px-3">
                   <Search className="h-5 w-5 text-slate-grey" />
                   <Input
-                    placeholder="Area or community (e.g. Dubai Marina, Arabian Ranches)"
+                    placeholder="Dubai Marina, Arabian Ranches, Yas Island…"
                     className="border-0 px-0 text-base shadow-none focus-visible:ring-0"
                   />
                 </div>
                 <Button asChild size="lg" className="bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
-                  <Link to="/sitters">Find a sitter near you</Link>
+                  <Link to="/sitters">Find a sitter</Link>
                 </Button>
               </form>
 
-              <div className="mt-5 text-xs text-slate-grey">
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-pure-white/60">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-success-green" />
+                  Police-cleared & reference-checked
+                </div>
+                <div className="flex items-center gap-2">
+                  <Star className="h-4 w-4 fill-salmon text-salmon" />
+                  4.9 average from 8,400+ bookings
+                </div>
+              </div>
+
+              <div className="mt-6 text-xs text-pure-white/50">
                 Browse freely — no account needed.{" "}
-                <Link to="/sitter/signup" className="font-medium text-pitch-black underline-offset-4 hover:underline">
+                <Link to="/sitter/signup" className="font-medium text-pure-white underline-offset-4 hover:underline">
                   I'm a sitter, not a parent →
                 </Link>
               </div>
             </div>
 
-            <div className="relative hidden md:block">
-              <div className="absolute -right-8 top-8 h-72 w-72 rounded-full bg-salmon/15 blur-3xl" />
-              <div className="relative grid grid-cols-2 gap-4 animate-fade-up">
-                <img
-                  src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&h=800&fit=crop"
-                  alt="Parent and child reading together"
-                  className="aspect-[3/4] w-full rounded-2xl object-cover shadow-card-hover"
-                />
-                <div className="flex flex-col gap-4 pt-10">
+            {/* Image column */}
+            <div className="md:col-span-5 relative hidden md:block">
+              <div className="relative animate-fade-up">
+                {/* Main hero image */}
+                <div className="relative overflow-hidden rounded-[2rem] shadow-card-hover ring-1 ring-pure-white/10">
                   <img
-                    src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=600&h=600&fit=crop"
-                    alt="Sitter playing with children"
-                    className="aspect-square w-full rounded-2xl object-cover shadow-card-hover"
+                    src={heroFamily}
+                    alt="A family at home with their trusted nanny"
+                    className="aspect-[4/5] w-full object-cover"
                   />
-                  <div className="rounded-2xl bg-card p-4 shadow-card">
-                    <div className="text-xs font-medium text-success-green">Verified+</div>
-                    <div className="mt-1 text-sm font-semibold text-pitch-black">Sara M. · 4.9 ★</div>
-                    <div className="text-xs text-slate-grey">142 bookings · 0.8 km away</div>
-                    <div className="mt-3 text-sm font-semibold text-pitch-black">AED 75<span className="text-xs font-normal text-slate-grey">/hr</span></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-pitch-black/40 via-transparent to-transparent" />
+                </div>
+
+                {/* Floating sitter card */}
+                <div className="absolute -left-6 bottom-8 w-60 rounded-2xl bg-pure-white p-4 shadow-card-hover">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-success-green/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-success-green">
+                      <ShieldCheck className="h-3 w-3" /> Verified+
+                    </span>
+                    <span className="flex items-center gap-1 text-xs font-medium text-pitch-black">
+                      <Star className="h-3 w-3 fill-salmon text-salmon" /> 4.9
+                    </span>
                   </div>
+                  <div className="mt-2 text-sm font-semibold text-pitch-black">Sara M.</div>
+                  <div className="mt-0.5 flex items-center gap-1 text-xs text-slate-grey">
+                    <MapPin className="h-3 w-3" /> 0.8 km · 142 bookings
+                  </div>
+                  <div className="mt-3 flex items-end justify-between">
+                    <div className="text-base font-bold text-pitch-black">
+                      AED 75<span className="text-xs font-normal text-slate-grey">/hr</span>
+                    </div>
+                    <span className="text-[10px] font-medium text-salmon">Available tonight</span>
+                  </div>
+                </div>
+
+                {/* Floating stat chip */}
+                <div className="absolute -right-4 top-6 rounded-2xl bg-salmon px-4 py-3 text-pure-white shadow-cta rotate-3">
+                  <div className="text-2xl font-bold leading-none">96%</div>
+                  <div className="mt-1 text-[10px] uppercase tracking-wider opacity-90">Sitter take-home</div>
                 </div>
               </div>
             </div>
