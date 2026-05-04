@@ -27,7 +27,7 @@ const PostJob = () => {
   const nav = useNavigate();
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
-    type: "one_off" as const,
+    type: "one_off" as "one_off" | "repeat" | "permanent",
     date: new Date().toISOString().slice(0, 10),
     startTime: "18:00",
     endTime: "22:00",
