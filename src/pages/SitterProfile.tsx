@@ -4,7 +4,10 @@ import { Footer } from "@/components/Footer";
 import { useSitter } from "@/hooks/useSitters";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/fees";
-import { Star, Clock, MapPin, MessageCircle, Languages, Heart, ShieldCheck, Loader2 } from "lucide-react";
+import {
+  Star, Clock, MapPin, MessageCircle, Languages, ShieldCheck, Loader2,
+  BadgeCheck, CheckCircle2, Calendar, Award, Heart,
+} from "lucide-react";
 
 const SitterProfile = () => {
   const { id } = useParams();
@@ -13,90 +16,238 @@ const SitterProfile = () => {
   if (isLoading) return <div className="grid min-h-screen place-items-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
   if (!sitter) return <Navigate to="/sitters" replace />;
 
+  const firstName = sitter.name.split(" ")[0];
+
+  // Mock weekly availability snapshot
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const availability = [true, true, false, true, true, true, false];
+
+  // Mock specialities derived from sitter flags
+  const specialities = [
+    sitter.newbornExperience && "Newborn",
+    sitter.multiplesExperience && "Twins / multiples",
+    sitter.senExperience && "SEN",
+    sitter.maternityNurse && "Maternity nurse",
+    sitter.nightNanny && "Night nanny",
+    sitter.earlyYearsQualified && "Early years qualified",
+    sitter.firstAidCertified && "First aid",
+  ].filter(Boolean) as string[];
+
+  const practical = [
+    sitter.drives && "Drives",
+    sitter.hasOwnCar && "Own car",
+    sitter.swims && "Swims",
+    sitter.cooks && "Cooks",
+    sitter.lightHousework && "Light housework",
+    sitter.homeworkHelp && "Homework help",
+    sitter.nonSmoker && "Non-smoker",
+    sitter.comfortableWithPets && "Pet-friendly",
+  ].filter(Boolean) as string[];
+
+  // Mock reviews
+  const reviews = [
+    { name: "Layla H.", date: "March 2026", rating: 5, comment: `${firstName} is wonderful with our two-year-old. Punctual, warm, and our daughter asks for her every week.` },
+    { name: "Marc D.", date: "January 2026", rating: 5, comment: `Couldn't recommend more. Genuinely caring and great at suggesting fun activities.` },
+    { name: "Aisha K.", date: "December 2025", rating: 5, comment: `Trustworthy, organised and our newborn settled with her instantly. A real find.` },
+  ];
+
   return (
-    <div className="min-h-screen bg-background pb-28 md:pb-0">
+    <div className="min-h-screen bg-cream pb-28 lg:pb-0">
       <Header />
 
-      <main className="container py-8 md:py-12">
+      <main className="container py-6 md:py-10">
         <Link to="/sitters" className="text-sm text-slate-grey hover:text-pitch-black">← Back to sitters</Link>
 
         <div className="mt-4 grid gap-10 lg:grid-cols-[1fr_380px]">
-          <div>
-            <div className="overflow-hidden rounded-2xl bg-card shadow-card">
-              <div className="relative aspect-[16/9] bg-muted">
-                <img src={sitter.photo} alt={sitter.name} className="h-full w-full object-cover" />
-              </div>
-              <div className="p-6">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <h1 className="text-2xl font-semibold text-pitch-black md:text-3xl">{sitter.name}</h1>
-                      {sitter.verified && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-success-green/15 px-2.5 py-1 text-xs font-semibold text-success-green">
-                          <ShieldCheck className="h-3.5 w-3.5" /> Verified
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-grey">
-                      <span className="inline-flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-warning-amber text-warning-amber" />
-                        <strong className="text-pitch-black">{sitter.rating || "New"}</strong>
-                        {sitter.bookingsCompleted > 0 && <>({sitter.bookingsCompleted} bookings)</>}
-                      </span>
-                      <span className="inline-flex items-center gap-1"><MapPin className="h-4 w-4" /> {sitter.area}</span>
-                    </div>
+          {/* LEFT — content */}
+          <div className="space-y-8">
+            {/* HEADER CARD */}
+            <div className="overflow-hidden rounded-3xl bg-pure-white shadow-card">
+              <div className="grid gap-6 p-6 sm:grid-cols-[180px_1fr] sm:p-8">
+                <div className="relative">
+                  <div className="aspect-square overflow-hidden rounded-2xl bg-salmon-soft">
+                    <img src={sitter.photo} alt={sitter.name} className="h-full w-full object-cover" />
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-semibold text-pitch-black">{formatCurrency(sitter.hourlyRate, sitter.currency)}<span className="text-sm font-normal text-slate-grey">/hr</span></div>
+                  {sitter.verified && (
+                    <span className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-success-green px-2.5 py-1 text-[10px] font-bold uppercase text-pure-white shadow-card">
+                      <BadgeCheck className="h-3 w-3" /> Verified
+                    </span>
+                  )}
+                </div>
+
+                <div>
+                  <h1 className="font-display text-3xl font-bold text-pitch-black md:text-4xl">{sitter.name}</h1>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-grey">
+                    <span className="inline-flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-salmon text-salmon" />
+                      <strong className="text-pitch-black">{sitter.rating || "New"}</strong>
+                      {sitter.bookingsCompleted > 0 && <span className="text-slate-grey">({sitter.bookingsCompleted} bookings)</span>}
+                    </span>
+                    <span className="inline-flex items-center gap-1"><MapPin className="h-4 w-4" /> {sitter.area}</span>
+                    <span className="inline-flex items-center gap-1"><Clock className="h-4 w-4" /> {sitter.yearsExperience} yrs</span>
+                  </div>
+
+                  {sitter.headline && (
+                    <p className="mt-4 text-base font-medium text-pitch-black">{sitter.headline}</p>
+                  )}
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {sitter.policeCleared && <Pill icon={ShieldCheck} label="Police cleared" />}
+                    {sitter.firstAidCertified && <Pill icon={Heart} label="First aid" />}
+                    {sitter.earlyYearsQualified && <Pill icon={Award} label="Early years" />}
+                    <Pill icon={Languages} label={sitter.languages.slice(0, 3).join(" · ")} />
                   </div>
                 </div>
-                {sitter.headline && <p className="mt-3 text-sm text-slate-grey">{sitter.headline}</p>}
               </div>
             </div>
 
+            {/* ABOUT */}
             <Section title="About me">
-              <p className="text-base leading-relaxed text-pitch-black/85">{sitter.bio || "No bio yet."}</p>
+              <p className="text-base leading-relaxed text-pitch-black/85">
+                {sitter.bio || `Hi, I'm ${firstName}. I love working with children and helping families feel supported. Get in touch if you'd like to chat.`}
+              </p>
             </Section>
 
-            <Section title="Details">
-              <div className="grid gap-3 text-sm sm:grid-cols-2">
-                <Detail icon={<Languages className="h-4 w-4" />} label="Languages" value={sitter.languages.join(", ")} />
-                <Detail icon={<Clock className="h-4 w-4" />} label="Experience" value={`${sitter.yearsExperience} years`} />
-                <Detail icon={<Heart className="h-4 w-4" />} label="Network badge" value={sitter.networkBadge} />
-                <Detail icon={<MapPin className="h-4 w-4" />} label="Area" value={sitter.area} />
+            {/* SPECIALITIES */}
+            {specialities.length > 0 && (
+              <Section title="Specialities">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {specialities.map(s => (
+                    <div key={s} className="flex items-center gap-2 rounded-xl bg-pure-white p-3 shadow-card">
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-success-green" />
+                      <span className="text-sm font-medium text-pitch-black">{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+            )}
+
+            {/* PRACTICAL */}
+            {practical.length > 0 && (
+              <Section title="Practical skills">
+                <div className="flex flex-wrap gap-2">
+                  {practical.map(p => (
+                    <span key={p} className="rounded-full bg-pure-white px-3 py-1.5 text-xs font-medium text-pitch-black shadow-card">
+                      {p}
+                    </span>
+                  ))}
+                </div>
+              </Section>
+            )}
+
+            {/* AVAILABILITY */}
+            <Section title="This week's availability">
+              <div className="grid grid-cols-7 gap-2">
+                {days.map((d, i) => (
+                  <div
+                    key={d}
+                    className={`flex flex-col items-center rounded-xl p-3 text-center text-xs font-semibold shadow-card ${
+                      availability[i]
+                        ? "bg-success-green/10 text-success-green"
+                        : "bg-pure-white text-dust-grey"
+                    }`}
+                  >
+                    <span>{d}</span>
+                    <span className="mt-1.5">{availability[i] ? "●" : "—"}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-slate-grey">Message {firstName} to confirm specific times.</p>
+            </Section>
+
+            {/* CHECKS */}
+            <Section title="Verification & checks">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <CheckRow label="Identity verified" passed={sitter.verified} />
+                <CheckRow label="Police clearance" passed={sitter.policeCleared} />
+                <CheckRow label="Reference checks" passed={sitter.verified} />
+                <CheckRow label="Paediatric first aid" passed={sitter.firstAidCertified} />
+              </div>
+            </Section>
+
+            {/* REVIEWS */}
+            <Section title={`Reviews (${reviews.length})`}>
+              <div className="space-y-4">
+                {reviews.map((r, i) => (
+                  <div key={i} className="rounded-2xl bg-pure-white p-5 shadow-card">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-salmon-soft font-display font-bold text-salmon-deep">
+                          {r.name[0]}
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold text-pitch-black">{r.name}</div>
+                          <div className="text-xs text-slate-grey">{r.date}</div>
+                        </div>
+                      </div>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: r.rating }).map((_, j) => <Star key={j} className="h-3.5 w-3.5 fill-salmon text-salmon" />)}
+                      </div>
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-pitch-black/85">"{r.comment}"</p>
+                  </div>
+                ))}
               </div>
             </Section>
           </div>
 
+          {/* RIGHT — sticky booking */}
           <aside className="hidden lg:block">
             <div className="sticky top-24 space-y-4">
-              <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
+              <div className="rounded-3xl bg-pure-white p-6 shadow-card-hover">
                 <div className="flex items-baseline justify-between">
-                  <div className="text-2xl font-semibold text-pitch-black">{formatCurrency(sitter.hourlyRate, sitter.currency)}</div>
-                  <div className="text-sm text-slate-grey">per hour</div>
+                  <div>
+                    <span className="font-display text-3xl font-bold text-pitch-black">
+                      {formatCurrency(sitter.hourlyRate, sitter.currency)}
+                    </span>
+                    <span className="ml-1 text-sm text-slate-grey">/hr</span>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-xs text-slate-grey">
+                    <Star className="h-3.5 w-3.5 fill-salmon text-salmon" /> {sitter.rating || "New"}
+                  </span>
                 </div>
+
                 <div className="mt-5 space-y-2">
-                  <Button asChild size="lg" className="w-full bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
-                    <Link to={`/book/${sitter.id}`}>Book {sitter.name.split(" ")[0]}</Link>
+                  <Button asChild size="lg" className="w-full rounded-full bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
+                    <Link to={`/book/${sitter.id}`}>
+                      <Calendar className="h-4 w-4" /> Book {firstName}
+                    </Link>
                   </Button>
-                  <Button variant="outline" size="lg" className="w-full gap-2">
+                  <Button variant="outline" size="lg" className="w-full gap-2 rounded-full border-cream-deep">
                     <MessageCircle className="h-4 w-4" /> Message
                   </Button>
                 </div>
-                <p className="mt-4 text-center text-xs text-slate-grey">Free to message · No charge until booking confirmed</p>
+
+                <ul className="mt-6 space-y-2.5 border-t border-cream-deep pt-5 text-sm">
+                  <li className="flex items-center gap-2 text-slate-grey">
+                    <CheckCircle2 className="h-4 w-4 text-success-green" /> Free to message
+                  </li>
+                  <li className="flex items-center gap-2 text-slate-grey">
+                    <CheckCircle2 className="h-4 w-4 text-success-green" /> No charge until confirmed
+                  </li>
+                  <li className="flex items-center gap-2 text-slate-grey">
+                    <CheckCircle2 className="h-4 w-4 text-success-green" /> Booking insurance included
+                  </li>
+                </ul>
+              </div>
+
+              <div className="rounded-2xl bg-cream p-5 text-center text-xs text-slate-grey">
+                Concerned about a profile?{" "}
+                <Link to="/" className="font-semibold text-salmon-deep hover:text-salmon">Report sitter</Link>
               </div>
             </div>
           </aside>
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-border bg-card p-3 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.08)] lg:hidden">
+      {/* Mobile sticky CTA */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-cream-deep bg-pure-white p-3 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.08)] lg:hidden">
         <div className="container flex items-center justify-between gap-3 px-4">
           <div>
-            <div className="text-xs text-slate-grey">Book {sitter.name.split(" ")[0]}</div>
-            <div className="text-base font-semibold text-pitch-black">{formatCurrency(sitter.hourlyRate, sitter.currency)}/hr</div>
+            <div className="text-xs text-slate-grey">Book {firstName}</div>
+            <div className="font-display text-base font-bold text-pitch-black">{formatCurrency(sitter.hourlyRate, sitter.currency)}/hr</div>
           </div>
-          <Button asChild className="bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
+          <Button asChild className="rounded-full bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
             <Link to={`/book/${sitter.id}`}>Book now</Link>
           </Button>
         </div>
@@ -109,21 +260,32 @@ const SitterProfile = () => {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mt-10">
-      <h2 className="text-lg font-semibold text-pitch-black">{title}</h2>
+    <section>
+      <h2 className="font-display text-xl font-bold text-pitch-black">{title}</h2>
       <div className="mt-4">{children}</div>
     </section>
   );
 }
 
-function Detail({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function Pill({ icon: Icon, label }: { icon: typeof Star; label: string }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-border bg-card p-3">
-      <span className="mt-0.5 text-slate-grey">{icon}</span>
-      <div>
-        <div className="text-xs text-slate-grey">{label}</div>
-        <div className="text-sm font-medium capitalize text-pitch-black">{value}</div>
-      </div>
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-cream px-3 py-1.5 text-xs font-medium text-pitch-black">
+      <Icon className="h-3.5 w-3.5 text-salmon-deep" /> {label}
+    </span>
+  );
+}
+
+function CheckRow({ label, passed }: { label: string; passed: boolean }) {
+  return (
+    <div className="flex items-center justify-between rounded-xl bg-pure-white p-3.5 shadow-card">
+      <span className="text-sm font-medium text-pitch-black">{label}</span>
+      {passed ? (
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-success-green">
+          <CheckCircle2 className="h-4 w-4" /> Passed
+        </span>
+      ) : (
+        <span className="text-xs font-medium text-dust-grey">Not on file</span>
+      )}
     </div>
   );
 }
