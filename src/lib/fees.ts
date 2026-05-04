@@ -32,7 +32,7 @@ export function calculateFee(completedBookingsTogether: number, bookingValue: nu
   };
 }
 
-export function formatCurrency(value: number, currency: "GBP" | "AED" = "GBP") {
-  if (currency === "AED") return `AED ${value.toFixed(2)}`;
-  return `£${value.toFixed(2)}`;
+export function formatCurrency(value: number, currency: "AED" | "GBP" = "AED") {
+  if (currency === "GBP") return `£${value.toFixed(2)}`;
+  return `AED ${value.toFixed(0)}`;
 }
