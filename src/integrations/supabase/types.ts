@@ -249,48 +249,60 @@ export type Database = {
         Row: {
           area: string | null
           bio: string | null
+          bookings_completed: number
           created_at: string
+          full_name: string | null
           headline: string | null
           hourly_rate_aed: number
           id: string
           is_active: boolean
+          is_demo: boolean
           languages: string[]
           network_badge: Database["public"]["Enums"]["network_badge"]
           photos: string[]
+          rating: number
           updated_at: string
-          user_id: string
+          user_id: string | null
           verified: boolean
           years_experience: number
         }
         Insert: {
           area?: string | null
           bio?: string | null
+          bookings_completed?: number
           created_at?: string
+          full_name?: string | null
           headline?: string | null
           hourly_rate_aed?: number
           id?: string
           is_active?: boolean
+          is_demo?: boolean
           languages?: string[]
           network_badge?: Database["public"]["Enums"]["network_badge"]
           photos?: string[]
+          rating?: number
           updated_at?: string
-          user_id: string
+          user_id?: string | null
           verified?: boolean
           years_experience?: number
         }
         Update: {
           area?: string | null
           bio?: string | null
+          bookings_completed?: number
           created_at?: string
+          full_name?: string | null
           headline?: string | null
           hourly_rate_aed?: number
           id?: string
           is_active?: boolean
+          is_demo?: boolean
           languages?: string[]
           network_badge?: Database["public"]["Enums"]["network_badge"]
           photos?: string[]
+          rating?: number
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
           verified?: boolean
           years_experience?: number
         }
