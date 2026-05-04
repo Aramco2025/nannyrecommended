@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SitterCard } from "@/components/SitterCard";
-import { sitters } from "@/data/sitters";
+import { useSitters } from "@/hooks/useSitters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, List, SlidersHorizontal } from "lucide-react";

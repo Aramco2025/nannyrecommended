@@ -5,10 +5,11 @@ import { Footer } from "@/components/Footer";
 import { TrustPillar } from "@/components/TrustPillar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { sitters } from "@/data/sitters";
+import { useSitters } from "@/hooks/useSitters";
 import { SitterCard } from "@/components/SitterCard";
 
 const Index = () => {
+  const { data: featured } = useSitters();
   return (
     <div className="min-h-screen bg-background">
       <Header />
