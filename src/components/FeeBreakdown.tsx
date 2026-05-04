@@ -4,10 +4,10 @@ type Props = {
   hourlyRate: number;
   hours: number;
   completedBookingsTogether: number;
-  currency?: "GBP" | "AED";
+  currency?: "AED" | "GBP";
 };
 
-export function FeeBreakdown({ hourlyRate, hours, completedBookingsTogether, currency = "GBP" }: Props) {
+export function FeeBreakdown({ hourlyRate, hours, completedBookingsTogether, currency = "AED" }: Props) {
   const baseValue = hourlyRate * hours;
   const fee = calculateFee(completedBookingsTogether, baseValue);
   const parentFeeAmount = fee.parentPays - fee.baseValue;

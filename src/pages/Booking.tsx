@@ -87,7 +87,7 @@ const Booking = () => {
 
             <Card>
               <Field label="Address">
-                <Input defaultValue="Home · 12 Battersea Park Rd, London SW11" />
+                <Input defaultValue="Home · Marina Promenade, Dubai Marina" />
               </Field>
               <div className="mt-4">
                 <Field label="Special instructions (optional)">

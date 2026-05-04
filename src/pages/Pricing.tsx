@@ -12,7 +12,7 @@ const rows = [
   ["Free cancellation window", "24 hours", "6 hours"],
   ["Concierge sourcing", "—", "✓"],
   ["Network connections", "—", "✓"],
-  ["Booking insurance", "Standard", "Up to £500 / AED 2,500"],
+  ["Booking insurance", "Standard", "Up to AED 2,500"],
 ];
 
 const Pricing = () => {
@@ -39,12 +39,12 @@ const Pricing = () => {
               <div className="p-5 text-sm font-medium text-slate-grey">What you get</div>
               <div className="p-5 text-center">
                 <div className="text-sm font-semibold text-pitch-black">Free</div>
-                <div className="text-xs text-slate-grey">£0 forever</div>
+                <div className="text-xs text-slate-grey">AED 0 forever</div>
               </div>
               <div className="relative p-5 text-center">
                 <div className="absolute right-3 top-3 rounded-full bg-salmon px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pure-white">Popular</div>
                 <div className="text-sm font-semibold text-pitch-black">Family Plus</div>
-                <div className="text-xs text-slate-grey">£9.99 / AED 39 per month</div>
+                <div className="text-xs text-slate-grey">AED 39 per month</div>
               </div>
             </div>
             {rows.map(([label, free, plus], i) => (

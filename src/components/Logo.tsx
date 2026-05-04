@@ -1,14 +1,10 @@
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.png";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
-    <Link to="/" className={`flex items-center gap-2 ${className}`}>
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-salmon text-primary-foreground font-bold">
-        N
-      </span>
-      <span className="font-semibold text-pitch-black tracking-tight">
-        Nanny<span className="text-salmon">Recommended</span>
-      </span>
+    <Link to="/" className={`flex items-center ${className}`} aria-label="NannyRecommended home">
+      <img src={logo} alt="NannyRecommended" className="h-9 w-auto md:h-10" />
     </Link>
   );
 }
