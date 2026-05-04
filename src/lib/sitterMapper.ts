@@ -38,5 +38,6 @@ export function mapSitter(s: DbSitter): UISitter {
     yearsExperience: s.years_experience ?? 0,
     languages: s.languages ?? ["English"],
     headline: s.headline ?? "",
+    tier: (s as any).tier ?? null,
   };
 }
