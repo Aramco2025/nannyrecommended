@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useSitter } from "@/hooks/useSitters";
 import { useAuth } from "@/hooks/useAuth";
 import { FeeBreakdown } from "@/components/FeeBreakdown";
-import { calculateFee } from "@/lib/fees";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+
+const stripePromise = loadStripe(import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string);
 
 const Booking = () => {
   const { sitterId } = useParams();
@@ -26,10 +29,7 @@ const Booking = () => {
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
-  const [instant, setInstant] = useState(false);
-
-  // simplified: assume 0 prior bookings together for this MVP
-  const completedBookingsTogether = 0;
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   if (isLoading || authLoading) return <div className="grid min-h-screen place-items-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
   if (!sitter) return <Navigate to="/sitters" replace />;
@@ -44,61 +44,42 @@ const Booking = () => {
     setBusy(true);
     try {
       const start = new Date(`${date}T${startTime}:00`);
-      const end = new Date(start.getTime() + hours * 3600 * 1000);
-      const subtotal = sitter.hourlyRate * hours;
-      const fee = calculateFee(completedBookingsTogether, subtotal);
-
-      // 1. Mock card charge (replace with Stripe Checkout post-MVP)
-      const { chargeCard } = await import("@/lib/payments/stripe");
-      const charge = await chargeCard({
-        amountMinor: Math.round(fee.parentPays * 100),
-        currency: sitter.currency,
+      const { data, error } = await supabase.functions.invoke("create-booking-checkout", {
+        body: {
+          sitter_id: sitter.id,
+          start_at: start.toISOString(),
+          hours,
+          address: address || null,
+          notes: notes || null,
+          return_url: `${window.location.origin}/account`,
+        },
       });
-      if (!charge.success) throw new Error("Card was declined");
-
-      if (instant) {
-        // Instant booking via RPC — validates availability + clash, creates confirmed booking
-        const { data, error } = await supabase.rpc("create_instant_booking", {
-          _sitter_id: sitter.id,
-          _start_at: start.toISOString(),
-          _hours: hours,
-          _address: address || null,
-          _notes: notes || null,
-        });
-        if (error) throw error;
-        toast({ title: "Booked instantly!", description: `${sitter.name.split(" ")[0]} is confirmed for ${start.toLocaleString()}.` });
-        navigate(`/messages/${data}`);
-        return;
-      }
-
-      // 2. Standard pending booking
-      const { data, error } = await supabase.from("bookings").insert({
-        parent_id: user.id,
-        sitter_id: sitter.id,
-        start_at: start.toISOString(),
-        end_at: end.toISOString(),
-        hours,
-        hourly_rate_aed: sitter.hourlyRate,
-        subtotal_aed: subtotal,
-        platform_fee_aed: fee.platformRevenue,
-        sitter_payout_aed: fee.sitterReceives,
-        total_aed: fee.parentPays,
-        status: "pending",
-        address,
-        notes,
-        payment_method_ref: charge.transactionId,
-      }).select("id").single();
       if (error) throw error;
-
-      // 3. Mark funds held in escrow
-      await supabase.rpc("create_booking_escrow", { _booking: data.id });
-
-      toast({ title: "Booking sent", description: `Payment held safely until ${sitter.name.split(" ")[0]} accepts.` });
-      navigate("/account");
+      if (!data?.client_secret) throw new Error("No checkout session returned");
+      setClientSecret(data.client_secret);
     } catch (err: any) {
-      toast({ title: "Could not create booking", description: err.message, variant: "destructive" });
+      toast({ title: "Could not start checkout", description: err.message, variant: "destructive" });
     } finally { setBusy(false); }
   };
+
+  if (clientSecret) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container max-w-2xl py-8">
+          <button onClick={() => setClientSecret(null)} className="text-sm text-slate-grey hover:text-pitch-black">← Back to booking details</button>
+          <h1 className="mt-4 font-display text-2xl font-semibold text-pitch-black">Complete payment</h1>
+          <p className="mt-1 text-sm text-slate-grey">Test mode — use card <code className="rounded bg-muted px-1">4242 4242 4242 4242</code>, any future date, any CVC.</p>
+          <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+            <EmbeddedCheckoutProvider stripe={stripePromise} options={{ clientSecret }}>
+              <EmbeddedCheckout />
+            </EmbeddedCheckoutProvider>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,31 +121,23 @@ const Booking = () => {
 
             <div className="lg:hidden">
               <FeeBreakdown hourlyRate={sitter.hourlyRate} hours={hours}
-                completedBookingsTogether={completedBookingsTogether} currency={sitter.currency} />
+                completedBookingsTogether={0} currency={sitter.currency} />
             </div>
-
-            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-pure-white p-4">
-              <input type="checkbox" checked={instant} onChange={e => setInstant(e.target.checked)} className="mt-1 h-4 w-4 accent-salmon" />
-              <span>
-                <span className="block text-sm font-semibold text-pitch-black">⚡ Book instantly</span>
-                <span className="block text-xs text-slate-grey">If {sitter.name.split(" ")[0]} is available at this time, she'll be confirmed immediately — no waiting for accept.</span>
-              </span>
-            </label>
 
             <div className="rounded-2xl border border-border bg-off-white p-4 text-xs text-slate-grey">
               🔒 Your payment is held safely until the booking is complete. {sitter.name.split(" ")[0]} only gets paid when you confirm she showed up and did the job.
             </div>
 
             <Button type="submit" disabled={busy} size="lg" className="w-full bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
-              {busy ? "Processing payment…" : !user ? "Sign in to book" : instant ? "Pay & book instantly" : "Send booking request"}
+              {busy ? "Starting checkout…" : !user ? "Sign in to book" : "Continue to payment"}
             </Button>
-            <p className="text-center text-xs text-slate-grey">Test mode — no real card is charged.</p>
+            <p className="text-center text-xs text-slate-grey">Secure payment powered by Stripe.</p>
           </form>
 
           <aside className="hidden lg:block">
             <div className="sticky top-24">
               <FeeBreakdown hourlyRate={sitter.hourlyRate} hours={hours}
-                completedBookingsTogether={completedBookingsTogether} currency={sitter.currency} />
+                completedBookingsTogether={0} currency={sitter.currency} />
             </div>
           </aside>
         </div>
