@@ -54,13 +54,16 @@ export type Database = {
           address: string | null
           created_at: string
           end_at: string
+          escrow_held: boolean
           hourly_rate_aed: number
           hours: number
           id: string
           notes: string | null
           paid_at: string | null
           parent_id: string
+          payment_method_ref: string | null
           platform_fee_aed: number
+          released_at: string | null
           sitter_id: string
           sitter_payout_aed: number
           start_at: string
@@ -74,13 +77,16 @@ export type Database = {
           address?: string | null
           created_at?: string
           end_at: string
+          escrow_held?: boolean
           hourly_rate_aed: number
           hours: number
           id?: string
           notes?: string | null
           paid_at?: string | null
           parent_id: string
+          payment_method_ref?: string | null
           platform_fee_aed: number
+          released_at?: string | null
           sitter_id: string
           sitter_payout_aed: number
           start_at: string
@@ -94,13 +100,16 @@ export type Database = {
           address?: string | null
           created_at?: string
           end_at?: string
+          escrow_held?: boolean
           hourly_rate_aed?: number
           hours?: number
           id?: string
           notes?: string | null
           paid_at?: string | null
           parent_id?: string
+          payment_method_ref?: string | null
           platform_fee_aed?: number
+          released_at?: string | null
           sitter_id?: string
           sitter_payout_aed?: number
           start_at?: string
@@ -119,6 +128,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cash_out_requests: {
+        Row: {
+          admin_notes: string | null
+          airtime_operator: string | null
+          airtime_phone: string | null
+          amount_minor_units: number
+          bank_account_holder: string | null
+          bank_iban: string | null
+          completed_at: string | null
+          currency: string
+          exchange_house: string | null
+          id: string
+          method: Database["public"]["Enums"]["cash_out_method"]
+          pickup_location_id: string | null
+          pickup_reference: string | null
+          processed_at: string | null
+          requested_at: string
+          sitter_id: string
+          status: Database["public"]["Enums"]["cash_out_status"]
+          voucher_provider: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          airtime_operator?: string | null
+          airtime_phone?: string | null
+          amount_minor_units: number
+          bank_account_holder?: string | null
+          bank_iban?: string | null
+          completed_at?: string | null
+          currency?: string
+          exchange_house?: string | null
+          id?: string
+          method: Database["public"]["Enums"]["cash_out_method"]
+          pickup_location_id?: string | null
+          pickup_reference?: string | null
+          processed_at?: string | null
+          requested_at?: string
+          sitter_id: string
+          status?: Database["public"]["Enums"]["cash_out_status"]
+          voucher_provider?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          airtime_operator?: string | null
+          airtime_phone?: string | null
+          amount_minor_units?: number
+          bank_account_holder?: string | null
+          bank_iban?: string | null
+          completed_at?: string | null
+          currency?: string
+          exchange_house?: string | null
+          id?: string
+          method?: Database["public"]["Enums"]["cash_out_method"]
+          pickup_location_id?: string | null
+          pickup_reference?: string | null
+          processed_at?: string | null
+          requested_at?: string
+          sitter_id?: string
+          status?: Database["public"]["Enums"]["cash_out_status"]
+          voucher_provider?: string | null
+        }
+        Relationships: []
       }
       loyalty: {
         Row: {
@@ -172,6 +244,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pickup_locations: {
+        Row: {
+          active: boolean
+          address: string
+          branch_name: string
+          created_at: string
+          emirate: string | null
+          hours: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          provider: string
+        }
+        Insert: {
+          active?: boolean
+          address: string
+          branch_name: string
+          created_at?: string
+          emirate?: string | null
+          hours?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          provider: string
+        }
+        Update: {
+          active?: boolean
+          address?: string
+          branch_name?: string
+          created_at?: string
+          emirate?: string | null
+          hours?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          provider?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -260,6 +371,9 @@ export type Database = {
           languages: string[]
           network_badge: Database["public"]["Enums"]["network_badge"]
           photos: string[]
+          preferred_payout_method:
+            | Database["public"]["Enums"]["cash_out_method"]
+            | null
           rating: number
           updated_at: string
           user_id: string | null
@@ -280,6 +394,9 @@ export type Database = {
           languages?: string[]
           network_badge?: Database["public"]["Enums"]["network_badge"]
           photos?: string[]
+          preferred_payout_method?:
+            | Database["public"]["Enums"]["cash_out_method"]
+            | null
           rating?: number
           updated_at?: string
           user_id?: string | null
@@ -300,6 +417,9 @@ export type Database = {
           languages?: string[]
           network_badge?: Database["public"]["Enums"]["network_badge"]
           photos?: string[]
+          preferred_payout_method?:
+            | Database["public"]["Enums"]["cash_out_method"]
+            | null
           rating?: number
           updated_at?: string
           user_id?: string | null
@@ -329,17 +449,116 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_transactions: {
+        Row: {
+          amount_minor_units: number
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          related_booking_id: string | null
+          related_cash_out_id: string | null
+          status: Database["public"]["Enums"]["wallet_tx_status"]
+          type: Database["public"]["Enums"]["wallet_tx_type"]
+          wallet_id: string
+        }
+        Insert: {
+          amount_minor_units: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          related_booking_id?: string | null
+          related_cash_out_id?: string | null
+          status?: Database["public"]["Enums"]["wallet_tx_status"]
+          type: Database["public"]["Enums"]["wallet_tx_type"]
+          wallet_id: string
+        }
+        Update: {
+          amount_minor_units?: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          related_booking_id?: string | null
+          related_cash_out_id?: string | null
+          status?: Database["public"]["Enums"]["wallet_tx_status"]
+          type?: Database["public"]["Enums"]["wallet_tx_type"]
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallets: {
+        Row: {
+          balance_minor_units: number
+          created_at: string
+          currency: string
+          id: string
+          pending_minor_units: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance_minor_units?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          pending_minor_units?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance_minor_units?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          pending_minor_units?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      ensure_wallet: { Args: { _user: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      release_booking_escrow: { Args: { _booking: string }; Returns: undefined }
+      wallet_credit: {
+        Args: {
+          _amount: number
+          _booking?: string
+          _description: string
+          _type: Database["public"]["Enums"]["wallet_tx_type"]
+          _user: string
+        }
+        Returns: string
+      }
+      wallet_debit: {
+        Args: {
+          _amount: number
+          _cash_out?: string
+          _description: string
+          _type: Database["public"]["Enums"]["wallet_tx_type"]
+          _user: string
+        }
+        Returns: string
       }
     }
     Enums: {
@@ -351,8 +570,31 @@ export type Database = {
         | "completed"
         | "cancelled"
         | "declined"
+      cash_out_method:
+        | "exchange_house_pickup"
+        | "bank_transfer"
+        | "voucher"
+        | "airtime"
+      cash_out_status:
+        | "requested"
+        | "processing"
+        | "ready_for_pickup"
+        | "completed"
+        | "cancelled"
+        | "failed"
       loyalty_tier: "bronze" | "silver" | "gold" | "platinum"
       network_badge: "none" | "trusted" | "premium" | "elite"
+      wallet_tx_status: "pending" | "completed" | "failed" | "cancelled"
+      wallet_tx_type:
+        | "top_up"
+        | "booking_payment_in"
+        | "booking_payment_out"
+        | "platform_fee"
+        | "cash_out_request"
+        | "cash_out_completed"
+        | "cash_out_cancelled"
+        | "refund"
+        | "bonus"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -489,8 +731,34 @@ export const Constants = {
         "cancelled",
         "declined",
       ],
+      cash_out_method: [
+        "exchange_house_pickup",
+        "bank_transfer",
+        "voucher",
+        "airtime",
+      ],
+      cash_out_status: [
+        "requested",
+        "processing",
+        "ready_for_pickup",
+        "completed",
+        "cancelled",
+        "failed",
+      ],
       loyalty_tier: ["bronze", "silver", "gold", "platinum"],
       network_badge: ["none", "trusted", "premium", "elite"],
+      wallet_tx_status: ["pending", "completed", "failed", "cancelled"],
+      wallet_tx_type: [
+        "top_up",
+        "booking_payment_in",
+        "booking_payment_out",
+        "platform_fee",
+        "cash_out_request",
+        "cash_out_completed",
+        "cash_out_cancelled",
+        "refund",
+        "bonus",
+      ],
     },
   },
 } as const
