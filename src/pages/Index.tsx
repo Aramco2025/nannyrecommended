@@ -22,7 +22,7 @@ const Index = () => {
             <div className="flex flex-col justify-center animate-fade-up">
               <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-slate-grey">
                 <span className="h-1.5 w-1.5 rounded-full bg-success-green" />
-                Now in Dubai, Abu Dhabi & Sharjah
+                Available across the UAE
               </span>
               <h1 className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-pitch-black md:text-5xl lg:text-6xl">
                 Babysitters and nannies,<br />
