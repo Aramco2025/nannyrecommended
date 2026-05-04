@@ -34,6 +34,12 @@ import NightNanny from "./pages/NightNanny.tsx";
 import AfterSchoolNanny from "./pages/AfterSchoolNanny.tsx";
 import FullTimeNanny from "./pages/FullTimeNanny.tsx";
 import EmergencyChildcare from "./pages/EmergencyChildcare.tsx";
+import SitterJobs from "./pages/SitterJobs.tsx";
+import SitterAvailability from "./pages/SitterAvailability.tsx";
+import SitterNotifications from "./pages/SitterNotifications.tsx";
+import Messages from "./pages/Messages.tsx";
+import MessageThread from "./pages/MessageThread.tsx";
+import PostJob from "./pages/PostJob.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -76,6 +82,12 @@ const App = () => (
             <Route path="/after-school-nanny" element={<AfterSchoolNanny />} />
             <Route path="/full-time-nanny" element={<FullTimeNanny />} />
             <Route path="/emergency-childcare" element={<EmergencyChildcare />} />
+            <Route path="/sitter/jobs" element={<SitterJobs />} />
+            <Route path="/sitter/availability" element={<SitterAvailability />} />
+            <Route path="/sitter/notifications" element={<SitterNotifications />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/messages/:bookingId" element={<MessageThread />} />
+            <Route path="/parent/post-job" element={<PostJob />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
