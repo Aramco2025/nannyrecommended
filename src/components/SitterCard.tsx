@@ -3,6 +3,7 @@ import { Star, MapPin, MessageCircle, ShieldCheck } from "lucide-react";
 import { UISitter } from "@/lib/sitterMapper";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/fees";
+import { TierBadge } from "@/components/pricing/TierBadge";
 
 export function SitterCard({ sitter }: { sitter: UISitter }) {
   return (
@@ -43,6 +44,7 @@ export function SitterCard({ sitter }: { sitter: UISitter }) {
               {formatCurrency(sitter.hourlyRate, sitter.currency)}
             </div>
             <div className="text-[11px] text-slate-grey">per hour</div>
+            {sitter.tier && <div className="mt-1 flex justify-end"><TierBadge tier={sitter.tier} /></div>}
           </div>
         </div>
 

@@ -5,7 +5,9 @@ import { SitterCard } from "@/components/SitterCard";
 import { useSitters } from "@/hooks/useSitters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { Search, MapPin, List, SlidersHorizontal } from "lucide-react";
+import { PRICING_TIERS, SitterTier } from "@/lib/pricing/tiers";
 
 const filterChips = [
   "Available now",
@@ -22,6 +24,8 @@ const filterChips = [
 const Sitters = () => {
   const [view, setView] = useState<"list" | "map">("list");
   const [active, setActive] = useState<string[]>([]);
+  const [tierFilter, setTierFilter] = useState<SitterTier | "any">("any");
+  const [priceRange, setPriceRange] = useState<[number, number]>([35, 140]);
   const { data: sitters = [], isLoading } = useSitters();
 
   const toggle = (chip: string) =>
@@ -29,6 +33,8 @@ const Sitters = () => {
 
   let visible = sitters;
   if (active.includes("Verified+")) visible = visible.filter(s => s.verified);
+  if (tierFilter !== "any") visible = visible.filter(s => s.tier === tierFilter);
+  visible = visible.filter(s => s.hourlyRate >= priceRange[0] && s.hourlyRate <= priceRange[1]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -71,6 +77,32 @@ const Sitters = () => {
               placeholder="Area or community (e.g. Dubai Marina)"
               defaultValue="Dubai Marina"
               className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+            />
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setTierFilter("any")}
+              className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${tierFilter === "any" ? "border-pitch-black bg-pitch-black text-pure-white" : "border-border bg-card text-slate-grey hover:text-pitch-black"}`}
+            >Any tier</button>
+            {PRICING_TIERS.map(t => (
+              <button
+                key={t.id}
+                onClick={() => setTierFilter(t.id)}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${tierFilter === t.id ? "border-pitch-black bg-pitch-black text-pure-white" : "border-border bg-card text-slate-grey hover:text-pitch-black"}`}
+              >{t.name}</button>
+            ))}
+          </div>
+
+          <div className="mt-4 max-w-md">
+            <div className="mb-2 flex items-center justify-between text-xs text-slate-grey">
+              <span>Hourly rate</span>
+              <span className="font-medium text-pitch-black">AED {priceRange[0]} – AED {priceRange[1]}</span>
+            </div>
+            <Slider
+              min={30} max={200} step={5}
+              value={priceRange}
+              onValueChange={(v) => setPriceRange([v[0], v[1]] as [number, number])}
             />
           </div>
 

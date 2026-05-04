@@ -17,6 +17,7 @@ import SitterDashboard from "./pages/SitterDashboard.tsx";
 import SitterWallet from "./pages/SitterWallet.tsx";
 import CashOut from "./pages/CashOut.tsx";
 import SitterPaymentSetup from "./pages/SitterPaymentSetup.tsx";
+import SitterSetRate from "./pages/SitterSetRate.tsx";
 import AdminPayouts from "./pages/AdminPayouts.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/sitter/wallet" element={<SitterWallet />} />
             <Route path="/sitter/wallet/cashout" element={<CashOut />} />
             <Route path="/sitter/payment-setup" element={<SitterPaymentSetup />} />
+            <Route path="/sitter/set-rate" element={<SitterSetRate />} />
             <Route path="/admin/payouts" element={<AdminPayouts />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/account" element={<Account />} />

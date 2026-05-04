@@ -369,12 +369,17 @@ export type Database = {
           is_active: boolean
           is_demo: boolean
           languages: string[]
+          monthly_full_time_aed: number | null
           network_badge: Database["public"]["Enums"]["network_badge"]
+          open_to_babysitting: boolean
+          open_to_full_time: boolean
           photos: string[]
           preferred_payout_method:
             | Database["public"]["Enums"]["cash_out_method"]
             | null
+          rate_last_updated: string
           rating: number
+          tier: string | null
           updated_at: string
           user_id: string | null
           verified: boolean
@@ -392,12 +397,17 @@ export type Database = {
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          monthly_full_time_aed?: number | null
           network_badge?: Database["public"]["Enums"]["network_badge"]
+          open_to_babysitting?: boolean
+          open_to_full_time?: boolean
           photos?: string[]
           preferred_payout_method?:
             | Database["public"]["Enums"]["cash_out_method"]
             | null
+          rate_last_updated?: string
           rating?: number
+          tier?: string | null
           updated_at?: string
           user_id?: string | null
           verified?: boolean
@@ -415,12 +425,17 @@ export type Database = {
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          monthly_full_time_aed?: number | null
           network_badge?: Database["public"]["Enums"]["network_badge"]
+          open_to_babysitting?: boolean
+          open_to_full_time?: boolean
           photos?: string[]
           preferred_payout_method?:
             | Database["public"]["Enums"]["cash_out_method"]
             | null
+          rate_last_updated?: string
           rating?: number
+          tier?: string | null
           updated_at?: string
           user_id?: string | null
           verified?: boolean
@@ -555,6 +570,7 @@ export type Database = {
         }
         Returns: string
       }
+      tier_from_hourly_rate: { Args: { rate: number }; Returns: string }
       wallet_credit: {
         Args: {
           _amount: number
