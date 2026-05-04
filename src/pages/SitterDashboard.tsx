@@ -104,7 +104,8 @@ const SitterDashboard = () => {
             <h1 className="text-3xl font-semibold text-pitch-black">Sitter dashboard</h1>
             <p className="mt-1 text-sm text-slate-grey">Manage your profile and incoming bookings.</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm"><a href="/sitter/set-rate">Set your rate</a></Button>
             <Button asChild variant="outline" size="sm"><a href="/sitter/payment-setup">Payout method</a></Button>
             <Button asChild size="sm" className="bg-salmon hover:bg-salmon-deep"><a href="/sitter/wallet">Open wallet</a></Button>
           </div>
