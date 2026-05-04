@@ -975,6 +975,7 @@ export type Database = {
       app_role: "parent" | "sitter" | "admin"
       application_status: "pending" | "accepted" | "declined" | "withdrawn"
       booking_status:
+        | "pending_payment"
         | "pending"
         | "confirmed"
         | "in_progress"
@@ -1139,6 +1140,7 @@ export const Constants = {
       app_role: ["parent", "sitter", "admin"],
       application_status: ["pending", "accepted", "declined", "withdrawn"],
       booking_status: [
+        "pending_payment",
         "pending",
         "confirmed",
         "in_progress",
