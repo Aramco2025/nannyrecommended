@@ -18,6 +18,31 @@ export type UISitter = {
   languages: string[];
   headline: string;
   tier: string | null;
+  // Filterable attributes
+  drives: boolean;
+  hasOwnCar: boolean;
+  swims: boolean;
+  cooks: boolean;
+  lightHousework: boolean;
+  homeworkHelp: boolean;
+  nonSmoker: boolean;
+  comfortableWithPets: boolean;
+  firstAidCertified: boolean;
+  policeCleared: boolean;
+  newbornExperience: boolean;
+  multiplesExperience: boolean;
+  senExperience: boolean;
+  earlyYearsQualified: boolean;
+  teachingQualified: boolean;
+  maternityNurse: boolean;
+  nightNanny: boolean;
+  liveInAvailable: boolean;
+  overnightAvailable: boolean;
+  schoolPickup: boolean;
+  oneOffAvailable: boolean;
+  regularAvailable: boolean;
+  hasVideoIntro: boolean;
+  ageGroups: string[];
 };
 
 const FALLBACK_PHOTO = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop";
@@ -39,5 +64,29 @@ export function mapSitter(s: DbSitter): UISitter {
     languages: s.languages ?? ["English"],
     headline: s.headline ?? "",
     tier: (s as any).tier ?? null,
+    drives: !!(s as any).drives,
+    hasOwnCar: !!(s as any).has_own_car,
+    swims: !!(s as any).swims,
+    cooks: !!(s as any).cooks,
+    lightHousework: !!(s as any).light_housework,
+    homeworkHelp: !!(s as any).homework_help,
+    nonSmoker: (s as any).non_smoker !== false,
+    comfortableWithPets: !!(s as any).comfortable_with_pets,
+    firstAidCertified: !!(s as any).first_aid_certified,
+    policeCleared: !!(s as any).police_cleared,
+    newbornExperience: !!(s as any).newborn_experience,
+    multiplesExperience: !!(s as any).multiples_experience,
+    senExperience: !!(s as any).sen_experience,
+    earlyYearsQualified: !!(s as any).early_years_qualified,
+    teachingQualified: !!(s as any).teaching_qualified,
+    maternityNurse: !!(s as any).maternity_nurse,
+    nightNanny: !!(s as any).night_nanny,
+    liveInAvailable: !!(s as any).live_in_available,
+    overnightAvailable: !!(s as any).overnight_available,
+    schoolPickup: !!(s as any).school_pickup,
+    oneOffAvailable: (s as any).one_off_available !== false,
+    regularAvailable: (s as any).regular_available !== false,
+    hasVideoIntro: !!(s as any).video_intro_url,
+    ageGroups: (s as any).age_groups ?? [],
   };
 }

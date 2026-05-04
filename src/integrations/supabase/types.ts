@@ -358,87 +358,159 @@ export type Database = {
       }
       sitters: {
         Row: {
+          age_groups: string[]
           area: string | null
           bio: string | null
           bookings_completed: number
+          comfortable_with_pets: boolean
+          cooks: boolean
           created_at: string
+          drives: boolean
+          early_years_qualified: boolean
+          first_aid_certified: boolean
           full_name: string | null
+          has_own_car: boolean
           headline: string | null
+          homework_help: boolean
           hourly_rate_aed: number
           id: string
           is_active: boolean
           is_demo: boolean
           languages: string[]
+          light_housework: boolean
+          live_in_available: boolean
+          maternity_nurse: boolean
           monthly_full_time_aed: number | null
+          multiples_experience: boolean
           network_badge: Database["public"]["Enums"]["network_badge"]
+          newborn_experience: boolean
+          night_nanny: boolean
+          non_smoker: boolean
+          one_off_available: boolean
           open_to_babysitting: boolean
           open_to_full_time: boolean
+          overnight_available: boolean
           photos: string[]
+          police_cleared: boolean
           preferred_payout_method:
             | Database["public"]["Enums"]["cash_out_method"]
             | null
           rate_last_updated: string
           rating: number
+          regular_available: boolean
+          school_pickup: boolean
+          sen_experience: boolean
+          swims: boolean
+          teaching_qualified: boolean
           tier: string | null
           updated_at: string
           user_id: string | null
           verified: boolean
+          video_intro_url: string | null
           years_experience: number
         }
         Insert: {
+          age_groups?: string[]
           area?: string | null
           bio?: string | null
           bookings_completed?: number
+          comfortable_with_pets?: boolean
+          cooks?: boolean
           created_at?: string
+          drives?: boolean
+          early_years_qualified?: boolean
+          first_aid_certified?: boolean
           full_name?: string | null
+          has_own_car?: boolean
           headline?: string | null
+          homework_help?: boolean
           hourly_rate_aed?: number
           id?: string
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          light_housework?: boolean
+          live_in_available?: boolean
+          maternity_nurse?: boolean
           monthly_full_time_aed?: number | null
+          multiples_experience?: boolean
           network_badge?: Database["public"]["Enums"]["network_badge"]
+          newborn_experience?: boolean
+          night_nanny?: boolean
+          non_smoker?: boolean
+          one_off_available?: boolean
           open_to_babysitting?: boolean
           open_to_full_time?: boolean
+          overnight_available?: boolean
           photos?: string[]
+          police_cleared?: boolean
           preferred_payout_method?:
             | Database["public"]["Enums"]["cash_out_method"]
             | null
           rate_last_updated?: string
           rating?: number
+          regular_available?: boolean
+          school_pickup?: boolean
+          sen_experience?: boolean
+          swims?: boolean
+          teaching_qualified?: boolean
           tier?: string | null
           updated_at?: string
           user_id?: string | null
           verified?: boolean
+          video_intro_url?: string | null
           years_experience?: number
         }
         Update: {
+          age_groups?: string[]
           area?: string | null
           bio?: string | null
           bookings_completed?: number
+          comfortable_with_pets?: boolean
+          cooks?: boolean
           created_at?: string
+          drives?: boolean
+          early_years_qualified?: boolean
+          first_aid_certified?: boolean
           full_name?: string | null
+          has_own_car?: boolean
           headline?: string | null
+          homework_help?: boolean
           hourly_rate_aed?: number
           id?: string
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          light_housework?: boolean
+          live_in_available?: boolean
+          maternity_nurse?: boolean
           monthly_full_time_aed?: number | null
+          multiples_experience?: boolean
           network_badge?: Database["public"]["Enums"]["network_badge"]
+          newborn_experience?: boolean
+          night_nanny?: boolean
+          non_smoker?: boolean
+          one_off_available?: boolean
           open_to_babysitting?: boolean
           open_to_full_time?: boolean
+          overnight_available?: boolean
           photos?: string[]
+          police_cleared?: boolean
           preferred_payout_method?:
             | Database["public"]["Enums"]["cash_out_method"]
             | null
           rate_last_updated?: string
           rating?: number
+          regular_available?: boolean
+          school_pickup?: boolean
+          sen_experience?: boolean
+          swims?: boolean
+          teaching_qualified?: boolean
           tier?: string | null
           updated_at?: string
           user_id?: string | null
           verified?: boolean
+          video_intro_url?: string | null
           years_experience?: number
         }
         Relationships: []
