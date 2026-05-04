@@ -42,6 +42,7 @@ const App = () => (
             <Route path="/sitter/wallet" element={<SitterWallet />} />
             <Route path="/sitter/wallet/cashout" element={<CashOut />} />
             <Route path="/sitter/payment-setup" element={<SitterPaymentSetup />} />
+            <Route path="/sitter/set-rate" element={<SitterSetRate />} />
             <Route path="/admin/payouts" element={<AdminPayouts />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/account" element={<Account />} />
