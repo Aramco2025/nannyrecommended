@@ -195,6 +195,54 @@ export type Database = {
         }
         Relationships: []
       }
+      favourites: {
+        Row: {
+          created_at: string
+          id: string
+          parent_id: string
+          sitter_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          parent_id: string
+          sitter_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          parent_id?: string
+          sitter_id?: string
+        }
+        Relationships: []
+      }
+      friend_connections: {
+        Row: {
+          created_at: string
+          id: string
+          recipient_id: string
+          requester_id: string
+          status: Database["public"]["Enums"]["friend_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recipient_id: string
+          requester_id: string
+          status?: Database["public"]["Enums"]["friend_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recipient_id?: string
+          requester_id?: string
+          status?: Database["public"]["Enums"]["friend_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       job_applications: {
         Row: {
           created_at: string
@@ -487,8 +535,10 @@ export type Database = {
           is_active: boolean
           is_demo: boolean
           languages: string[]
+          latitude: number | null
           light_housework: boolean
           live_in_available: boolean
+          longitude: number | null
           maternity_nurse: boolean
           monthly_full_time_aed: number | null
           multiples_experience: boolean
@@ -539,8 +589,10 @@ export type Database = {
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          latitude?: number | null
           light_housework?: boolean
           live_in_available?: boolean
+          longitude?: number | null
           maternity_nurse?: boolean
           monthly_full_time_aed?: number | null
           multiples_experience?: boolean
@@ -591,8 +643,10 @@ export type Database = {
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          latitude?: number | null
           light_housework?: boolean
           live_in_available?: boolean
+          longitude?: number | null
           maternity_nurse?: boolean
           monthly_full_time_aed?: number | null
           multiples_experience?: boolean
@@ -762,6 +816,10 @@ export type Database = {
         }
         Returns: string
       }
+      sitter_friend_trust_count: {
+        Args: { _sitter: string; _viewer: string }
+        Returns: number
+      }
       tier_from_hourly_rate: { Args: { rate: number }; Returns: string }
       wallet_credit: {
         Args: {
@@ -806,6 +864,7 @@ export type Database = {
         | "completed"
         | "cancelled"
         | "failed"
+      friend_status: "pending" | "accepted"
       job_status: "open" | "filled" | "cancelled"
       job_type: "one_off" | "repeat" | "permanent"
       loyalty_tier: "bronze" | "silver" | "gold" | "platinum"
@@ -972,6 +1031,7 @@ export const Constants = {
         "cancelled",
         "failed",
       ],
+      friend_status: ["pending", "accepted"],
       job_status: ["open", "filled", "cancelled"],
       job_type: ["one_off", "repeat", "permanent"],
       loyalty_tier: ["bronze", "silver", "gold", "platinum"],

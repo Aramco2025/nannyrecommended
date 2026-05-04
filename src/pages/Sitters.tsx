@@ -17,6 +17,9 @@ import { PRICING_TIERS, SitterTier } from "@/lib/pricing/tiers";
 import {
   applyFilters, emptyFilters, FilterKey, LANGUAGES, LangKey, SitterFilters,
 } from "@/lib/sitterFilters";
+import { AvailabilityFilter, type SlotFilter } from "@/components/AvailabilityFilter";
+import { useAvailableSitters } from "@/hooks/useAvailableSitters";
+import { MobileTabBar } from "@/components/MobileTabBar";
 
 type Section = { title: string; items: { key: FilterKey; label: string }[] };
 
@@ -87,7 +90,9 @@ const Sitters = () => {
   const [tierFilter, setTierFilter] = useState<SitterTier | "any">("any");
   const [priceRange, setPriceRange] = useState<[number, number]>([35, 200]);
   const [filters, setFilters] = useState<SitterFilters>(emptyFilters());
+  const [slot, setSlot] = useState<SlotFilter>(null);
   const { data: sitters = [], isLoading } = useSitters();
+  const { data: availableIds } = useAvailableSitters(slot);
 
   const toggleFlag = (k: FilterKey) => setFilters(f => {
     const next = new Set(f.flags);
@@ -103,8 +108,9 @@ const Sitters = () => {
   const visible = useMemo(() => {
     let v = applyFilters(sitters, filters, priceRange);
     if (tierFilter !== "any") v = v.filter(s => s.tier === tierFilter);
+    if (slot && availableIds) v = v.filter(s => availableIds.has(s.id));
     return v;
-  }, [sitters, filters, priceRange, tierFilter]);
+  }, [sitters, filters, priceRange, tierFilter, slot, availableIds]);
 
   const activeCount =
     filters.flags.size +
@@ -242,7 +248,7 @@ const Sitters = () => {
   );
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-cream pb-20 md:pb-0">
       <Header />
 
       {/* Search bar */}
@@ -259,6 +265,7 @@ const Sitters = () => {
               <MapPin className="h-4 w-4 text-salmon" />
             </div>
             <div className="flex items-center gap-2">
+              <AvailabilityFilter value={slot} onChange={setSlot} />
               <div className="flex items-center rounded-full border border-cream-deep bg-cream p-1">
                 <button
                   onClick={() => setView("list")}
@@ -372,6 +379,7 @@ const Sitters = () => {
       </main>
 
       <Footer />
+      <MobileTabBar />
     </div>
   );
 };

@@ -40,6 +40,9 @@ import SitterNotifications from "./pages/SitterNotifications.tsx";
 import Messages from "./pages/Messages.tsx";
 import MessageThread from "./pages/MessageThread.tsx";
 import PostJob from "./pages/PostJob.tsx";
+import Favourites from "./pages/Favourites.tsx";
+import Friends from "./pages/Friends.tsx";
+import JobApplicants from "./pages/JobApplicants.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -88,6 +91,9 @@ const App = () => (
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/:bookingId" element={<MessageThread />} />
             <Route path="/parent/post-job" element={<PostJob />} />
+            <Route path="/favourites" element={<Favourites />} />
+            <Route path="/friends" element={<Friends />} />
+            <Route path="/parent/jobs/:jobId/applicants" element={<JobApplicants />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
