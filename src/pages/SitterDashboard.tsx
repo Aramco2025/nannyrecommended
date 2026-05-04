@@ -1,0 +1,169 @@
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { z } from "zod";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
+import { formatCurrency } from "@/lib/fees";
+
+const profileSchema = z.object({
+  headline: z.string().trim().max(120).optional(),
+  bio: z.string().trim().max(2000).optional(),
+  area: z.string().trim().max(80).optional(),
+  hourly_rate_aed: z.number().min(30).max(1000),
+  years_experience: z.number().int().min(0).max(70),
+});
+
+const SitterDashboard = () => {
+  const { user, loading } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const [sitterId, setSitterId] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    headline: "", bio: "", area: "", hourly_rate_aed: 75, years_experience: 1, photos: "",
+  });
+  const [bookings, setBookings] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase.from("sitters").select("*").eq("user_id", user.id).maybeSingle();
+      if (data) {
+        setSitterId(data.id);
+        setForm({
+          headline: data.headline ?? "",
+          bio: data.bio ?? "",
+          area: data.area ?? "",
+          hourly_rate_aed: Number(data.hourly_rate_aed),
+          years_experience: data.years_experience,
+          photos: (data.photos ?? []).join("\n"),
+        });
+        const { data: bks } = await supabase.from("bookings").select("*").eq("sitter_id", data.id).order("start_at", { ascending: false });
+        setBookings(bks ?? []);
+      }
+    })();
+  }, [user]);
+
+  if (loading) return <div className="grid min-h-screen place-items-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
+  if (!user) return <Navigate to="/auth" replace />;
+
+  const save = async () => {
+    setBusy(true);
+    try {
+      const parsed = profileSchema.safeParse({
+        headline: form.headline, bio: form.bio, area: form.area,
+        hourly_rate_aed: Number(form.hourly_rate_aed), years_experience: Number(form.years_experience),
+      });
+      if (!parsed.success) {
+        toast({ title: "Check your details", description: parsed.error.issues[0].message, variant: "destructive" });
+        return;
+      }
+      const photos = form.photos.split("\n").map(s => s.trim()).filter(Boolean);
+      const profileData = await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle();
+      const payload = {
+        user_id: user.id,
+        full_name: profileData.data?.full_name ?? user.email?.split("@")[0] ?? "Sitter",
+        ...parsed.data,
+        photos,
+        is_active: true,
+      };
+      if (sitterId) {
+        const { error } = await supabase.from("sitters").update(payload).eq("id", sitterId);
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabase.from("sitters").insert(payload).select("id").single();
+        if (error) throw error;
+        setSitterId(data.id);
+      }
+      toast({ title: "Profile saved" });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally { setBusy(false); }
+  };
+
+  const updateBookingStatus = async (id: string, status: "confirmed" | "declined" | "completed") => {
+    const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
+    if (error) return toast({ title: "Error", description: error.message, variant: "destructive" });
+    setBookings(bs => bs.map(b => b.id === id ? { ...b, status } : b));
+    toast({ title: `Booking ${status}` });
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="container py-10">
+        <h1 className="text-3xl font-semibold text-pitch-black">Sitter dashboard</h1>
+        <p className="mt-1 text-sm text-slate-grey">Manage your profile and incoming bookings.</p>
+
+        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+          <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
+            <h2 className="text-lg font-semibold text-pitch-black">Your listing</h2>
+            <div className="mt-4 space-y-4">
+              <div className="space-y-1.5"><Label className="text-xs text-slate-grey">Headline</Label>
+                <Input value={form.headline} onChange={e => setForm({ ...form, headline: e.target.value })} maxLength={120} placeholder="e.g. Paediatric nurse · weekends" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5"><Label className="text-xs text-slate-grey">Hourly rate (AED)</Label>
+                  <Input type="number" min={30} max={1000} value={form.hourly_rate_aed} onChange={e => setForm({ ...form, hourly_rate_aed: Number(e.target.value) })} />
+                </div>
+                <div className="space-y-1.5"><Label className="text-xs text-slate-grey">Years experience</Label>
+                  <Input type="number" min={0} max={70} value={form.years_experience} onChange={e => setForm({ ...form, years_experience: Number(e.target.value) })} />
+                </div>
+              </div>
+              <div className="space-y-1.5"><Label className="text-xs text-slate-grey">Area</Label>
+                <Input value={form.area} onChange={e => setForm({ ...form, area: e.target.value })} maxLength={80} placeholder="e.g. Dubai Marina" />
+              </div>
+              <div className="space-y-1.5"><Label className="text-xs text-slate-grey">About you</Label>
+                <Textarea rows={5} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} maxLength={2000} />
+              </div>
+              <div className="space-y-1.5"><Label className="text-xs text-slate-grey">Photo URLs (one per line)</Label>
+                <Textarea rows={3} value={form.photos} onChange={e => setForm({ ...form, photos: e.target.value })} placeholder="https://..." />
+              </div>
+              <Button disabled={busy} onClick={save} className="w-full bg-salmon hover:bg-salmon-deep text-primary-foreground">
+                {busy ? "Saving…" : sitterId ? "Save changes" : "Publish listing"}
+              </Button>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-pitch-black">Bookings</h2>
+            <div className="mt-4 space-y-3">
+              {bookings.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-border bg-card p-6 text-center text-sm text-slate-grey">No bookings yet.</div>
+              )}
+              {bookings.map(b => (
+                <div key={b.id} className="rounded-2xl border border-border bg-card p-4 shadow-card">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium text-pitch-black">{new Date(b.start_at).toLocaleString()}</div>
+                      <div className="text-xs text-slate-grey">{b.hours}h · payout {formatCurrency(Number(b.sitter_payout_aed))}</div>
+                    </div>
+                    <span className="rounded-full bg-off-white px-2 py-0.5 text-[11px] font-medium capitalize text-slate-grey">{b.status.replace("_", " ")}</span>
+                  </div>
+                  {b.status === "pending" && (
+                    <div className="mt-3 flex gap-2">
+                      <Button size="sm" onClick={() => updateBookingStatus(b.id, "confirmed")}>Accept</Button>
+                      <Button size="sm" variant="outline" onClick={() => updateBookingStatus(b.id, "declined")}>Decline</Button>
+                    </div>
+                  )}
+                  {b.status === "confirmed" && (
+                    <div className="mt-3"><Button size="sm" onClick={() => updateBookingStatus(b.id, "completed")}>Mark completed</Button></div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default SitterDashboard;
