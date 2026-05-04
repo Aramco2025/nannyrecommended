@@ -52,7 +52,7 @@ const Auth = () => {
         });
         if (error) throw error;
         toast({ title: "Welcome!", description: "Account created." });
-        navigate(role === "sitter" ? "/sitter/dashboard" : "/account");
+        navigate("/onboarding/region");
       } else {
         const parsed = signInSchema.safeParse({ email, password });
         if (!parsed.success) {

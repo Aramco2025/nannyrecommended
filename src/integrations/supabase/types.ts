@@ -195,6 +195,36 @@ export type Database = {
         }
         Relationships: []
       }
+      children: {
+        Row: {
+          created_at: string
+          dob: string | null
+          id: string
+          name: string
+          notes: string | null
+          parent_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dob?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          parent_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dob?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          parent_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       favourites: {
         Row: {
           created_at: string
@@ -417,27 +447,45 @@ export type Database = {
       }
       profiles: {
         Row: {
+          active_role: Database["public"]["Enums"]["app_role"] | null
+          address_line: string | null
           avatar_url: string | null
+          care_needs: string[]
           created_at: string
           full_name: string | null
           id: string
+          onboarding_completed: boolean
           phone: string | null
+          phone_verified: boolean
+          region: string | null
           updated_at: string
         }
         Insert: {
+          active_role?: Database["public"]["Enums"]["app_role"] | null
+          address_line?: string | null
           avatar_url?: string | null
+          care_needs?: string[]
           created_at?: string
           full_name?: string | null
           id: string
+          onboarding_completed?: boolean
           phone?: string | null
+          phone_verified?: boolean
+          region?: string | null
           updated_at?: string
         }
         Update: {
+          active_role?: Database["public"]["Enums"]["app_role"] | null
+          address_line?: string | null
           avatar_url?: string | null
+          care_needs?: string[]
           created_at?: string
           full_name?: string | null
           id?: string
+          onboarding_completed?: boolean
           phone?: string | null
+          phone_verified?: boolean
+          region?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -486,6 +534,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sitter_applications: {
+        Row: {
+          bio: string | null
+          created_at: string
+          eligibility: Json
+          experience: Json
+          id: string
+          id_doc_url: string | null
+          qualifications: Json
+          references_data: Json
+          sitter_user_id: string
+          status: string
+          submitted_at: string | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          eligibility?: Json
+          experience?: Json
+          id?: string
+          id_doc_url?: string | null
+          qualifications?: Json
+          references_data?: Json
+          sitter_user_id: string
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          eligibility?: Json
+          experience?: Json
+          id?: string
+          id_doc_url?: string | null
+          qualifications?: Json
+          references_data?: Json
+          sitter_user_id?: string
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
       }
       sitter_notification_prefs: {
         Row: {

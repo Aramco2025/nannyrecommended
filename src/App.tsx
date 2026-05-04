@@ -43,6 +43,17 @@ import PostJob from "./pages/PostJob.tsx";
 import Favourites from "./pages/Favourites.tsx";
 import Friends from "./pages/Friends.tsx";
 import JobApplicants from "./pages/JobApplicants.tsx";
+import OnboardingWelcome from "./pages/onboarding/Welcome.tsx";
+import OnboardingRegion from "./pages/onboarding/RegionPicker.tsx";
+import OnboardingRole from "./pages/onboarding/RolePicker.tsx";
+import OnboardingPhone from "./pages/onboarding/PhoneVerify.tsx";
+import OnboardingPermissions from "./pages/onboarding/Permissions.tsx";
+import ParentNeeds from "./pages/onboarding/parent/Needs.tsx";
+import ParentFamily from "./pages/onboarding/parent/Family.tsx";
+import ParentAddress from "./pages/onboarding/parent/Address.tsx";
+import ParentConnect from "./pages/onboarding/parent/Connect.tsx";
+import ParentDone from "./pages/onboarding/parent/Done.tsx";
+import SitterEligibility from "./pages/sitter/apply/Eligibility.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -94,6 +105,17 @@ const App = () => (
             <Route path="/favourites" element={<Favourites />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/parent/jobs/:jobId/applicants" element={<JobApplicants />} />
+            <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />
+            <Route path="/onboarding/region" element={<OnboardingRegion />} />
+            <Route path="/onboarding/role" element={<OnboardingRole />} />
+            <Route path="/onboarding/phone" element={<OnboardingPhone />} />
+            <Route path="/onboarding/permissions" element={<OnboardingPermissions />} />
+            <Route path="/onboarding/parent/needs" element={<ParentNeeds />} />
+            <Route path="/onboarding/parent/family" element={<ParentFamily />} />
+            <Route path="/onboarding/parent/address" element={<ParentAddress />} />
+            <Route path="/onboarding/parent/connect" element={<ParentConnect />} />
+            <Route path="/onboarding/parent/done" element={<ParentDone />} />
+            <Route path="/sitter/apply/eligibility" element={<SitterEligibility />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
