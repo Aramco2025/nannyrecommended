@@ -55,6 +55,7 @@ export default {
         "slate-grey": "hsl(var(--slate-grey))",
         "dust-grey": "hsl(var(--dust-grey))",
         "off-white": "hsl(var(--off-white))",
+        "pure-white": "hsl(var(--pure-white))",
         "success-green": "hsl(var(--success-green))",
         "warning-amber": "hsl(var(--warning-amber))",
       },
