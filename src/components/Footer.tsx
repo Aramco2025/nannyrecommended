@@ -27,6 +27,8 @@ export function Footer() {
             <li>Help</li>
             <li>Trust & safety</li>
             <li>Contact</li>
+            <li><Link to="/privacy" className="hover:text-pitch-black">Privacy</Link></li>
+            <li><Link to="/terms" className="hover:text-pitch-black">Terms</Link></li>
           </ul>
         </div>
       </div>
