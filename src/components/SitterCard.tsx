@@ -3,6 +3,7 @@ import { Star, MapPin, MessageCircle, ShieldCheck } from "lucide-react";
 import { UISitter } from "@/lib/sitterMapper";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/fees";
+import { TierBadge } from "@/components/pricing/TierBadge";
 
 export function SitterCard({ sitter }: { sitter: UISitter }) {
   return (
