@@ -265,6 +265,7 @@ const Sitters = () => {
               <MapPin className="h-4 w-4 text-salmon" />
             </div>
             <div className="flex items-center gap-2">
+              <AvailabilityFilter value={slot} onChange={setSlot} />
               <div className="flex items-center rounded-full border border-cream-deep bg-cream p-1">
                 <button
                   onClick={() => setView("list")}
