@@ -15,7 +15,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
-const stripePromise = loadStripe(import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string);
+const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string;
+const stripePromise = loadStripe(clientToken);
+const stripeEnv: "sandbox" | "live" = clientToken?.startsWith("pk_test_") ? "sandbox" : "live";
 
 const Booking = () => {
   const { sitterId } = useParams();
@@ -52,6 +54,7 @@ const Booking = () => {
           address: address || null,
           notes: notes || null,
           return_url: `${window.location.origin}/account`,
+          environment: stripeEnv,
         },
       });
       if (error) throw error;
