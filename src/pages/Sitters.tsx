@@ -5,7 +5,9 @@ import { SitterCard } from "@/components/SitterCard";
 import { useSitters } from "@/hooks/useSitters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { Search, MapPin, List, SlidersHorizontal } from "lucide-react";
+import { PRICING_TIERS, SitterTier } from "@/lib/pricing/tiers";
 
 const filterChips = [
   "Available now",
