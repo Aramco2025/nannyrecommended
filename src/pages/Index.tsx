@@ -61,7 +61,7 @@ const Index = () => {
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-pure-white/60">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-4 w-4 text-success-green" />
-                  Police-cleared & reference-checked
+                  Reference-checked
                 </div>
                 <div className="flex items-center gap-2">
                   <Star className="h-4 w-4 fill-salmon text-salmon" />
