@@ -27,6 +27,13 @@ import Contact from "./pages/Contact.tsx";
 import FindNanny from "./pages/FindNanny.tsx";
 import NannyJobs from "./pages/NannyJobs.tsx";
 import Guides from "./pages/Guides.tsx";
+import ParentFaqs from "./pages/ParentFaqs.tsx";
+import SitterFaqs from "./pages/SitterFaqs.tsx";
+import Babysitter from "./pages/Babysitter.tsx";
+import NightNanny from "./pages/NightNanny.tsx";
+import AfterSchoolNanny from "./pages/AfterSchoolNanny.tsx";
+import FullTimeNanny from "./pages/FullTimeNanny.tsx";
+import EmergencyChildcare from "./pages/EmergencyChildcare.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -62,6 +69,13 @@ const App = () => (
             <Route path="/find-nanny" element={<FindNanny />} />
             <Route path="/nanny-jobs" element={<NannyJobs />} />
             <Route path="/guides" element={<Guides />} />
+            <Route path="/parent-faqs" element={<ParentFaqs />} />
+            <Route path="/sitter-faqs" element={<SitterFaqs />} />
+            <Route path="/babysitter" element={<Babysitter />} />
+            <Route path="/night-nanny" element={<NightNanny />} />
+            <Route path="/after-school-nanny" element={<AfterSchoolNanny />} />
+            <Route path="/full-time-nanny" element={<FullTimeNanny />} />
+            <Route path="/emergency-childcare" element={<EmergencyChildcare />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
