@@ -90,7 +90,9 @@ const Sitters = () => {
   const [tierFilter, setTierFilter] = useState<SitterTier | "any">("any");
   const [priceRange, setPriceRange] = useState<[number, number]>([35, 200]);
   const [filters, setFilters] = useState<SitterFilters>(emptyFilters());
+  const [slot, setSlot] = useState<SlotFilter>(null);
   const { data: sitters = [], isLoading } = useSitters();
+  const { data: availableIds } = useAvailableSitters(slot);
 
   const toggleFlag = (k: FilterKey) => setFilters(f => {
     const next = new Set(f.flags);
@@ -106,8 +108,9 @@ const Sitters = () => {
   const visible = useMemo(() => {
     let v = applyFilters(sitters, filters, priceRange);
     if (tierFilter !== "any") v = v.filter(s => s.tier === tierFilter);
+    if (slot && availableIds) v = v.filter(s => availableIds.has(s.id));
     return v;
-  }, [sitters, filters, priceRange, tierFilter]);
+  }, [sitters, filters, priceRange, tierFilter, slot, availableIds]);
 
   const activeCount =
     filters.flags.size +
