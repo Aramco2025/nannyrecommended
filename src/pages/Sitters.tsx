@@ -84,6 +84,36 @@ const Sitters = () => {
             {filterChips.map(chip => {
               const isActive = active.includes(chip);
               return (
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setTierFilter("any")}
+              className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${tierFilter === "any" ? "border-pitch-black bg-pitch-black text-pure-white" : "border-border bg-card text-slate-grey hover:text-pitch-black"}`}
+            >Any tier</button>
+            {PRICING_TIERS.map(t => (
+              <button
+                key={t.id}
+                onClick={() => setTierFilter(t.id)}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${tierFilter === t.id ? "border-pitch-black bg-pitch-black text-pure-white" : "border-border bg-card text-slate-grey hover:text-pitch-black"}`}
+              >{t.name}</button>
+            ))}
+          </div>
+
+          <div className="mt-4 max-w-md">
+            <div className="mb-2 flex items-center justify-between text-xs text-slate-grey">
+              <span>Hourly rate</span>
+              <span className="font-medium text-pitch-black">AED {priceRange[0]} – AED {priceRange[1]}</span>
+            </div>
+            <Slider
+              min={30} max={200} step={5}
+              value={priceRange}
+              onValueChange={(v) => setPriceRange([v[0], v[1]] as [number, number])}
+            />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {filterChips.map(chip => {
+              const isActive = active.includes(chip);
+              return (
                 <button
                   key={chip}
                   onClick={() => toggle(chip)}
