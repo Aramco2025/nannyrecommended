@@ -248,7 +248,7 @@ const Sitters = () => {
   );
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-cream pb-20 md:pb-0">
       <Header />
 
       {/* Search bar */}
@@ -379,6 +379,7 @@ const Sitters = () => {
       </main>
 
       <Footer />
+      <MobileTabBar />
     </div>
   );
 };
