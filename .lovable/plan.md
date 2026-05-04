@@ -1,88 +1,77 @@
+## Goal
 
-# Plan: Make NannyRecommended fully functional and testable
+Turn the screens you uploaded into real working features for **sitters**, and let parents **book instantly** when a sitter is available. Today the sitter side has a dashboard + wallet + static `/nanny-jobs` mock list, but no live job board, no calendar/availability UI, no instant booking, and no in-app chat. We'll build all of that.
 
-Goal: turn the current mock-data shell into a real app with login, real sitter profiles, working bookings, and live (test-mode) payments — so you can use it like Bubble. Then wrap it for iOS via Capacitor.
+## What gets built
 
-## What's there today
-- Pages: Home, Find a sitter, Sitter profile, Booking flow (UI), Pricing, How it works, Sitter signup
-- Components: SitterCard, FeeBreakdown, LoyaltyProgress, Header/Footer, etc.
-- All data is hardcoded in `src/data/sitters.ts`
-- No login, no database, no payments, no real bookings
+### 1. Live job board for sitters (`/sitter/jobs`)
+Replaces the static mock at `/nanny-jobs` for signed-in sitters.
+- Tabs: **One-off · Repeat · Permanent** (matches your screen 1)
+- Filter chips: Childcare · Night nanny · After-school
+- Each job card: parent first name + initial, date/time, area, distance, hourly rate, **Apply** button
+- Pulls from a new `job_posts` table; "Apply" creates a `job_applications` row (parent gets notified)
+- Empty state with link to update notification radius
 
-## Phase 1 — Backend foundations (Lovable Cloud)
-Enable Lovable Cloud (one click). Gives us database, auth, file storage, serverless functions — no external accounts.
+### 2. Parents post jobs (`/parent/post-job`)
+Simple form on the parent side so the board has real content:
+- Type (one-off / repeat / permanent), date(s), time window, area, hourly rate offered, notes
+- Inserts into `job_posts`, visible to sitters whose preferences match
 
-Database tables:
-- `profiles` — user info (name, phone, avatar, role: parent/sitter)
-- `user_roles` — separate roles table (parent, sitter, admin) for security
-- `sitters` — sitter listings (linked to a user, hourly rate AED, bio, area, network badges, verified flag, photos)
-- `availability` — sitter time slots
-- `bookings` — parent_id, sitter_id, start/end, status, total fee, platform fee, sitter payout
-- `reviews` — booking_id, rating, comment
-- `loyalty` — bookings count per parent, current tier
-- `messages` — parent ↔ sitter chat per booking
+### 3. Availability calendar (`/sitter/availability`) — your screen 4
+- Week-by-week view with day pills (M T W T F S S)
+- 30-min time slots per day, tap to toggle **Available / Unavailable**
+- Booked slots auto-shown as blocked with the parent's name
+- Saves to existing `availability` table (extending to support specific-date overrides)
 
-All tables get Row Level Security so parents only see their own bookings, sitters only see requests sent to them, etc.
+### 4. Instant booking for parents
+Today `/book/:sitterId` creates a `pending` booking that the sitter must accept. We'll add an **"Available now — book instantly"** path:
+- On a sitter profile, parent picks a date/time → if it falls inside the sitter's saved availability and no clash, status goes straight to **`confirmed`** (skips pending), escrow held
+- Sitter still gets a notification but doesn't need to accept
 
-## Phase 2 — Authentication
-- Email + password sign-up / sign-in (instant, no email confirmation in test mode)
-- Role chosen at signup: "I'm a parent" or "I'm a sitter"
-- Profile auto-created via DB trigger
-- Protected routes: `/account`, `/bookings`, `/sitter/dashboard`
-- Header shows Sign in / Account avatar based on state
+### 5. In-app messaging (`/messages` and `/messages/:bookingId`) — your screen 6
+- Inbox listing all bookings the user is part of (parent or sitter view)
+- Thread view using the existing `messages` table + Supabase Realtime for live updates
+- "Parent profile" / "Sitter profile" quick-link chips at the top of the thread
 
-## Phase 3 — Real sitter listings
-- Replace mock data on `/sitters` and `/sitter/:id` with live DB queries
-- Sitter signup flow (`/sitter/signup`) actually writes to the DB
-- Sitter dashboard: edit profile, set hourly rate, set availability, upload photos
-- Filters on `/sitters`: area (Dubai neighbourhoods), price (AED/hr), date, network badges
+### 6. Notification preferences (`/sitter/notifications`) — your screen 5
+- Per job-type radius sliders (One-off, Repeat, Night nanny, Permanent) with mute toggles
+- Saved on a new `sitter_notification_prefs` table; used to filter the job board
 
-## Phase 4 — Booking flow (real)
-- Parent picks date/time + duration on a sitter's profile
-- Confirms → creates a `booking` row with status `pending`
-- Sitter gets it in their dashboard, accepts or declines
-- Status transitions: pending → confirmed → completed → reviewed
-- Transparent fee breakdown shown at every step (already built UI-side)
-- Email/in-app notifications on status changes
+### 7. Sitter profile polish — your screen 2
+- Add **Bookings completed** + **Repeat families** counters at the top of public sitter profile
+- "Open to meeting" + "Healthcare professional" trust chips driven by existing sitter flags
 
-## Phase 5 — Payments (Stripe, test mode)
-Use Lovable's built-in Stripe payments — no account setup needed to test. AED supported.
+### 8. Header/nav
+- When signed in as a sitter: show **Jobs · Availability · Inbox · Wallet · Account** instead of the marketing nav
+- Mobile: hamburger menu (still missing from previous QA) added in the same pass
 
-- On booking confirmation, parent pays via Stripe Checkout
-- Funds held until job is marked complete
-- Platform fee retained (per your fairer model — sitters keep more than Bubble's cut)
-- Refunds for cancellations per policy
-- Test cards (e.g. `4242 4242 4242 4242`) so you can run end-to-end bookings without real money
-- When ready for live: account verification flow inside Lovable
+## Database changes
 
-## Phase 6 — Reviews, loyalty, messaging
-- After completed booking → parent prompted to leave review
-- Loyalty tier auto-updates based on completed bookings count
-- Simple in-app messaging thread per booking (parent ↔ sitter)
+New tables:
+- `job_posts` — parent_id, type (`one_off|repeat|permanent`), start_at, end_at, area, lat/lng, hourly_rate_aed, notes, status (`open|filled|cancelled`)
+- `job_applications` — job_post_id, sitter_id, message, status (`pending|accepted|declined|withdrawn`)
+- `sitter_notification_prefs` — sitter_id, type, radius_km, muted
 
-## Phase 7 — QA pass
-- Test full happy path: sign up as parent → book sitter → pay (test card) → sitter accepts → complete → review
-- Test as sitter: sign up → create profile → receive booking → accept → get paid out
-- Fix any rough edges, confirm AED/UAE-only language throughout
+Extensions:
+- `availability` — add `specific_date date NULL` so sitters can override a single date in addition to weekly recurring slots
+- `bookings` — no schema change; just allow direct `confirmed` status via a new RPC `create_instant_booking` that validates the slot is free and inside availability
 
-## Phase 8 — Wrap for iOS (Capacitor)
-Once the web app works end-to-end:
-- Install Capacitor + iOS platform
-- Configure with hot-reload pointing at the sandbox preview (so Lovable edits show up live in the iOS Simulator)
-- You run on your Mac: `npx cap add ios` → `npm run build` → `npx cap sync` → `npx cap run ios`
-- Test in iOS Simulator and on your iPhone (no Apple Developer account needed yet)
-- When Apple Developer account is approved → archive in Xcode → upload to App Store Connect → submit for review
+All new tables get RLS:
+- `job_posts`: public read for active sitters, parent owns insert/update/delete
+- `job_applications`: parent (post owner) and applying sitter can read; sitter inserts own
+- `sitter_notification_prefs`: sitter owns
 
-## Suggested execution order
-I'd recommend tackling this in 3 build batches so you can test as we go:
+Realtime enabled on `messages` and `job_applications`.
 
-1. **Batch A** (Phases 1–3): Backend + auth + real sitter listings. After this you can sign up, create sitter profiles, browse real listings.
-2. **Batch B** (Phases 4–6): Booking flow + Stripe test payments + reviews/loyalty/messaging. After this the app is fully functional.
-3. **Batch C** (Phases 7–8): QA pass + iOS wrapping.
+## Out of scope for this pass
+- Push notifications (web/mobile) — we save preferences but won't send pushes yet
+- Distance/geo filtering uses sitter's saved area as a string match; lat/lng comes later
+- Insurance + booking timer screen (your screens 7 & 8) — call out as next step
 
-## What I need from you to start
-1. **Approve this plan** so I can switch out of plan mode and start building.
-2. **Confirm Batch A start**: I'll enable Lovable Cloud, build the schema, wire up auth + real listings.
-3. **For payments later**: confirm AED is your billing currency, and confirm the platform fee % you want to charge parents and the % cut from sitters (your "fairer than Bubble" numbers).
+## Files (high level)
 
-Once approved, I'll begin with Batch A.
+New: `src/pages/SitterJobs.tsx`, `src/pages/PostJob.tsx`, `src/pages/SitterAvailability.tsx`, `src/pages/Messages.tsx`, `src/pages/MessageThread.tsx`, `src/pages/SitterNotifications.tsx`, `src/components/sitter/JobCard.tsx`, `src/components/sitter/AvailabilityGrid.tsx`, `src/components/messages/ChatBubble.tsx`, `src/hooks/useJobPosts.ts`, `src/hooks/useMessages.ts`.
+
+Edited: `src/App.tsx` (routes), `src/components/Header.tsx` (sitter nav + mobile menu), `src/pages/SitterProfile.tsx` (instant-book CTA + counters), `src/pages/Booking.tsx` (instant path).
+
+After you approve I'll run the DB migration first, then ship the UI.

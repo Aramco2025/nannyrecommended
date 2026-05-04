@@ -21,6 +21,7 @@ export type Database = {
           end_time: string
           id: string
           sitter_id: string
+          specific_date: string | null
           start_time: string
         }
         Insert: {
@@ -29,6 +30,7 @@ export type Database = {
           end_time: string
           id?: string
           sitter_id: string
+          specific_date?: string | null
           start_time: string
         }
         Update: {
@@ -37,6 +39,7 @@ export type Database = {
           end_time?: string
           id?: string
           sitter_id?: string
+          specific_date?: string | null
           start_time?: string
         }
         Relationships: [
@@ -189,6 +192,86 @@ export type Database = {
           sitter_id?: string
           status?: Database["public"]["Enums"]["cash_out_status"]
           voucher_provider?: string | null
+        }
+        Relationships: []
+      }
+      job_applications: {
+        Row: {
+          created_at: string
+          id: string
+          job_post_id: string
+          message: string | null
+          sitter_user_id: string
+          status: Database["public"]["Enums"]["application_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          job_post_id: string
+          message?: string | null
+          sitter_user_id: string
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          job_post_id?: string
+          message?: string | null
+          sitter_user_id?: string
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_job_post_id_fkey"
+            columns: ["job_post_id"]
+            isOneToOne: false
+            referencedRelation: "job_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_posts: {
+        Row: {
+          area: string | null
+          created_at: string
+          end_at: string
+          hourly_rate_aed: number
+          id: string
+          notes: string | null
+          parent_id: string
+          start_at: string
+          status: Database["public"]["Enums"]["job_status"]
+          type: Database["public"]["Enums"]["job_type"]
+          updated_at: string
+        }
+        Insert: {
+          area?: string | null
+          created_at?: string
+          end_at: string
+          hourly_rate_aed: number
+          id?: string
+          notes?: string | null
+          parent_id: string
+          start_at: string
+          status?: Database["public"]["Enums"]["job_status"]
+          type: Database["public"]["Enums"]["job_type"]
+          updated_at?: string
+        }
+        Update: {
+          area?: string | null
+          created_at?: string
+          end_at?: string
+          hourly_rate_aed?: number
+          id?: string
+          notes?: string | null
+          parent_id?: string
+          start_at?: string
+          status?: Database["public"]["Enums"]["job_status"]
+          type?: Database["public"]["Enums"]["job_type"]
+          updated_at?: string
         }
         Relationships: []
       }
@@ -355,6 +438,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sitter_notification_prefs: {
+        Row: {
+          id: string
+          job_type: Database["public"]["Enums"]["job_type"]
+          muted: boolean
+          radius_km: number
+          sitter_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          job_type: Database["public"]["Enums"]["job_type"]
+          muted?: boolean
+          radius_km?: number
+          sitter_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          job_type?: Database["public"]["Enums"]["job_type"]
+          muted?: boolean
+          radius_km?: number
+          sitter_user_id?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       sitters: {
         Row: {
@@ -619,6 +729,16 @@ export type Database = {
     }
     Functions: {
       create_booking_escrow: { Args: { _booking: string }; Returns: undefined }
+      create_instant_booking: {
+        Args: {
+          _address?: string
+          _hours: number
+          _notes?: string
+          _sitter_id: string
+          _start_at: string
+        }
+        Returns: string
+      }
       ensure_wallet: { Args: { _user: string }; Returns: string }
       has_role: {
         Args: {
@@ -666,6 +786,7 @@ export type Database = {
     }
     Enums: {
       app_role: "parent" | "sitter" | "admin"
+      application_status: "pending" | "accepted" | "declined" | "withdrawn"
       booking_status:
         | "pending"
         | "confirmed"
@@ -685,6 +806,8 @@ export type Database = {
         | "completed"
         | "cancelled"
         | "failed"
+      job_status: "open" | "filled" | "cancelled"
+      job_type: "one_off" | "repeat" | "permanent"
       loyalty_tier: "bronze" | "silver" | "gold" | "platinum"
       network_badge: "none" | "trusted" | "premium" | "elite"
       wallet_tx_status: "pending" | "completed" | "failed" | "cancelled"
@@ -826,6 +949,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["parent", "sitter", "admin"],
+      application_status: ["pending", "accepted", "declined", "withdrawn"],
       booking_status: [
         "pending",
         "confirmed",
@@ -848,6 +972,8 @@ export const Constants = {
         "cancelled",
         "failed",
       ],
+      job_status: ["open", "filled", "cancelled"],
+      job_type: ["one_off", "repeat", "permanent"],
       loyalty_tier: ["bronze", "silver", "gold", "platinum"],
       network_badge: ["none", "trusted", "premium", "elite"],
       wallet_tx_status: ["pending", "completed", "failed", "cancelled"],
