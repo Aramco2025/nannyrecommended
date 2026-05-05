@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { formatMoney, toMinor } from "@/lib/money";
-import { Banknote, Building2, Gift, Phone, ArrowLeft, Loader2, CheckCircle2, Copy } from "lucide-react";
+import { Banknote, Building2, Gift, Phone, ArrowLeft, Loader2, CheckCircle2, Copy, ExternalLink } from "lucide-react";
+import { createConnectOnboardingLink, transferToSitter } from "@/lib/payments/stripe";
 
 type Method = "exchange_house_pickup" | "bank_transfer" | "voucher" | "airtime";
 type Step = "amount" | "method" | "destination" | "confirm" | "success";
