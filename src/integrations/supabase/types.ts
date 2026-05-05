@@ -658,6 +658,7 @@ export type Database = {
           comfortable_with_pets: boolean
           cooks: boolean
           created_at: string
+          dog_walker: boolean
           drives: boolean
           early_years_qualified: boolean
           first_aid_certified: boolean
@@ -685,6 +686,8 @@ export type Database = {
           open_to_babysitting: boolean
           open_to_full_time: boolean
           overnight_available: boolean
+          pet_boarding: boolean
+          pet_sitter: boolean
           photos: string[]
           police_cleared: boolean
           preferred_payout_method:
@@ -712,6 +715,7 @@ export type Database = {
           comfortable_with_pets?: boolean
           cooks?: boolean
           created_at?: string
+          dog_walker?: boolean
           drives?: boolean
           early_years_qualified?: boolean
           first_aid_certified?: boolean
@@ -739,6 +743,8 @@ export type Database = {
           open_to_babysitting?: boolean
           open_to_full_time?: boolean
           overnight_available?: boolean
+          pet_boarding?: boolean
+          pet_sitter?: boolean
           photos?: string[]
           police_cleared?: boolean
           preferred_payout_method?:
@@ -766,6 +772,7 @@ export type Database = {
           comfortable_with_pets?: boolean
           cooks?: boolean
           created_at?: string
+          dog_walker?: boolean
           drives?: boolean
           early_years_qualified?: boolean
           first_aid_certified?: boolean
@@ -793,6 +800,8 @@ export type Database = {
           open_to_babysitting?: boolean
           open_to_full_time?: boolean
           overnight_available?: boolean
+          pet_boarding?: boolean
+          pet_sitter?: boolean
           photos?: string[]
           police_cleared?: boolean
           preferred_payout_method?:
