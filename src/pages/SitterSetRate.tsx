@@ -33,6 +33,9 @@ export default function SitterSetRate() {
   const [hourly, setHourly] = useState<number>(60);
   const [monthly, setMonthly] = useState<number>(4000);
   const [openLiveIn, setOpenLiveIn] = useState(false);
+  const [surcharges, setSurcharges] = useState({
+    evening: 0, lateNight: 0, weekend: 0, holiday: 0, multiChild: 0, lastMinute: 0,
+  });
 
   useEffect(() => {
     if (!user) return;
