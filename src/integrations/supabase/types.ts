@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      area_waitlist: {
+        Row: {
+          area: string
+          email: string | null
+          full_name: string | null
+          id: string
+          notes: string | null
+          phone: string | null
+          requested_at: string
+          user_id: string | null
+        }
+        Insert: {
+          area: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          requested_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          area?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          requested_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       auth_attempts: {
         Row: {
           created_at: string
