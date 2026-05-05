@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/fees";
 import { Loader2 } from "lucide-react";
+import { NoSubscriptionCard } from "@/components/pricing/NoSubscriptionCard";
 
 type Booking = {
   id: string;
