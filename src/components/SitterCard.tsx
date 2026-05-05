@@ -57,7 +57,10 @@ export function SitterCard({ sitter }: { sitter: UISitter }) {
                 <span className="font-medium text-pitch-black">{sitter.rating ? `${Math.round(sitter.rating * 20)}%` : "New"}</span>
               </span>
               {sitter.bookingsCompleted > 0 && (
-                <span>{sitter.bookingsCompleted} bookings</span>
+                <span>{sitter.bookingsCompleted} sits</span>
+              )}
+              {sitter.yearsExperience > 0 && (
+                <span>{sitter.yearsExperience}y exp</span>
               )}
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" /> {sitter.area}
@@ -83,6 +86,23 @@ export function SitterCard({ sitter }: { sitter: UISitter }) {
           <p className="line-clamp-2 text-xs text-slate-grey">{sitter.headline}</p>
         )}
 
+        {(() => {
+          const quals: string[] = [];
+          if (sitter.firstAidCertified) quals.push("First aid");
+          if (sitter.policeCleared) quals.push("Police cleared");
+          if (sitter.earlyYearsQualified) quals.push("Early years");
+          if (sitter.teachingQualified) quals.push("Teaching");
+          if (sitter.newbornExperience) quals.push("Newborn");
+          if (sitter.senExperience) quals.push("SEN");
+          const top = quals.slice(0, 3);
+          return top.length === 0 ? null : (
+            <div className="flex flex-wrap gap-1.5">
+              {top.map(q => (
+                <span key={q} className="rounded-full bg-cream px-2 py-0.5 text-[10px] font-medium text-pitch-black">{q}</span>
+              ))}
+            </div>
+          );
+        })()}
         <div className="mt-auto flex gap-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1 gap-1.5">
             <MessageCircle className="h-4 w-4" /> Message

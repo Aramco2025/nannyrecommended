@@ -46,6 +46,14 @@ export type UISitter = {
   dogWalker: boolean;
   petSitter: boolean;
   petBoarding: boolean;
+  surcharges: {
+    evening: number;
+    lateNight: number;
+    weekend: number;
+    holiday: number;
+    multiChild: number;
+    lastMinute: number;
+  };
 };
 
 const FALLBACK_PHOTO = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop";
@@ -94,5 +102,13 @@ export function mapSitter(s: DbSitter): UISitter {
     dogWalker: !!(s as any).dog_walker,
     petSitter: !!(s as any).pet_sitter,
     petBoarding: !!(s as any).pet_boarding,
+    surcharges: {
+      evening: Number((s as any).evening_surcharge_aed ?? 0),
+      lateNight: Number((s as any).late_night_surcharge_aed ?? 0),
+      weekend: Number((s as any).weekend_surcharge_aed ?? 0),
+      holiday: Number((s as any).holiday_surcharge_aed ?? 0),
+      multiChild: Number((s as any).multi_child_surcharge_aed ?? 0),
+      lastMinute: Number((s as any).last_minute_surcharge_aed ?? 0),
+    },
   };
 }

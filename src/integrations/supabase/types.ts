@@ -156,6 +156,8 @@ export type Database = {
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
           subtotal_aed: number
+          taxi_cover_aed: number
+          taxi_requested: boolean
           total_aed: number
           updated_at: string
         }
@@ -190,6 +192,8 @@ export type Database = {
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           subtotal_aed: number
+          taxi_cover_aed?: number
+          taxi_requested?: boolean
           total_aed: number
           updated_at?: string
         }
@@ -224,6 +228,8 @@ export type Database = {
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           subtotal_aed?: number
+          taxi_cover_aed?: number
+          taxi_requested?: boolean
           total_aed?: number
           updated_at?: string
         }
@@ -475,6 +481,7 @@ export type Database = {
           area: string | null
           children_ids: string[]
           created_at: string
+          decision_deadline_at: string | null
           end_at: string
           hourly_rate_aed: number
           id: string
@@ -491,6 +498,7 @@ export type Database = {
           area?: string | null
           children_ids?: string[]
           created_at?: string
+          decision_deadline_at?: string | null
           end_at: string
           hourly_rate_aed: number
           id?: string
@@ -507,6 +515,7 @@ export type Database = {
           area?: string | null
           children_ids?: string[]
           created_at?: string
+          decision_deadline_at?: string | null
           end_at?: string
           hourly_rate_aed?: number
           id?: string
@@ -1007,22 +1016,27 @@ export type Database = {
           dog_walker: boolean
           drives: boolean
           early_years_qualified: boolean
+          evening_surcharge_aed: number
           first_aid_certified: boolean
           full_name: string | null
           has_own_car: boolean
           headline: string | null
+          holiday_surcharge_aed: number
           homework_help: boolean
           hourly_rate_aed: number
           id: string
           is_active: boolean
           is_demo: boolean
           languages: string[]
+          last_minute_surcharge_aed: number
+          late_night_surcharge_aed: number
           latitude: number | null
           light_housework: boolean
           live_in_available: boolean
           longitude: number | null
           maternity_nurse: boolean
           monthly_full_time_aed: number | null
+          multi_child_surcharge_aed: number
           multiples_experience: boolean
           network_badge: Database["public"]["Enums"]["network_badge"]
           newborn_experience: boolean
@@ -1051,6 +1065,7 @@ export type Database = {
           user_id: string | null
           verified: boolean
           video_intro_url: string | null
+          weekend_surcharge_aed: number
           years_experience: number
         }
         Insert: {
@@ -1064,22 +1079,27 @@ export type Database = {
           dog_walker?: boolean
           drives?: boolean
           early_years_qualified?: boolean
+          evening_surcharge_aed?: number
           first_aid_certified?: boolean
           full_name?: string | null
           has_own_car?: boolean
           headline?: string | null
+          holiday_surcharge_aed?: number
           homework_help?: boolean
           hourly_rate_aed?: number
           id?: string
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          last_minute_surcharge_aed?: number
+          late_night_surcharge_aed?: number
           latitude?: number | null
           light_housework?: boolean
           live_in_available?: boolean
           longitude?: number | null
           maternity_nurse?: boolean
           monthly_full_time_aed?: number | null
+          multi_child_surcharge_aed?: number
           multiples_experience?: boolean
           network_badge?: Database["public"]["Enums"]["network_badge"]
           newborn_experience?: boolean
@@ -1108,6 +1128,7 @@ export type Database = {
           user_id?: string | null
           verified?: boolean
           video_intro_url?: string | null
+          weekend_surcharge_aed?: number
           years_experience?: number
         }
         Update: {
@@ -1121,22 +1142,27 @@ export type Database = {
           dog_walker?: boolean
           drives?: boolean
           early_years_qualified?: boolean
+          evening_surcharge_aed?: number
           first_aid_certified?: boolean
           full_name?: string | null
           has_own_car?: boolean
           headline?: string | null
+          holiday_surcharge_aed?: number
           homework_help?: boolean
           hourly_rate_aed?: number
           id?: string
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          last_minute_surcharge_aed?: number
+          late_night_surcharge_aed?: number
           latitude?: number | null
           light_housework?: boolean
           live_in_available?: boolean
           longitude?: number | null
           maternity_nurse?: boolean
           monthly_full_time_aed?: number | null
+          multi_child_surcharge_aed?: number
           multiples_experience?: boolean
           network_badge?: Database["public"]["Enums"]["network_badge"]
           newborn_experience?: boolean
@@ -1165,6 +1191,7 @@ export type Database = {
           user_id?: string | null
           verified?: boolean
           video_intro_url?: string | null
+          weekend_surcharge_aed?: number
           years_experience?: number
         }
         Relationships: []
@@ -1445,6 +1472,7 @@ export type Database = {
       }
       ensure_wallet: { Args: { _user: string }; Returns: string }
       expire_pending_payment_bookings: { Args: never; Returns: number }
+      expire_stale_job_posts: { Args: never; Returns: number }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
