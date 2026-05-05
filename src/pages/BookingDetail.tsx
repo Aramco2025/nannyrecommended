@@ -29,6 +29,9 @@ type Booking = {
   started_at: string | null;
   ended_at: string | null;
   released_at: string | null;
+  children_ids: string[] | null;
+  pets: any[] | null;
+  parking: string | null;
   sitters?: { full_name: string | null; photos: string[] | null; user_id: string | null } | null;
   profiles?: { full_name: string | null; phone: string | null } | null;
 };
