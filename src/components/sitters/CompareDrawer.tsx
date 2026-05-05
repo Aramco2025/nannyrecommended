@@ -14,9 +14,18 @@ type Ctx = {
   has: (id: string) => boolean;
 };
 const CompareCtx = createContext<Ctx | null>(null);
-export const useCompare = () => {
+const NOOP_CTX: Ctx = {
+  ids: [],
+  sitters: [],
+  toggle: () => {},
+  clear: () => {},
+  has: () => false,
+};
+/** Returns a no-op context when used outside CompareProvider so SitterCard
+ *  can be rendered on pages that don't mount the provider (home, favourites). */
+export const useCompare = () => useContext(CompareCtx) ?? NOOP_CTX;
+const useCompareStrict = () => {
   const c = useContext(CompareCtx);
-  if (!c) throw new Error("useCompare must be used inside CompareProvider");
   return c;
 };
 
