@@ -80,6 +80,7 @@ import Education from "./pages/sitter/Education.tsx";
 import EducationArticle from "./pages/sitter/EducationArticle.tsx";
 import BookingReturn from "./pages/checkout/BookingReturn.tsx";
 import SubscriptionReturn from "./pages/checkout/SubscriptionReturn.tsx";
+import Referrals from "./pages/Referrals.tsx";
 import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner.tsx";
 
 const queryClient = new QueryClient();
