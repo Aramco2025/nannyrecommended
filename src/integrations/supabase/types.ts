@@ -55,6 +55,7 @@ export type Database = {
       bookings: {
         Row: {
           address: string | null
+          children_ids: string[]
           created_at: string
           end_at: string
           ended_at: string | null
@@ -65,7 +66,9 @@ export type Database = {
           notes: string | null
           paid_at: string | null
           parent_id: string
+          parking: string | null
           payment_method_ref: string | null
+          pets: Json
           platform_fee_aed: number
           released_at: string | null
           sitter_id: string
@@ -80,6 +83,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          children_ids?: string[]
           created_at?: string
           end_at: string
           ended_at?: string | null
@@ -90,7 +94,9 @@ export type Database = {
           notes?: string | null
           paid_at?: string | null
           parent_id: string
+          parking?: string | null
           payment_method_ref?: string | null
+          pets?: Json
           platform_fee_aed: number
           released_at?: string | null
           sitter_id: string
@@ -105,6 +111,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          children_ids?: string[]
           created_at?: string
           end_at?: string
           ended_at?: string | null
@@ -115,7 +122,9 @@ export type Database = {
           notes?: string | null
           paid_at?: string | null
           parent_id?: string
+          parking?: string | null
           payment_method_ref?: string | null
+          pets?: Json
           platform_fee_aed?: number
           released_at?: string | null
           sitter_id?: string
@@ -320,12 +329,15 @@ export type Database = {
       job_posts: {
         Row: {
           area: string | null
+          children_ids: string[]
           created_at: string
           end_at: string
           hourly_rate_aed: number
           id: string
           notes: string | null
           parent_id: string
+          parking: string | null
+          pets: Json
           start_at: string
           status: Database["public"]["Enums"]["job_status"]
           type: Database["public"]["Enums"]["job_type"]
@@ -333,12 +345,15 @@ export type Database = {
         }
         Insert: {
           area?: string | null
+          children_ids?: string[]
           created_at?: string
           end_at: string
           hourly_rate_aed: number
           id?: string
           notes?: string | null
           parent_id: string
+          parking?: string | null
+          pets?: Json
           start_at: string
           status?: Database["public"]["Enums"]["job_status"]
           type: Database["public"]["Enums"]["job_type"]
@@ -346,12 +361,15 @@ export type Database = {
         }
         Update: {
           area?: string | null
+          children_ids?: string[]
           created_at?: string
           end_at?: string
           hourly_rate_aed?: number
           id?: string
           notes?: string | null
           parent_id?: string
+          parking?: string | null
+          pets?: Json
           start_at?: string
           status?: Database["public"]["Enums"]["job_status"]
           type?: Database["public"]["Enums"]["job_type"]
