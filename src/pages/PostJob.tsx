@@ -166,6 +166,39 @@ const PostJob = () => {
       <Footer />
     </div>
   );
+          {children.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-xs text-slate-grey">Children for this job</Label>
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {children.map(c => {
+                  const checked = selectedChildren.includes(c.id);
+                  return (
+                    <li key={c.id} className="flex items-center gap-3 rounded-xl border border-cream-deep p-3">
+                      <Checkbox checked={checked}
+                        onCheckedChange={(v) => setSelectedChildren(prev => v ? [...prev, c.id] : prev.filter(x => x !== c.id))} />
+                      <div className="text-sm">
+                        <div className="font-medium text-pitch-black">{c.name}</div>
+                        {c.dob && <div className="text-xs text-slate-grey">DOB {c.dob}</div>}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
+          <div className="space-y-1.5"><Label className="text-xs text-slate-grey">Notes (optional)</Label>
+            <Textarea rows={4} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} maxLength={2000}
+              placeholder="2 children aged 4 and 7. Bedtime 8pm." /></div>
+
+          <Button disabled={busy} type="submit" size="lg" className="w-full rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep">
+            {busy ? (editId ? "Saving…" : "Posting…") : (editId ? "Save changes" : "Post job")}
+          </Button>
+        </form>
+      </main>
+      <Footer />
+    </div>
+  );
 };
 
 export default PostJob;
