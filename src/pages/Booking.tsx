@@ -21,13 +21,20 @@ const stripeEnv: "sandbox" | "live" = clientToken?.startsWith("pk_test_") ? "san
 
 const Booking = () => {
   const { sitterId } = useParams();
+  const [search] = useSearchParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { data: sitter, isLoading } = useSitter(sitterId);
 
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [startTime, setStartTime] = useState("19:00");
-  const [hours, setHours] = useState(4);
+  const qDate = search.get("date");
+  const qStart = search.get("start");
+  const qHours = search.get("hours");
+  const qApp = search.get("application_id");
+  const qJob = search.get("job_id");
+
+  const [date, setDate] = useState(qDate ?? new Date().toISOString().slice(0, 10));
+  const [startTime, setStartTime] = useState(qStart ?? "19:00");
+  const [hours, setHours] = useState(qHours ? Number(qHours) : 4);
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
