@@ -377,7 +377,9 @@ const Sitters = () => {
 
       <Footer />
       <MobileTabBar />
+      <CompareBar />
     </div>
+    </CompareProvider>
   );
 };
 
