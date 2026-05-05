@@ -46,6 +46,7 @@ const Booking = () => {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [completedTogether, setCompletedTogether] = useState(0);
   const [taxiHome, setTaxiHome] = useState(false);
+  const [saveAsRepeat, setSaveAsRepeat] = useState(false);
   const TAXI_COVER_AED = 60; // flat estimate; refine later
 
   // Smart defaults from last booking
@@ -135,6 +136,19 @@ const Booking = () => {
         await supabase.from("job_applications").update({ status: "accepted" }).eq("id", qApp);
         await supabase.from("job_applications").update({ status: "declined" }).eq("job_post_id", qJob).neq("id", qApp).eq("status", "pending");
         await supabase.from("job_posts").update({ status: "filled" }).eq("id", qJob);
+      }
+      if (saveAsRepeat && user) {
+        const start = new Date(`${date}T${startTime}:00`);
+        await supabase.from("recurring_bookings").insert({
+          parent_id: user.id,
+          sitter_id: sitter.id,
+          day_of_week: start.getDay(),
+          start_time: startTime + ":00",
+          hours,
+          address: address || null,
+          notes: notes || null,
+          children_ids: selectedChildren,
+        });
       }
       setClientSecret(data.client_secret);
     } catch (err: any) {
@@ -241,6 +255,14 @@ const Booking = () => {
                   onChange={e => setParking(e.target.value)} />
               </Field>
             </Card>
+
+            <label className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 text-sm text-pitch-black">
+              <Checkbox checked={saveAsRepeat} onCheckedChange={(v) => setSaveAsRepeat(!!v)} />
+              <span>
+                <span className="block font-medium">Save as weekly repeat</span>
+                <span className="block text-xs text-slate-grey">We'll suggest this slot every {new Date(`${date}T${startTime}:00`).toLocaleDateString("en-GB",{weekday:"long"})} — one tap to confirm.</span>
+              </span>
+            </label>
 
             <div className="rounded-2xl border border-border bg-off-white p-4 text-xs text-slate-grey">
               🔒 Your payment is held safely until the booking is complete.

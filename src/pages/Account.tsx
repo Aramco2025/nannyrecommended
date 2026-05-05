@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { FamilyPlusCard } from "@/components/payments/FamilyPlusCard";
 import { NextBookingCard } from "@/components/account/NextBookingCard";
 import { LoyaltyProgress } from "@/components/LoyaltyProgress";
+import { RecurringBookingsCard } from "@/components/parent/RecurringBookingsCard";
 
 type Booking = {
   id: string;
@@ -92,9 +93,12 @@ const Account = () => {
             <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/parent/family">My family</Link></Button>
             <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/parent/bookings">All bookings</Link></Button>
             <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/account/notifications">Notifications</Link></Button>
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/referrals">Refer & earn AED 50</Link></Button>
             <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/contact">Contact support</Link></Button>
           </div>
         </div>
+
+        <div className="mt-6"><RecurringBookingsCard /></div>
 
         <h2 className="mt-12 text-xl font-semibold text-pitch-black">Your bookings</h2>
         <div className="mt-4 space-y-3">

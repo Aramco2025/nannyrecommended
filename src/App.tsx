@@ -80,6 +80,7 @@ import Education from "./pages/sitter/Education.tsx";
 import EducationArticle from "./pages/sitter/EducationArticle.tsx";
 import BookingReturn from "./pages/checkout/BookingReturn.tsx";
 import SubscriptionReturn from "./pages/checkout/SubscriptionReturn.tsx";
+import Referrals from "./pages/Referrals.tsx";
 import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner.tsx";
 
 const queryClient = new QueryClient();
@@ -110,6 +111,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/help" element={<AuthHelp />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/referrals" element={<Referrals />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/trust-safety" element={<TrustSafety />} />

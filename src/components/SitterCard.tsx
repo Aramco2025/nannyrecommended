@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Star, MapPin, MessageCircle, ShieldCheck, Heart, ThumbsUp, Users } from "lucide-react";
+import { Star, MapPin, MessageCircle, ShieldCheck, Heart, ThumbsUp, Users, PlayCircle } from "lucide-react";
 import { UISitter } from "@/lib/sitterMapper";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/fees";
@@ -29,6 +29,11 @@ export function SitterCard({ sitter }: { sitter: UISitter }) {
         {sitter.verified && (
           <span className="absolute right-3 bottom-3 inline-flex items-center gap-1 rounded-full bg-pure-white/95 px-2 py-1 text-[11px] font-semibold text-pitch-black shadow-card backdrop-blur">
             <ShieldCheck className="h-3 w-3 text-success-green" /> Verified
+          </span>
+        )}
+        {sitter.hasVideoIntro && (
+          <span className="absolute left-3 bottom-3 inline-flex items-center gap-1 rounded-full bg-pitch-black/85 px-2 py-1 text-[11px] font-semibold text-pure-white shadow-card backdrop-blur">
+            <PlayCircle className="h-3 w-3" /> Video intro
           </span>
         )}
       </Link>
