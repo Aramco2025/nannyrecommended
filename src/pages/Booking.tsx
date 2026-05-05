@@ -122,7 +122,7 @@ const Booking = () => {
         <main className="container max-w-2xl py-8">
           <button onClick={() => setClientSecret(null)} className="text-sm text-slate-grey hover:text-pitch-black">← Back to booking details</button>
           <h1 className="mt-4 font-display text-2xl font-semibold text-pitch-black">Complete payment</h1>
-          <p className="mt-1 text-sm text-slate-grey">Test mode — use card <code className="rounded bg-muted px-1">4242 4242 4242 4242</code>, any future date, any CVC.</p>
+          {isTestMode() && <p className="mt-1 text-sm text-slate-grey">Test mode — use card <code className="rounded bg-muted px-1">4242 4242 4242 4242</code>, any future date, any CVC.</p>}
           <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-card">
             <EmbeddedCheckoutProvider stripe={stripePromise} options={{ clientSecret }}>
               <EmbeddedCheckout />
