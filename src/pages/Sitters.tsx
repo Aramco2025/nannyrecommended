@@ -339,13 +339,16 @@ const Sitters = () => {
 
           {/* RESULTS */}
           <div>
-            <div className="mb-5 flex items-baseline justify-between">
+            <div className="mb-5 flex items-baseline justify-between gap-3">
               <h1 className="font-display text-2xl font-bold text-pitch-black md:text-3xl">
                 Sitters near you
               </h1>
-              <p className="text-sm text-slate-grey">
-                <span className="font-semibold text-success-green">●</span> {visible.length} match{visible.length === 1 ? "" : "es"}
-              </p>
+              <div className="flex items-center gap-3">
+                <ConciergeCTA />
+                <p className="text-sm text-slate-grey">
+                  <span className="font-semibold text-success-green">●</span> {visible.length} match{visible.length === 1 ? "" : "es"}
+                </p>
+              </div>
             </div>
 
             <AreaDensityIndicator area={null} visibleCount={visible.length} />
