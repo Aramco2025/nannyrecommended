@@ -82,7 +82,16 @@ const SitterJobs = () => {
                       await apply.mutateAsync({ jobId: j.id });
                       toast({ title: "Application sent", description: "The parent will see your profile." });
                     } catch (e: any) {
-                      toast({ title: "Couldn't apply", description: e.message, variant: "destructive" });
+                      const msg = String(e.message || "");
+                      if (/cap|limit|8/.test(msg)) {
+                        toast({
+                          title: "This job is full",
+                          description: "It already has 8 applicants. Try another job — new ones post hourly.",
+                          variant: "destructive",
+                        });
+                      } else {
+                        toast({ title: "Couldn't apply", description: msg, variant: "destructive" });
+                      }
                     }
                   }}
                 />
