@@ -169,6 +169,7 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin/bookings" element={<AdminBookings />} />
+            <Route path="/admin/disputes" element={<AdminDisputes />} />
             <Route path="/checkout/booking-return" element={<BookingReturn />} />
             <Route path="/checkout/subscription-return" element={<SubscriptionReturn />} />
             <Route path="*" element={<NotFound />} />
