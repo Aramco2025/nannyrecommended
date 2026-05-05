@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "@/hooks/use-toast";
+import { SmsOtpForm } from "@/components/auth/SmsOtpForm";
+import { logAuthAttempt } from "@/lib/auth/methods";
 
 const signInSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
