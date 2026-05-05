@@ -101,8 +101,8 @@ const PostJob = () => {
     <div className="min-h-screen bg-cream">
       <Header />
       <main className="container max-w-xl py-10">
-        <h1 className="font-display text-3xl font-bold text-pitch-black">Post a job</h1>
-        <p className="mt-1 text-sm text-slate-grey">Tell us what you need and verified sitters will apply.</p>
+        <h1 className="font-display text-3xl font-bold text-pitch-black">{editId ? "Edit job" : "Post a job"}</h1>
+        <p className="mt-1 text-sm text-slate-grey">{editId ? "Update the details — applicants will see the changes." : "Tell us what you need and verified sitters will apply."}</p>
 
         <form onSubmit={submit} className="mt-8 space-y-5 rounded-3xl bg-pure-white p-6 shadow-card">
           <div className="space-y-1.5">
