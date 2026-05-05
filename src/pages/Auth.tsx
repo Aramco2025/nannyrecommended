@@ -182,6 +182,11 @@ const Auth = () => {
               </>
             )}
           </div>
+          {mode === "signin" && (
+            <div className="mt-2 text-center text-sm">
+              <Link to="/forgot-password" className="text-slate-grey underline hover:text-pitch-black">Forgot password?</Link>
+            </div>
+          )}
           <div className="mt-2 text-center text-xs text-slate-grey">
             <Link to="/" className="underline">Back to home</Link>
           </div>
