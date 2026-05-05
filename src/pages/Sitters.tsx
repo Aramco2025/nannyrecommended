@@ -42,6 +42,9 @@ const SECTIONS: Section[] = [
       { key: "sen", label: "Special educational needs" },
       { key: "maternity", label: "Maternity nurse" },
       { key: "night", label: "Night nanny" },
+      { key: "dogWalker", label: "Dog walker" },
+      { key: "petSitter", label: "Pet sitter" },
+      { key: "petBoarding", label: "Pet boarding" },
     ],
   },
   {
