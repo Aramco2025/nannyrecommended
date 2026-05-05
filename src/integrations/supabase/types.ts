@@ -790,6 +790,105 @@ export type Database = {
         }
         Relationships: []
       }
+      recurring_bookings: {
+        Row: {
+          active: boolean
+          address: string | null
+          children_ids: string[]
+          created_at: string
+          day_of_week: number
+          hours: number
+          id: string
+          next_occurrence: string | null
+          notes: string | null
+          parent_id: string
+          sitter_id: string
+          start_time: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          address?: string | null
+          children_ids?: string[]
+          created_at?: string
+          day_of_week: number
+          hours: number
+          id?: string
+          next_occurrence?: string | null
+          notes?: string | null
+          parent_id: string
+          sitter_id: string
+          start_time: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          address?: string | null
+          children_ids?: string[]
+          created_at?: string
+          day_of_week?: number
+          hours?: number
+          id?: string
+          next_occurrence?: string | null
+          notes?: string | null
+          parent_id?: string
+          sitter_id?: string
+          start_time?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          referred_user_id: string
+          referrer_id: string
+          reward_aed: number
+          rewarded_at: string | null
+          status: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          referred_user_id: string
+          referrer_id: string
+          reward_aed?: number
+          rewarded_at?: string | null
+          status?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          referred_user_id?: string
+          referrer_id?: string
+          reward_aed?: number
+          rewarded_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       refunds: {
         Row: {
           amount_minor_units: number
@@ -875,6 +974,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      saved_searches: {
+        Row: {
+          alerts_enabled: boolean
+          created_at: string
+          filters: Json
+          id: string
+          last_alerted_at: string | null
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alerts_enabled?: boolean
+          created_at?: string
+          filters?: Json
+          id?: string
+          last_alerted_at?: string | null
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alerts_enabled?: boolean
+          created_at?: string
+          filters?: Json
+          id?: string
+          last_alerted_at?: string | null
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       sitter_applications: {
         Row: {
@@ -1470,6 +1602,7 @@ export type Database = {
         }
         Returns: string
       }
+      ensure_referral_code: { Args: { _user: string }; Returns: string }
       ensure_wallet: { Args: { _user: string }; Returns: string }
       expire_pending_payment_bookings: { Args: never; Returns: number }
       expire_stale_job_posts: { Args: never; Returns: number }
@@ -1564,6 +1697,7 @@ export type Database = {
         | "cash_out_cancelled"
         | "refund"
         | "bonus"
+        | "referral_credit"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1732,6 +1866,7 @@ export const Constants = {
         "cash_out_cancelled",
         "refund",
         "bonus",
+        "referral_credit",
       ],
     },
   },
