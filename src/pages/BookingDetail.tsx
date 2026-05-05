@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { formatCurrency } from "@/lib/fees";
 import { BookingTimer } from "@/components/booking/BookingTimer";
 import { ReviewForm } from "@/components/booking/ReviewForm";
+import { PaymentSummary } from "@/components/booking/PaymentSummary";
 
 type Booking = {
   id: string;
@@ -182,10 +183,13 @@ export default function BookingDetail() {
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <div><span className="text-slate-grey">Total: </span><span className="font-medium text-pitch-black">{formatCurrency(Number(b.total_aed))}</span></div>
-            {isSitter && <div><span className="text-slate-grey">Your payout: </span><span className="font-medium text-pitch-black">{formatCurrency(Number(b.sitter_payout_aed))}</span></div>}
-          </div>
+          <PaymentSummary
+            total={Number(b.total_aed)}
+            sitterPayout={Number(b.sitter_payout_aed)}
+            hours={Number(b.hours)}
+            isSitter={isSitter}
+            released={!!b.released_at}
+          />
 
           {(b.status === "confirmed" || b.status === "in_progress" || b.status === "completed") && (
             <div className="mt-5">

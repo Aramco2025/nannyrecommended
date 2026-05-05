@@ -44,6 +44,18 @@ const Booking = () => {
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [completedTogether, setCompletedTogether] = useState(0);
+
+  useEffect(() => {
+    if (!user || !sitterId) return;
+    supabase
+      .from("bookings")
+      .select("id", { count: "exact", head: true })
+      .eq("parent_id", user.id)
+      .eq("sitter_id", sitterId)
+      .eq("status", "completed")
+      .then(({ count }) => setCompletedTogether(count ?? 0));
+  }, [user, sitterId]);
 
   // Family info (confirm step)
   const [children, setChildren] = useState<Child[]>([]);
@@ -259,7 +271,7 @@ const Booking = () => {
 
             <div className="lg:hidden">
               <FeeBreakdown hourlyRate={sitter.hourlyRate} hours={hours}
-                completedBookingsTogether={0} currency={sitter.currency} />
+                completedBookingsTogether={completedTogether} currency={sitter.currency} />
             </div>
 
             <Button type="submit" size="lg" className="w-full bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
@@ -271,7 +283,7 @@ const Booking = () => {
           <aside className="hidden lg:block">
             <div className="sticky top-24">
               <FeeBreakdown hourlyRate={sitter.hourlyRate} hours={hours}
-                completedBookingsTogether={0} currency={sitter.currency} />
+                completedBookingsTogether={completedTogether} currency={sitter.currency} />
             </div>
           </aside>
         </div>
