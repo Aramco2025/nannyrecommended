@@ -75,6 +75,13 @@ export default function BookingDetail() {
       .then(({ data }) => setHasReview(!!data));
   }, [id, user, b?.status]);
 
+  useEffect(() => {
+    const ids = b?.children_ids ?? [];
+    if (!ids.length) { setChildNames([]); return; }
+    supabase.from("children").select("id,name,dob").in("id", ids)
+      .then(({ data }) => setChildNames((data ?? []) as any));
+  }, [b?.children_ids]);
+
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
   if (loading) return <div className="grid min-h-screen place-items-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
