@@ -88,6 +88,12 @@ export default function SitterSetRate() {
         monthly_full_time_aed: open_to_full_time ? monthly : null,
         open_to_babysitting,
         open_to_full_time,
+        evening_surcharge_aed: surcharges.evening,
+        late_night_surcharge_aed: surcharges.lateNight,
+        weekend_surcharge_aed: surcharges.weekend,
+        holiday_surcharge_aed: surcharges.holiday,
+        multi_child_surcharge_aed: surcharges.multiChild,
+        last_minute_surcharge_aed: surcharges.lastMinute,
       };
       if (sitterId) {
         const { error } = await supabase.from("sitters").update(payload).eq("id", sitterId);
