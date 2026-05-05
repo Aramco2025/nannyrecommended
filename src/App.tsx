@@ -61,6 +61,11 @@ import SitterReferences from "./pages/sitter/apply/References.tsx";
 import SitterBio from "./pages/sitter/apply/Bio.tsx";
 import SitterReview from "./pages/sitter/apply/Review.tsx";
 import SitterPending from "./pages/sitter/apply/Pending.tsx";
+import BookingDetail from "./pages/BookingDetail.tsx";
+import Notifications from "./pages/Notifications.tsx";
+import ForgotPassword from "./pages/ForgotPassword.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
+import AdminBookings from "./pages/AdminBookings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -130,6 +135,11 @@ const App = () => (
             <Route path="/sitter/apply/bio" element={<SitterBio />} />
             <Route path="/sitter/apply/review" element={<SitterReview />} />
             <Route path="/sitter/apply/pending" element={<SitterPending />} />
+            <Route path="/bookings/:id" element={<BookingDetail />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/admin/bookings" element={<AdminBookings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
