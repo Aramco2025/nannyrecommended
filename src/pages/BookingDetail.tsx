@@ -14,6 +14,8 @@ import { formatCurrency } from "@/lib/fees";
 import { BookingTimer } from "@/components/booking/BookingTimer";
 import { ReviewForm } from "@/components/booking/ReviewForm";
 import { PaymentSummary } from "@/components/booking/PaymentSummary";
+import { CancelBookingDialog } from "@/components/booking/CancelBookingDialog";
+import { XCircle } from "lucide-react";
 
 type Booking = {
   id: string;
@@ -56,6 +58,7 @@ export default function BookingDetail() {
   const [childNames, setChildNames] = useState<{ id: string; name: string; dob: string | null }[]>([]);
   const { messages } = useThreadMessages(id);
   const [text, setText] = useState("");
+  const [cancelOpen, setCancelOpen] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   const reload = async () => {
