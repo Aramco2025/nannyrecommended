@@ -69,6 +69,8 @@ import AdminBookings from "./pages/AdminBookings.tsx";
 import AuthHelp from "./pages/AuthHelp.tsx";
 import NotificationPreferences from "./pages/NotificationPreferences.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import SitterJobDetail from "./pages/sitter/JobDetail.tsx";
+import SitterApplications from "./pages/sitter/Applications.tsx";
 
 const queryClient = new QueryClient();
 
@@ -112,6 +114,8 @@ const App = () => (
             <Route path="/full-time-nanny" element={<FullTimeNanny />} />
             <Route path="/emergency-childcare" element={<EmergencyChildcare />} />
             <Route path="/sitter/jobs" element={<SitterJobs />} />
+            <Route path="/sitter/jobs/:id" element={<SitterJobDetail />} />
+            <Route path="/sitter/applications" element={<SitterApplications />} />
             <Route path="/sitter/availability" element={<SitterAvailability />} />
             <Route path="/sitter/notifications" element={<SitterNotifications />} />
             <Route path="/messages" element={<Messages />} />
