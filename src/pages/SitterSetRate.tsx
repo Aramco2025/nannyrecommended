@@ -198,6 +198,33 @@ export default function SitterSetRate() {
           </section>
         )}
 
+        {(mode === "babysitting" || mode === "both") && (
+          <section className="mt-4 rounded-2xl border border-border bg-card p-6 shadow-card">
+            <Label className="text-xs uppercase tracking-wide text-slate-grey">Surcharges (AED / hour)</Label>
+            <p className="mt-1 text-xs text-slate-grey">Optional extras that apply automatically when conditions are met. Parents see a clear breakdown before paying.</p>
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {([
+                ["evening", "Evening (after 9pm)"],
+                ["lateNight", "Late night (after 12am)"],
+                ["weekend", "Weekend"],
+                ["holiday", "Public holiday"],
+                ["multiChild", "Per extra child"],
+                ["lastMinute", "Last-minute (<4h)"],
+              ] as const).map(([key, label]) => (
+                <label key={key} className="flex flex-col gap-1 text-xs text-slate-grey">
+                  <span>{label}</span>
+                  <Input
+                    type="number" min={0} max={200} inputMode="numeric"
+                    value={surcharges[key]}
+                    onChange={(e) => setSurcharges(s => ({ ...s, [key]: Math.max(0, Number(e.target.value) || 0) }))}
+                    className="h-10"
+                  />
+                </label>
+              ))}
+            </div>
+          </section>
+        )}
+
         <Button onClick={save} disabled={busy} className="mt-6 w-full bg-salmon hover:bg-salmon-deep text-primary-foreground">
           {busy ? "Saving…" : "Save rate"}
         </Button>
