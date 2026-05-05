@@ -73,7 +73,25 @@ const Auth = () => {
           throw error;
         }
         await logAuthAttempt({ email_or_phone: parsed.data.email, method: "email_password", success: true });
-        toast({ title: "Welcome!", description: "Account created." });
+
+        // Capture referral code if present in URL
+        const refCode = params.get("ref");
+        if (refCode) {
+          try {
+            const { data: refRow } = await supabase
+              .from("referral_codes").select("user_id").eq("code", refCode.toUpperCase()).maybeSingle();
+            const { data: { user: newUser } } = await supabase.auth.getUser();
+            if (refRow?.user_id && newUser && refRow.user_id !== newUser.id) {
+              await supabase.from("referrals").insert({
+                referrer_id: refRow.user_id,
+                referred_user_id: newUser.id,
+                code: refCode.toUpperCase(),
+              });
+            }
+          } catch (e) { /* non-fatal */ }
+        }
+
+        toast({ title: "Welcome!", description: refCode ? "Account created. Your AED 50 credit unlocks after your first booking." : "Account created." });
         navigate("/onboarding/region");
       } else {
         const parsed = signInSchema.safeParse({ email, password });
