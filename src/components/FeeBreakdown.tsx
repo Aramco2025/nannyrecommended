@@ -1,14 +1,16 @@
 import { Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { calculateFee, formatCurrency } from "@/lib/fees";
+import type { AppliedSurcharge } from "@/lib/pricing/surcharges";
 
 type Props = {
   hourlyRate: number;
   hours: number;
   completedBookingsTogether: number;
   currency?: "AED" | "GBP";
-  /** When true, render compact variant (no padding/border) for embedding inside other cards. */
   compact?: boolean;
+  surcharges?: AppliedSurcharge[];
+  taxiCoverAed?: number;
 };
 
 export function FeeBreakdown({
@@ -17,8 +19,11 @@ export function FeeBreakdown({
   completedBookingsTogether,
   currency = "AED",
   compact = false,
+  surcharges = [],
+  taxiCoverAed = 0,
 }: Props) {
-  const baseValue = hourlyRate * hours;
+  const surchargeTotal = surcharges.reduce((a, s) => a + s.amountPerHour * hours, 0);
+  const baseValue = hourlyRate * hours + surchargeTotal + taxiCoverAed;
   const fee = calculateFee(completedBookingsTogether, baseValue);
   const parentFeeAmount = fee.parentPays - fee.baseValue;
   const sitterFeeAmount = fee.baseValue - fee.sitterReceives;
@@ -43,12 +48,24 @@ export function FeeBreakdown({
           <Row
             label={
               <InfoLabel
-                text={`Sitter rate · ${formatCurrency(hourlyRate, currency)} × ${hours}h`}
+                text={`Sitter base rate · ${formatCurrency(hourlyRate, currency)} × ${hours}h`}
                 tip="The sitter's hourly rate, set by them. We never mark this up."
               />
             }
-            value={formatCurrency(baseValue, currency)}
+            value={formatCurrency(hourlyRate * hours, currency)}
           />
+          {surcharges.map(s => (
+            <Row key={s.label}
+              label={<span className="text-xs text-slate-grey">{s.label}</span>}
+              value={<span className="text-xs text-slate-grey">+ {formatCurrency(s.amountPerHour * hours, currency)}</span>}
+              muted />
+          ))}
+          {taxiCoverAed > 0 && (
+            <Row
+              label={<span className="text-xs text-slate-grey">Taxi home cover</span>}
+              value={<span className="text-xs text-slate-grey">+ {formatCurrency(taxiCoverAed, currency)}</span>}
+              muted />
+          )}
           <Row
             label={
               <InfoLabel
