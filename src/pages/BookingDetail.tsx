@@ -14,6 +14,8 @@ import { formatCurrency } from "@/lib/fees";
 import { BookingTimer } from "@/components/booking/BookingTimer";
 import { ReviewForm } from "@/components/booking/ReviewForm";
 import { PaymentSummary } from "@/components/booking/PaymentSummary";
+import { CancelBookingDialog } from "@/components/booking/CancelBookingDialog";
+import { XCircle } from "lucide-react";
 
 type Booking = {
   id: string;
@@ -56,6 +58,7 @@ export default function BookingDetail() {
   const [childNames, setChildNames] = useState<{ id: string; name: string; dob: string | null }[]>([]);
   const { messages } = useThreadMessages(id);
   const [text, setText] = useState("");
+  const [cancelOpen, setCancelOpen] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   const reload = async () => {
@@ -203,10 +206,7 @@ export default function BookingDetail() {
               {b.status === "pending" && (
                 <>
                   <Button disabled={busy !== null} onClick={() => setStatus("confirmed")} className="bg-salmon hover:bg-salmon-deep text-primary-foreground">Accept booking</Button>
-                  <Button disabled={busy !== null} variant="outline" onClick={() => {
-                    if (!confirm("Decline this booking? The parent will be refunded manually.")) return;
-                    setStatus("cancelled");
-                  }}>Decline</Button>
+                  <Button disabled={busy !== null} variant="outline" onClick={() => setCancelOpen(true)}>Decline</Button>
                 </>
               )}
               {b.status === "confirmed" && (
@@ -221,6 +221,11 @@ export default function BookingDetail() {
                   <Square className="h-4 w-4" /> End sit
                 </Button>
               )}
+              {(b.status === "pending" || b.status === "confirmed") && (
+                <Button variant="ghost" className="text-salmon-deep hover:text-salmon-deep" onClick={() => setCancelOpen(true)}>
+                  <XCircle className="h-4 w-4" /> Cancel
+                </Button>
+              )}
             </div>
           )}
 
@@ -233,9 +238,27 @@ export default function BookingDetail() {
                   <CheckCircle2 className="h-4 w-4" /> Confirm completion · release payment
                 </Button>
               )}
+              {(b.status === "pending" || b.status === "confirmed") && (
+                <Button variant="ghost" className="text-salmon-deep hover:text-salmon-deep" onClick={() => setCancelOpen(true)}>
+                  <XCircle className="h-4 w-4" /> Cancel booking
+                </Button>
+              )}
             </div>
           )}
         </div>
+
+        <CancelBookingDialog
+          open={cancelOpen}
+          onOpenChange={setCancelOpen}
+          bookingId={b.id}
+          startAt={b.start_at}
+          total={Number(b.total_aed)}
+          status={b.status}
+          role={isParent ? "parent" : "sitter"}
+          area={b.address ?? null}
+          excludeSitterId={b.sitter_id}
+          onCancelled={reload}
+        />
 
         {/* Review (parent, after completion) */}
         {isParent && b.status === "completed" && hasReview === false && (

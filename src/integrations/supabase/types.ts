@@ -127,6 +127,10 @@ export type Database = {
       bookings: {
         Row: {
           address: string | null
+          cancel_fee_aed: number | null
+          cancel_reason: string | null
+          cancelled_at: string | null
+          cancelled_by_role: string | null
           children_ids: string[]
           created_at: string
           end_at: string
@@ -142,6 +146,7 @@ export type Database = {
           payment_method_ref: string | null
           pets: Json
           platform_fee_aed: number
+          refund_aed: number | null
           released_at: string | null
           sitter_id: string
           sitter_payout_aed: number
@@ -155,6 +160,10 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          cancel_fee_aed?: number | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by_role?: string | null
           children_ids?: string[]
           created_at?: string
           end_at: string
@@ -170,6 +179,7 @@ export type Database = {
           payment_method_ref?: string | null
           pets?: Json
           platform_fee_aed: number
+          refund_aed?: number | null
           released_at?: string | null
           sitter_id: string
           sitter_payout_aed: number
@@ -183,6 +193,10 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          cancel_fee_aed?: number | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by_role?: string | null
           children_ids?: string[]
           created_at?: string
           end_at?: string
@@ -198,6 +212,7 @@ export type Database = {
           payment_method_ref?: string | null
           pets?: Json
           platform_fee_aed?: number
+          refund_aed?: number | null
           released_at?: string | null
           sitter_id?: string
           sitter_payout_aed?: number
@@ -1154,6 +1169,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_booking: {
+        Args: { _booking: string; _reason: string }
+        Returns: Json
+      }
       create_booking_escrow: { Args: { _booking: string }; Returns: undefined }
       create_instant_booking: {
         Args: {
