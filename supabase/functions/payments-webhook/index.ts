@@ -1,4 +1,4 @@
-// Stripe webhook — confirms booking and holds escrow on checkout.session.completed.
+// Stripe webhook — confirms booking, holds escrow, and records payment events.
 // Lovable registers this endpoint automatically: ?env=sandbox (test) or ?env=live.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -6,7 +6,6 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 async function verify(body: string, sigHeader: string, secret: string) {
-  // Stripe-Signature: t=...,v1=...
   const parts = Object.fromEntries(sigHeader.split(",").map(p => p.split("=")));
   const t = parts.t;
   const v1 = parts.v1;
@@ -42,60 +41,138 @@ Deno.serve(async (req) => {
   const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
   try {
-    if (event.type === "checkout.session.completed" || event.type === "transaction.completed") {
-      const session = event.data.object;
-      const bookingId = session?.metadata?.booking_id;
-      if (!bookingId) return new Response("ok", { status: 200 });
+    switch (event.type) {
+      case "checkout.session.completed":
+      case "transaction.completed": {
+        const session = event.data.object;
+        const bookingId = session?.metadata?.booking_id;
+        if (!bookingId) break;
 
-      const { data: booking } = await admin
-        .from("bookings").select("id,status,parent_id").eq("id", bookingId).maybeSingle();
-      if (!booking) return new Response("ok", { status: 200 });
-      if (booking.status === "confirmed" || booking.status === "completed") {
-        return new Response("ok", { status: 200 });
-      }
+        const { data: booking } = await admin
+          .from("bookings").select("id,status,parent_id,total_aed,sitter_id").eq("id", bookingId).maybeSingle();
+        if (!booking) break;
+        if (booking.status === "confirmed" || booking.status === "completed") break;
 
-      await admin.from("bookings").update({
-        status: "pending",
-        escrow_held: true,
-        paid_at: new Date().toISOString(),
-        payment_method_ref: session.payment_intent ?? session.id,
-      }).eq("id", bookingId);
+        const pi = (session.payment_intent as string | null) ?? null;
+        await admin.from("bookings").update({
+          status: "pending",
+          escrow_held: true,
+          paid_at: new Date().toISOString(),
+          payment_method_ref: pi ?? session.id,
+          stripe_payment_intent_id: pi,
+        }).eq("id", bookingId);
 
-      // Notify parent: payment received, awaiting sitter
-      await admin.from("notifications").insert({
-        user_id: booking.parent_id,
-        type: "booking_awaiting_sitter",
-        title: "Payment received",
-        body: "We've notified the sitter. You'll hear back shortly.",
-        link: "/account",
-      });
-
-      // Notify sitter: new booking request to accept
-      const { data: bk } = await admin
-        .from("bookings").select("sitter_id,start_at,hours").eq("id", bookingId).maybeSingle();
-      if (bk) {
-        const { data: s } = await admin
-          .from("sitters").select("user_id").eq("id", bk.sitter_id).maybeSingle();
-        if (s?.user_id) {
-          await admin.from("notifications").insert({
-            user_id: s.user_id,
-            type: "booking_request",
-            title: "New booking request 🎉",
-            body: `A parent booked ${bk.hours}h. Accept to confirm.`,
-            link: "/sitter/dashboard",
-          });
+        // Record the charge so /account/billing shows real history
+        if (pi) {
+          await admin.from("charges").upsert({
+            user_id: booking.parent_id,
+            booking_id: bookingId,
+            stripe_payment_intent_id: pi,
+            stripe_session_id: session.id,
+            amount_minor_units: Math.round(Number(booking.total_aed) * 100),
+            currency: "AED",
+            status: "succeeded",
+            description: `Booking ${bookingId}`,
+            environment: env,
+          }, { onConflict: "stripe_payment_intent_id" });
         }
-      }
-    }
 
-    if (event.type === "checkout.session.expired" || event.type === "transaction.payment_failed") {
-      const bookingId = event.data.object?.metadata?.booking_id;
-      if (bookingId) {
-        await admin.from("bookings")
-          .update({ status: "cancelled" })
-          .eq("id", bookingId)
-          .eq("status", "pending_payment");
+        await admin.from("notifications").insert({
+          user_id: booking.parent_id,
+          type: "booking_awaiting_sitter",
+          title: "Payment received",
+          body: "We've notified the sitter. You'll hear back shortly.",
+          link: "/account",
+        });
+
+        const { data: bk } = await admin
+          .from("bookings").select("sitter_id,start_at,hours").eq("id", bookingId).maybeSingle();
+        if (bk) {
+          const { data: s } = await admin
+            .from("sitters").select("user_id").eq("id", bk.sitter_id).maybeSingle();
+          if (s?.user_id) {
+            await admin.from("notifications").insert({
+              user_id: s.user_id,
+              type: "booking_request",
+              title: "New booking request 🎉",
+              body: `A parent booked ${bk.hours}h. Accept to confirm.`,
+              link: "/sitter/dashboard",
+            });
+          }
+        }
+        break;
       }
+
+      case "checkout.session.expired":
+      case "transaction.payment_failed": {
+        const bookingId = event.data.object?.metadata?.booking_id;
+        if (bookingId) {
+          await admin.from("bookings")
+            .update({ status: "cancelled" })
+            .eq("id", bookingId)
+            .eq("status", "pending_payment");
+        }
+        break;
+      }
+
+      case "charge.refunded": {
+        const charge = event.data.object;
+        const pi = charge.payment_intent as string | null;
+        if (!pi) break;
+        const { data: c } = await admin.from("charges")
+          .select("id").eq("stripe_payment_intent_id", pi).maybeSingle();
+        if (!c) break;
+        const refunds = charge.refunds?.data ?? [];
+        for (const r of refunds) {
+          await admin.from("refunds").upsert({
+            charge_id: c.id,
+            stripe_refund_id: r.id,
+            amount_minor_units: r.amount,
+            currency: (r.currency ?? "aed").toUpperCase(),
+            reason: r.reason ?? null,
+            status: r.status ?? "succeeded",
+          }, { onConflict: "stripe_refund_id" });
+        }
+        await admin.from("charges").update({
+          status: charge.refunded ? "refunded" : "partially_refunded",
+        }).eq("id", c.id);
+        break;
+      }
+
+      case "transfer.created":
+      case "transfer.updated":
+      case "transfer.paid":
+      case "transfer.failed": {
+        const t = event.data.object;
+        const status = event.type === "transfer.failed" ? "failed"
+          : event.type === "transfer.paid" ? "paid"
+          : "pending";
+        await admin.from("sitter_payouts")
+          .update({ status, failure_reason: t.failure_message ?? null })
+          .eq("stripe_transfer_id", t.id);
+        if (status === "paid") {
+          const cor = t.metadata?.cash_out_request_id;
+          if (cor) {
+            await admin.from("cash_out_requests")
+              .update({ status: "completed", completed_at: new Date().toISOString() })
+              .eq("id", cor);
+          }
+        }
+        break;
+      }
+
+      case "account.updated": {
+        const acc = event.data.object;
+        const onboarded = acc.charges_enabled && acc.payouts_enabled;
+        await admin.from("profiles")
+          .update({ stripe_connect_onboarded: !!onboarded })
+          .eq("stripe_connect_account_id", acc.id);
+        break;
+      }
+
+      default:
+        // Unhandled events are fine — just 200.
+        break;
     }
 
     return new Response("ok", { status: 200 });
