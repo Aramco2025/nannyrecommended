@@ -29,6 +29,8 @@ const PostJob = () => {
   const [search] = useSearchParams();
   const editId = search.get("edit");
   const [busy, setBusy] = useState(false);
+  const [children, setChildren] = useState<{ id: string; name: string; dob: string | null }[]>([]);
+  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
   const [form, setForm] = useState({
     type: "one_off" as "one_off" | "repeat" | "permanent",
     date: new Date().toISOString().slice(0, 10),
@@ -38,6 +40,15 @@ const PostJob = () => {
     hourly_rate_aed: 60,
     notes: "",
   });
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("children").select("id,name,dob").eq("parent_id", user.id).then(({ data }) => {
+      const list = (data ?? []) as any[];
+      setChildren(list);
+      if (!editId) setSelectedChildren(list.map(c => c.id));
+    });
+  }, [user, editId]);
 
   useEffect(() => {
     if (!editId) return;
@@ -54,6 +65,7 @@ const PostJob = () => {
         hourly_rate_aed: Number(data.hourly_rate_aed),
         notes: data.notes ?? "",
       });
+      setSelectedChildren((data as any).children_ids ?? []);
     });
   }, [editId]);
 
