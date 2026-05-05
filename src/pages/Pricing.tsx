@@ -22,6 +22,18 @@ const rows: [string, string, string][] = [
 ];
 
 const Pricing = () => {
+const Pricing = () => {
+  const { user } = useAuth();
+  const { isFamilyPlus } = useSubscription();
+  const navigate = useNavigate();
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+
+  const handleUpgrade = () => {
+    if (!user) { navigate("/auth?redirect=/pricing"); return; }
+    if (isFamilyPlus) { navigate("/account"); return; }
+    setUpgradeOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-cream">
       <Header />
@@ -70,8 +82,12 @@ const Pricing = () => {
                 </Button>
               </div>
               <div className="p-5 text-center">
-                <Button size="sm" className="rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep shadow-cta">
-                  Upgrade to Plus
+                <Button
+                  size="sm"
+                  onClick={handleUpgrade}
+                  className="rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep shadow-cta"
+                >
+                  {isFamilyPlus ? "Manage Plus" : "Upgrade to Plus"}
                 </Button>
               </div>
             </div>
