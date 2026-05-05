@@ -10,10 +10,13 @@ import {
 } from "lucide-react";
 import { VerificationPanel } from "@/components/trust/VerificationPanel";
 import { InsuranceBadge } from "@/components/trust/InsuranceBadge";
+import { ReviewsSummary } from "@/components/trust/ReviewsSummary";
+import { useSitterReviews } from "@/hooks/useSitterReviews";
 
 const SitterProfile = () => {
   const { id } = useParams();
   const { data: sitter, isLoading } = useSitter(id);
+  const { data: reviewsData } = useSitterReviews(sitter?.id);
 
   if (isLoading) return <div className="grid min-h-screen place-items-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
   if (!sitter) return <Navigate to="/sitters" replace />;
