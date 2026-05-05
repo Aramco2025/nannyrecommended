@@ -157,14 +157,9 @@ const CashOut = () => {
         )}
 
         {step === "destination" && method === "bank_transfer" && (
-          <section className="space-y-4">
-            <h1 className="font-display text-2xl font-semibold text-pitch-black">Bank details</h1>
-            <div><Label className="text-xs text-slate-grey">IBAN</Label>
-              <Input value={iban} onChange={e => setIban(e.target.value.toUpperCase())} placeholder="AE07 0331 2345 6789 0123 456" maxLength={34} /></div>
-            <div><Label className="text-xs text-slate-grey">Account holder name</Label>
-              <Input value={holder} onChange={e => setHolder(e.target.value)} maxLength={120} /></div>
-            <Button disabled={iban.length < 15 || !holder} className="w-full bg-salmon hover:bg-salmon-deep" onClick={() => setStep("confirm")}>Continue</Button>
-          </section>
+          <BankTransferConnect
+            onReady={() => setStep("confirm")}
+          />
         )}
 
         {step === "destination" && method === "voucher" && (
