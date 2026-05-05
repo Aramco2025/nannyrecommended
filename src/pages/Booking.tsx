@@ -66,6 +66,12 @@ const Booking = () => {
       });
       if (error) throw error;
       if (!data?.client_secret) throw new Error("No checkout session returned");
+      // If hire-flow, mark application accepted + close job (fires sitter notification trigger)
+      if (qApp && qJob) {
+        await supabase.from("job_applications").update({ status: "accepted" }).eq("id", qApp);
+        await supabase.from("job_applications").update({ status: "declined" }).eq("job_post_id", qJob).neq("id", qApp).eq("status", "pending");
+        await supabase.from("job_posts").update({ status: "filled" }).eq("id", qJob);
+      }
       setClientSecret(data.client_secret);
     } catch (err: any) {
       toast({ title: "Could not start checkout", description: err.message, variant: "destructive" });
