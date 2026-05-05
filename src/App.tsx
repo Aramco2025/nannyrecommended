@@ -111,6 +111,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/help" element={<AuthHelp />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/referrals" element={<Referrals />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/trust-safety" element={<TrustSafety />} />
