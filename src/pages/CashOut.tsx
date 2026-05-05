@@ -245,4 +245,63 @@ function Row({ label, value, bold }: { label: string; value: string; bold?: bool
   );
 }
 
+function BankTransferConnect({ onReady }: { onReady: () => void }) {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<{ stripe_connect_account_id: string | null; stripe_connect_onboarded: boolean } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles")
+      .select("stripe_connect_account_id, stripe_connect_onboarded")
+      .eq("id", user.id).maybeSingle()
+      .then(({ data }) => setProfile(data as any));
+  }, [user]);
+
+  const start = async () => {
+    setBusy(true);
+    try {
+      const { url } = await createConnectOnboardingLink();
+      window.location.href = url;
+    } catch (e: any) {
+      toast({ title: "Could not start setup", description: e.message, variant: "destructive" });
+      setBusy(false);
+    }
+  };
+
+  if (!profile) return <div className="grid place-items-center py-10"><Loader2 className="h-5 w-5 animate-spin" /></div>;
+
+  if (profile.stripe_connect_onboarded) {
+    return (
+      <section className="space-y-4">
+        <h1 className="font-display text-2xl font-semibold text-pitch-black">Bank transfer ready</h1>
+        <div className="rounded-2xl border border-success-green/30 bg-success-green/5 p-4 text-sm text-pitch-black">
+          <CheckCircle2 className="mr-2 inline h-4 w-4 text-success-green" />
+          Your bank account is connected. Funds settle in 1–2 working days.
+        </div>
+        <Button className="w-full bg-salmon hover:bg-salmon-deep" onClick={onReady}>Continue</Button>
+      </section>
+    );
+  }
+
+  return (
+    <section className="space-y-4">
+      <h1 className="font-display text-2xl font-semibold text-pitch-black">Connect your bank</h1>
+      <p className="text-sm text-slate-grey">
+        We use our payments partner to verify your identity and bank account securely. Takes ~3 minutes.
+        You'll be redirected and brought right back here.
+      </p>
+      <ul className="space-y-2 text-sm text-slate-grey">
+        <li>• Emirates ID or passport</li>
+        <li>• UAE bank IBAN</li>
+        <li>• Phone for verification code</li>
+      </ul>
+      <Button disabled={busy} onClick={start} className="w-full bg-salmon hover:bg-salmon-deep">
+        {busy ? "Opening secure setup…" : <>Continue with secure setup <ExternalLink className="ml-2 h-4 w-4" /></>}
+      </Button>
+      <p className="text-center text-xs text-slate-grey">Or pick a different cash-out method — no bank account required.</p>
+    </section>
+  );
+}
+
 export default CashOut;
