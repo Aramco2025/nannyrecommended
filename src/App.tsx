@@ -66,6 +66,7 @@ import Notifications from "./pages/Notifications.tsx";
 import ForgotPassword from "./pages/ForgotPassword.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminBookings from "./pages/AdminBookings.tsx";
+import AdminDisputes from "./pages/AdminDisputes.tsx";
 import AuthHelp from "./pages/AuthHelp.tsx";
 import NotificationPreferences from "./pages/NotificationPreferences.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -168,6 +169,7 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin/bookings" element={<AdminBookings />} />
+            <Route path="/admin/disputes" element={<AdminDisputes />} />
             <Route path="/checkout/booking-return" element={<BookingReturn />} />
             <Route path="/checkout/subscription-return" element={<SubscriptionReturn />} />
             <Route path="*" element={<NotFound />} />
