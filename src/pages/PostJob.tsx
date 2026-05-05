@@ -154,18 +154,6 @@ const PostJob = () => {
                 onChange={e => setForm({ ...form, hourly_rate_aed: Number(e.target.value) })} required /></div>
           </div>
 
-          <div className="space-y-1.5"><Label className="text-xs text-slate-grey">Notes (optional)</Label>
-            <Textarea rows={4} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} maxLength={2000}
-              placeholder="2 children aged 4 and 7. Bedtime 8pm." /></div>
-
-          <Button disabled={busy} type="submit" size="lg" className="w-full rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep">
-            {busy ? (editId ? "Saving…" : "Posting…") : (editId ? "Save changes" : "Post job")}
-          </Button>
-        </form>
-      </main>
-      <Footer />
-    </div>
-  );
           {children.length > 0 && (
             <div className="space-y-2">
               <Label className="text-xs text-slate-grey">Children for this job</Label>
