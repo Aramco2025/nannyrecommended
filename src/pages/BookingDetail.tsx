@@ -61,6 +61,7 @@ export default function BookingDetail() {
   const [childNames, setChildNames] = useState<{ id: string; name: string; dob: string | null }[]>([]);
   const { messages } = useThreadMessages(id);
   const [text, setText] = useState("");
+  const [cancelOpen, setCancelOpen] = useState(false);
   const [disputeOpen, setDisputeOpen] = useState(false);
   const { dispute, reload: reloadDispute } = useBookingDispute(id);
   const endRef = useRef<HTMLDivElement>(null);
