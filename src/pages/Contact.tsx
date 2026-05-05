@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Mail, MessageCircle, ShieldCheck, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { PrioritySupportBadge } from "@/components/payments/FamilyPlusGates";
 
 const CATEGORIES = [
   { value: "booking", label: "Booking issue" },
