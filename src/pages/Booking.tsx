@@ -286,21 +286,60 @@ const Booking = () => {
               </Field>
             </Card>
 
-            <div className="lg:hidden">
-              <FeeBreakdown hourlyRate={sitter.hourlyRate} hours={hours}
-                completedBookingsTogether={completedTogether} currency={sitter.currency} />
-            </div>
+            {(() => {
+              const start = new Date(`${date}T${startTime}:00`);
+              return start.getHours() >= 22 || (start.getHours() + hours) > 22 ? (
+                <Card>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <Checkbox checked={taxiHome} onCheckedChange={(v) => setTaxiHome(!!v)} />
+                    <div>
+                      <div className="flex items-center gap-2 text-sm font-semibold text-pitch-black">
+                        <Car className="h-4 w-4" /> Cover {sitter.name.split(" ")[0]}'s taxi home (~AED {TAXI_COVER_AED})
+                      </div>
+                      <p className="mt-1 text-xs text-slate-grey">Sits ending after 10pm — we'll fund a Careem/Uber to their saved home address.</p>
+                    </div>
+                  </label>
+                </Card>
+              ) : null;
+            })()}
+
+            {(() => {
+              const start = new Date(`${date}T${startTime}:00`);
+              const childCount = Math.max(1, selectedChildren.length || children.length || 1);
+              const { applied } = computeSurcharges({
+                start, hours, childCount, rates: sitter.surcharges ?? { evening: 0, lateNight: 0, weekend: 0, holiday: 0, multiChild: 0, lastMinute: 0 },
+              });
+              return (
+                <div className="lg:hidden">
+                  <FeeBreakdown hourlyRate={sitter.hourlyRate} hours={hours}
+                    completedBookingsTogether={completedTogether} currency={sitter.currency}
+                    surcharges={applied} taxiCoverAed={taxiHome ? TAXI_COVER_AED : 0} />
+                </div>
+              );
+            })()}
 
             <Button type="submit" size="lg" className="w-full bg-salmon text-primary-foreground shadow-cta hover:bg-salmon-deep">
               {!user ? "Sign in to book" : "Continue — review family info"}
             </Button>
-            <p className="text-center text-xs text-slate-grey">Secure payment powered by Stripe.</p>
+            <p className="text-center text-xs text-slate-grey">
+              💳 No cash needed — {sitter.name.split(" ")[0]} is paid automatically when the sit completes.
+            </p>
           </form>
 
           <aside className="hidden lg:block">
             <div className="sticky top-24">
-              <FeeBreakdown hourlyRate={sitter.hourlyRate} hours={hours}
-                completedBookingsTogether={completedTogether} currency={sitter.currency} />
+              {(() => {
+                const start = new Date(`${date}T${startTime}:00`);
+                const childCount = Math.max(1, selectedChildren.length || children.length || 1);
+                const { applied } = computeSurcharges({
+                  start, hours, childCount, rates: sitter.surcharges ?? { evening: 0, lateNight: 0, weekend: 0, holiday: 0, multiChild: 0, lastMinute: 0 },
+                });
+                return (
+                  <FeeBreakdown hourlyRate={sitter.hourlyRate} hours={hours}
+                    completedBookingsTogether={completedTogether} currency={sitter.currency}
+                    surcharges={applied} taxiCoverAed={taxiHome ? TAXI_COVER_AED : 0} />
+                );
+              })()}
             </div>
           </aside>
         </div>
