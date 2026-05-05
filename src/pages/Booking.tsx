@@ -46,6 +46,7 @@ const Booking = () => {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [completedTogether, setCompletedTogether] = useState(0);
   const [taxiHome, setTaxiHome] = useState(false);
+  const [saveAsRepeat, setSaveAsRepeat] = useState(false);
   const TAXI_COVER_AED = 60; // flat estimate; refine later
 
   // Smart defaults from last booking
