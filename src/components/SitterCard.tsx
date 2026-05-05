@@ -86,6 +86,23 @@ export function SitterCard({ sitter }: { sitter: UISitter }) {
           <p className="line-clamp-2 text-xs text-slate-grey">{sitter.headline}</p>
         )}
 
+        {(() => {
+          const quals: string[] = [];
+          if (sitter.firstAidCertified) quals.push("First aid");
+          if (sitter.policeCleared) quals.push("Police cleared");
+          if (sitter.earlyYearsQualified) quals.push("Early years");
+          if (sitter.teachingQualified) quals.push("Teaching");
+          if (sitter.newbornExperience) quals.push("Newborn");
+          if (sitter.senExperience) quals.push("SEN");
+          const top = quals.slice(0, 3);
+          return top.length === 0 ? null : (
+            <div className="flex flex-wrap gap-1.5">
+              {top.map(q => (
+                <span key={q} className="rounded-full bg-cream px-2 py-0.5 text-[10px] font-medium text-pitch-black">{q}</span>
+              ))}
+            </div>
+          );
+        })()}
         <div className="mt-auto flex gap-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1 gap-1.5">
             <MessageCircle className="h-4 w-4" /> Message
