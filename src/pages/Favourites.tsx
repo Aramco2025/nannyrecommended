@@ -17,7 +17,9 @@ const Favourites = () => {
   if (loading) return <div className="grid min-h-screen place-items-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
   if (!user) return <Navigate to="/auth?mode=signin" replace />;
 
-  const favs = sitters.filter(s => favIds?.has(s.id));
+  const favs = sitters
+    .filter(s => favIds?.has(s.id))
+    .sort((a, b) => (b.bookingsCompleted ?? 0) - (a.bookingsCompleted ?? 0));
   const isLoading = favLoading || sittersLoading;
 
   return (
