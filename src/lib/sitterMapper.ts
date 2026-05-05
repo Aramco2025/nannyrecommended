@@ -43,6 +43,9 @@ export type UISitter = {
   regularAvailable: boolean;
   hasVideoIntro: boolean;
   ageGroups: string[];
+  dogWalker: boolean;
+  petSitter: boolean;
+  petBoarding: boolean;
 };
 
 const FALLBACK_PHOTO = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop";
@@ -88,5 +91,8 @@ export function mapSitter(s: DbSitter): UISitter {
     regularAvailable: (s as any).regular_available !== false,
     hasVideoIntro: !!(s as any).video_intro_url,
     ageGroups: (s as any).age_groups ?? [],
+    dogWalker: !!(s as any).dog_walker,
+    petSitter: !!(s as any).pet_sitter,
+    petBoarding: !!(s as any).pet_boarding,
   };
 }

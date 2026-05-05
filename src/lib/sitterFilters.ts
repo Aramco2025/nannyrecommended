@@ -3,6 +3,7 @@ import type { UISitter } from "@/lib/sitterMapper";
 export type FilterKey =
   | "oneOff" | "regular" | "liveIn" | "overnight" | "schoolPickup"
   | "newborn" | "multiples" | "sen" | "earlyYears" | "teaching" | "maternity" | "night"
+  | "dogWalker" | "petSitter" | "petBoarding"
   | "firstAid" | "policeCleared"
   | "drives" | "ownCar" | "swims" | "cooks" | "housework" | "homework" | "nonSmoker" | "pets"
   | "verified" | "videoIntro" | "recommended"
@@ -53,6 +54,9 @@ export function applyFilters(sitters: UISitter[], f: SitterFilters, priceRange: 
     if (has("teaching") && !s.teachingQualified) return false;
     if (has("maternity") && !s.maternityNurse) return false;
     if (has("night") && !s.nightNanny) return false;
+    if (has("dogWalker") && !s.dogWalker) return false;
+    if (has("petSitter") && !s.petSitter) return false;
+    if (has("petBoarding") && !s.petBoarding) return false;
 
     if (has("firstAid") && !s.firstAidCertified) return false;
     if (has("policeCleared") && !s.policeCleared) return false;
