@@ -71,6 +71,13 @@ import NotificationPreferences from "./pages/NotificationPreferences.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SitterJobDetail from "./pages/sitter/JobDetail.tsx";
 import SitterApplications from "./pages/sitter/Applications.tsx";
+import SitterRequests from "./pages/sitter/Requests.tsx";
+import ParentHome from "./pages/parent/Home.tsx";
+import ParentBookings from "./pages/parent/Bookings.tsx";
+import ParentFamilyPage from "./pages/parent/Family.tsx";
+import SitterReviewsAll from "./pages/sitter/ReviewsAll.tsx";
+import Education from "./pages/sitter/Education.tsx";
+import EducationArticle from "./pages/sitter/EducationArticle.tsx";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +92,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/sitters" element={<Sitters />} />
             <Route path="/sitters/:id" element={<SitterProfile />} />
+            <Route path="/sitters/:id/reviews" element={<SitterReviewsAll />} />
             <Route path="/book/:sitterId" element={<Booking />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
@@ -116,11 +124,17 @@ const App = () => (
             <Route path="/sitter/jobs" element={<SitterJobs />} />
             <Route path="/sitter/jobs/:id" element={<SitterJobDetail />} />
             <Route path="/sitter/applications" element={<SitterApplications />} />
+            <Route path="/sitter/requests" element={<SitterRequests />} />
+            <Route path="/sitter/education" element={<Education />} />
+            <Route path="/sitter/education/:slug" element={<EducationArticle />} />
             <Route path="/sitter/availability" element={<SitterAvailability />} />
             <Route path="/sitter/notifications" element={<SitterNotifications />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/:bookingId" element={<MessageThread />} />
             <Route path="/parent/post-job" element={<PostJob />} />
+            <Route path="/parent/home" element={<ParentHome />} />
+            <Route path="/parent/bookings" element={<ParentBookings />} />
+            <Route path="/parent/family" element={<ParentFamilyPage />} />
             <Route path="/favourites" element={<Favourites />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/parent/jobs/:jobId/applicants" element={<JobApplicants />} />

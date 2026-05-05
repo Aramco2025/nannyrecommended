@@ -130,6 +130,16 @@ const SitterDashboard = () => {
             <p className="mt-1 text-sm text-slate-grey">Manage your profile and incoming bookings.</p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm" className="relative"><a href="/sitter/requests">
+              Requests
+              {bookings.filter(b => b.status === "pending").length > 0 && (
+                <span className="ml-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-salmon px-1 text-[10px] font-bold text-pure-white">
+                  {bookings.filter(b => b.status === "pending").length}
+                </span>
+              )}
+            </a></Button>
+            <Button asChild variant="outline" size="sm"><a href="/sitter/applications">My applications</a></Button>
+            <Button asChild variant="outline" size="sm"><a href="/sitter/education">Education hub</a></Button>
             <Button asChild variant="outline" size="sm"><a href="/sitter/set-rate">Set your rate</a></Button>
             <Button asChild variant="outline" size="sm"><a href="/sitter/payment-setup">Payout method</a></Button>
             <Button asChild size="sm" className="bg-salmon hover:bg-salmon-deep"><a href="/sitter/wallet">Open wallet</a></Button>

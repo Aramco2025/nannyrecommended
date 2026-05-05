@@ -88,9 +88,10 @@ const Account = () => {
           <div className="text-xs font-semibold uppercase tracking-wider text-slate-grey">
             Settings & support
           </div>
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
-            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/account/notifications">Notification preferences</Link></Button>
-            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/auth/help">Sign-in help</Link></Button>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/parent/family">My family</Link></Button>
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/parent/bookings">All bookings</Link></Button>
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/account/notifications">Notifications</Link></Button>
             <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/contact">Contact support</Link></Button>
           </div>
         </div>

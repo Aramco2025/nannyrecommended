@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { LogOut, User as UserIcon, Menu, Bell } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useNotifications } from "@/hooks/useNotifications";
+import { RoleSwitcher } from "@/components/RoleSwitcher";
 
 const guestLinks = [
   { to: "/sitters", label: "Find a sitter" },
@@ -19,9 +20,9 @@ const sitterLinks = [
   { to: "/sitter/wallet", label: "Wallet" },
 ];
 const parentLinks = [
+  { to: "/parent/home", label: "Home" },
   { to: "/sitters", label: "Find a sitter" },
   { to: "/favourites", label: "Favourites" },
-  { to: "/friends", label: "Friends" },
   { to: "/parent/post-job", label: "Post a job" },
   { to: "/messages", label: "Inbox" },
 ];
@@ -59,6 +60,7 @@ export function Header() {
             </>
           ) : (
             <>
+              <RoleSwitcher />
               <Button asChild variant="ghost" size="icon" className="relative hidden md:inline-flex" aria-label="Notifications">
                 <Link to="/notifications">
                   <Bell className="h-4 w-4" />
