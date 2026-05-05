@@ -98,7 +98,7 @@ const Booking = () => {
           children_ids: selectedChildren,
           pets,
           parking: parking || null,
-          return_url: `${window.location.origin}/account`,
+          return_url: `${window.location.origin}/checkout/booking-return`,
           environment: stripeEnv,
         },
       });
