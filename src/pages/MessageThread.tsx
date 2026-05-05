@@ -69,7 +69,8 @@ const MessageThread = () => {
         </div>
       </div>
 
-      <main className="container flex-1 py-4">
+      <main className="container flex-1 space-y-3 py-4">
+        <ThreadSafetyBanner bookingId={bookingId} />
         {msgsLoading ? (
           <div className="grid h-40 place-items-center"><Loader2 className="h-5 w-5 animate-spin" /></div>
         ) : (
@@ -82,8 +83,15 @@ const MessageThread = () => {
                     mine ? "bg-salmon-soft text-pitch-black" : "bg-pure-white text-pitch-black shadow-card"
                   }`}>
                     {m.body}
-                  </div>
-                </div>
+      </div>
+
+      <ContactWarningDialog
+        open={!!warning}
+        reasons={warning?.reasons ?? []}
+        onCancel={() => setWarning(null)}
+        onConfirm={() => void doSend()}
+      />
+    </div>
               );
             })}
             <div ref={endRef} />
