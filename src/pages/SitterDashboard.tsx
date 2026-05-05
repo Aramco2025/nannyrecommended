@@ -136,6 +136,18 @@ const SitterDashboard = () => {
           </div>
         </div>
 
+        <div className="mt-8">
+          <ProfileCompletenessCard
+            sitter={sitter ? { ...sitter, ...{
+              headline: form.headline, bio: form.bio, area: form.area,
+              hourly_rate_aed: form.hourly_rate_aed,
+              photos: form.photos.split("\n").map(s => s.trim()).filter(Boolean),
+            } } : null}
+            hasAvailability={hasAvailability}
+            hasPayout={hasPayout}
+          />
+        </div>
+
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
             <h2 className="text-lg font-semibold text-pitch-black">Your listing</h2>
