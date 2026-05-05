@@ -33,6 +33,12 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [failedTries, setFailedTries] = useState(0);
+  const [showSms, setShowSms] = useState(false);
+
+  const recordError = (where: string, message: string) => {
+    sessionStorage.setItem("nr_last_auth_error", JSON.stringify({ at: where, message, ts: Date.now() }));
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +58,21 @@ const Auth = () => {
             data: { full_name: parsed.data.fullName, role: parsed.data.role },
           },
         });
-        if (error) throw error;
+        if (error) {
+          // Dual-account / role-merge nudge
+          if (/already.*registered|user already/i.test(error.message)) {
+            recordError("signup_dup", error.message);
+            await logAuthAttempt({ email_or_phone: parsed.data.email, method: "email_password", success: false, error_code: "duplicate_account", error_message: error.message });
+            toast({
+              title: "You already have an account",
+              description: "Sign in instead — we'll add the new role to your existing account.",
+            });
+            setMode("signin");
+            return;
+          }
+          throw error;
+        }
+        await logAuthAttempt({ email_or_phone: parsed.data.email, method: "email_password", success: true });
         toast({ title: "Welcome!", description: "Account created." });
         navigate("/onboarding/region");
       } else {
@@ -64,7 +84,13 @@ const Auth = () => {
         const { error } = await supabase.auth.signInWithPassword({
           email: parsed.data.email, password: parsed.data.password,
         });
-        if (error) throw error;
+        if (error) {
+          await logAuthAttempt({ email_or_phone: parsed.data.email, method: "email_password", success: false, error_code: "signin_failed", error_message: error.message });
+          recordError("signin", error.message);
+          setFailedTries((n) => n + 1);
+          throw error;
+        }
+        await logAuthAttempt({ email_or_phone: parsed.data.email, method: "email_password", success: true });
         toast({ title: "Signed in" });
         navigate("/account");
       }
