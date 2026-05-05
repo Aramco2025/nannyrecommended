@@ -71,8 +71,16 @@ const Account = () => {
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
           <NoSubscriptionCard />
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
+            <div className="text-xs uppercase tracking-wide text-slate-grey">Settings & support</div>
+            <div className="mt-3 grid gap-2">
+              <Button asChild variant="outline" className="justify-start"><Link to="/account/notifications">Notification preferences</Link></Button>
+              <Button asChild variant="outline" className="justify-start"><Link to="/auth/help">Sign-in help</Link></Button>
+              <Button asChild variant="outline" className="justify-start"><Link to="/contact">Contact support</Link></Button>
+            </div>
+          </div>
         </div>
 
         <h2 className="mt-12 text-xl font-semibold text-pitch-black">Your bookings</h2>

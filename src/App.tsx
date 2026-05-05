@@ -67,6 +67,7 @@ import ForgotPassword from "./pages/ForgotPassword.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminBookings from "./pages/AdminBookings.tsx";
 import AuthHelp from "./pages/AuthHelp.tsx";
+import NotificationPreferences from "./pages/NotificationPreferences.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -139,6 +140,7 @@ const App = () => (
             <Route path="/sitter/apply/pending" element={<SitterPending />} />
             <Route path="/bookings/:id" element={<BookingDetail />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/account/notifications" element={<NotificationPreferences />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin/bookings" element={<AdminBookings />} />
