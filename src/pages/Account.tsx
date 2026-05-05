@@ -71,6 +71,10 @@ const Account = () => {
           </div>
         </div>
 
+        <div className="mt-6">
+          <NoSubscriptionCard />
+        </div>
+
         <h2 className="mt-12 text-xl font-semibold text-pitch-black">Your bookings</h2>
         <div className="mt-4 space-y-3">
           {(bookings ?? []).length === 0 && (
