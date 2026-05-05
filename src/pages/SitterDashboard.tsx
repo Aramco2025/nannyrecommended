@@ -13,6 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/fees";
 import { EarningsCalculator } from "@/components/sitter/EarningsCalculator";
+import { ProfileCompletenessCard } from "@/components/sitter/ProfileCompletenessCard";
 
 const profileSchema = z.object({
   headline: z.string().trim().max(120).optional(),
@@ -26,6 +27,9 @@ const SitterDashboard = () => {
   const { user, loading } = useAuth();
   const [busy, setBusy] = useState(false);
   const [sitterId, setSitterId] = useState<string | null>(null);
+  const [sitter, setSitter] = useState<any>(null);
+  const [hasAvailability, setHasAvailability] = useState(false);
+  const [hasPayout, setHasPayout] = useState(false);
   const [form, setForm] = useState({
     headline: "", bio: "", area: "", hourly_rate_aed: 75, years_experience: 1, photos: "",
   });
@@ -37,6 +41,8 @@ const SitterDashboard = () => {
       const { data } = await supabase.from("sitters").select("*").eq("user_id", user.id).maybeSingle();
       if (data) {
         setSitterId(data.id);
+        setSitter(data);
+        setHasPayout(!!data.preferred_payout_method);
         setForm({
           headline: data.headline ?? "",
           bio: data.bio ?? "",
@@ -45,8 +51,12 @@ const SitterDashboard = () => {
           years_experience: data.years_experience,
           photos: (data.photos ?? []).join("\n"),
         });
-        const { data: bks } = await supabase.from("bookings").select("*").eq("sitter_id", data.id).order("start_at", { ascending: false });
+        const [{ data: bks }, { count: avCount }] = await Promise.all([
+          supabase.from("bookings").select("*").eq("sitter_id", data.id).order("start_at", { ascending: false }),
+          supabase.from("availability").select("id", { count: "exact", head: true }).eq("sitter_id", data.id),
+        ]);
         setBookings(bks ?? []);
+        setHasAvailability((avCount ?? 0) > 0);
       }
     })();
   }, [user]);
@@ -124,6 +134,18 @@ const SitterDashboard = () => {
             <Button asChild variant="outline" size="sm"><a href="/sitter/payment-setup">Payout method</a></Button>
             <Button asChild size="sm" className="bg-salmon hover:bg-salmon-deep"><a href="/sitter/wallet">Open wallet</a></Button>
           </div>
+        </div>
+
+        <div className="mt-8">
+          <ProfileCompletenessCard
+            sitter={sitter ? { ...sitter, ...{
+              headline: form.headline, bio: form.bio, area: form.area,
+              hourly_rate_aed: form.hourly_rate_aed,
+              photos: form.photos.split("\n").map(s => s.trim()).filter(Boolean),
+            } } : null}
+            hasAvailability={hasAvailability}
+            hasPayout={hasPayout}
+          />
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
