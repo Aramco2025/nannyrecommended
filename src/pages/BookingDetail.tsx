@@ -286,6 +286,15 @@ export default function BookingDetail() {
           onCancelled={reload}
         />
 
+        <DisputeDialog
+          open={disputeOpen}
+          onOpenChange={setDisputeOpen}
+          bookingId={b.id}
+          parentId={b.parent_id}
+          sitterId={b.sitter_id}
+          onCreated={reloadDispute}
+        />
+
         {/* Review (parent, after completion) */}
         {isParent && b.status === "completed" && hasReview === false && (
           <div className="mt-6">
