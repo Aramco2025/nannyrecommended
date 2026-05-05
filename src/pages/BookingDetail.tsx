@@ -52,6 +52,7 @@ export default function BookingDetail() {
   const [b, setB] = useState<Booking | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [hasReview, setHasReview] = useState<boolean | null>(null);
+  const [childNames, setChildNames] = useState<{ id: string; name: string; dob: string | null }[]>([]);
   const { messages } = useThreadMessages(id);
   const [text, setText] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
