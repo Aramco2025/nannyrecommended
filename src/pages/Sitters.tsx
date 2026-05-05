@@ -312,6 +312,29 @@ const Sitters = () => {
                   )}
                 </SheetContent>
               </Sheet>
+
+              <SavedSearchesSheet
+                currentFilters={{
+                  flags: Array.from(filters.flags),
+                  languages: Array.from(filters.languages),
+                  minExperience: filters.minExperience,
+                  minRating: filters.minRating,
+                  minBookings: filters.minBookings,
+                  priceRange,
+                  tierFilter,
+                }}
+                onLoad={(f) => {
+                  setFilters({
+                    flags: new Set(f.flags ?? []),
+                    languages: new Set(f.languages ?? []),
+                    minExperience: f.minExperience ?? 0,
+                    minRating: f.minRating ?? 0,
+                    minBookings: f.minBookings ?? 0,
+                  });
+                  if (f.priceRange) setPriceRange(f.priceRange);
+                  if (f.tierFilter) setTierFilter(f.tierFilter);
+                }}
+              />
             </div>
           </div>
         </div>
