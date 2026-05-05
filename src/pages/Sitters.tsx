@@ -23,6 +23,7 @@ import { MobileTabBar } from "@/components/MobileTabBar";
 import { AreaDensityIndicator } from "@/components/AreaDensityIndicator";
 import { CompareProvider, CompareBar } from "@/components/sitters/CompareDrawer";
 import { SittersMapView } from "@/components/sitters/SittersMapView";
+import { ConciergeCTA } from "@/components/payments/FamilyPlusGates";
 
 type Section = { title: string; items: { key: FilterKey; label: string }[] };
 
