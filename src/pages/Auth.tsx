@@ -199,6 +199,18 @@ const Auth = () => {
             </Button>
           </form>
 
+          <div className="my-5 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <button type="button" onClick={() => setShowSms((v) => !v)} className="text-xs uppercase tracking-wider text-slate-grey underline">
+              {showSms ? "Hide SMS option" : "Or use SMS code instead"}
+            </button>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          {showSms && (
+            <SmsOtpForm onVerified={() => { toast({ title: "Phone verified" }); navigate("/account"); }} />
+          )}
+
           <div className="mt-5 text-center text-sm text-slate-grey">
             {mode === "signup" ? (
               <>Already have an account?{" "}
@@ -215,7 +227,14 @@ const Auth = () => {
               <Link to="/forgot-password" className="text-slate-grey underline hover:text-pitch-black">Forgot password?</Link>
             </div>
           )}
+          {failedTries >= 3 && (
+            <div className="mt-3 rounded-lg bg-salmon/10 p-3 text-center text-xs text-salmon-deep">
+              Stuck? <Link to="/auth/help" className="font-medium underline">Talk to support</Link> — we'll get you in within 30 minutes.
+            </div>
+          )}
           <div className="mt-2 text-center text-xs text-slate-grey">
+            <Link to="/auth/help" className="underline">I can't sign in / I never got my code</Link>
+            {" · "}
             <Link to="/" className="underline">Back to home</Link>
           </div>
         </div>
