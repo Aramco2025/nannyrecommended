@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
+import { Link, useParams, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Header } from "@/components/Header";
@@ -21,13 +21,20 @@ const stripeEnv: "sandbox" | "live" = clientToken?.startsWith("pk_test_") ? "san
 
 const Booking = () => {
   const { sitterId } = useParams();
+  const [search] = useSearchParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { data: sitter, isLoading } = useSitter(sitterId);
 
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [startTime, setStartTime] = useState("19:00");
-  const [hours, setHours] = useState(4);
+  const qDate = search.get("date");
+  const qStart = search.get("start");
+  const qHours = search.get("hours");
+  const qApp = search.get("application_id");
+  const qJob = search.get("job_id");
+
+  const [date, setDate] = useState(qDate ?? new Date().toISOString().slice(0, 10));
+  const [startTime, setStartTime] = useState(qStart ?? "19:00");
+  const [hours, setHours] = useState(qHours ? Number(qHours) : 4);
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
@@ -59,6 +66,12 @@ const Booking = () => {
       });
       if (error) throw error;
       if (!data?.client_secret) throw new Error("No checkout session returned");
+      // If hire-flow, mark application accepted + close job (fires sitter notification trigger)
+      if (qApp && qJob) {
+        await supabase.from("job_applications").update({ status: "accepted" }).eq("id", qApp);
+        await supabase.from("job_applications").update({ status: "declined" }).eq("job_post_id", qJob).neq("id", qApp).eq("status", "pending");
+        await supabase.from("job_posts").update({ status: "filled" }).eq("id", qJob);
+      }
       setClientSecret(data.client_secret);
     } catch (err: any) {
       toast({ title: "Could not start checkout", description: err.message, variant: "destructive" });
