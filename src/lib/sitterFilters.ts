@@ -3,6 +3,7 @@ import type { UISitter } from "@/lib/sitterMapper";
 export type FilterKey =
   | "oneOff" | "regular" | "liveIn" | "overnight" | "schoolPickup"
   | "newborn" | "multiples" | "sen" | "earlyYears" | "teaching" | "maternity" | "night"
+  | "dogWalker" | "petSitter" | "petBoarding"
   | "firstAid" | "policeCleared"
   | "drives" | "ownCar" | "swims" | "cooks" | "housework" | "homework" | "nonSmoker" | "pets"
   | "verified" | "videoIntro" | "recommended"
