@@ -106,6 +106,12 @@ const Booking = () => {
     setBusy(true);
     try {
       const start = new Date(`${date}T${startTime}:00`);
+      const childCount = Math.max(1, selectedChildren.length || 1);
+      const { applied } = computeSurcharges({
+        start, hours, childCount,
+        rates: sitter.surcharges ?? { evening: 0, lateNight: 0, weekend: 0, holiday: 0, multiChild: 0, lastMinute: 0 },
+      });
+      const surchargeTotalAed = applied.reduce((a, s) => a + s.amountPerHour * hours, 0);
       const { data, error } = await supabase.functions.invoke("create-booking-checkout", {
         body: {
           sitter_id: sitter.id,
@@ -116,6 +122,9 @@ const Booking = () => {
           children_ids: selectedChildren,
           pets,
           parking: parking || null,
+          surcharges_aed: +surchargeTotalAed.toFixed(2),
+          taxi_cover_aed: taxiHome ? TAXI_COVER_AED : 0,
+          taxi_requested: taxiHome,
           return_url: `${window.location.origin}/checkout/booking-return`,
           environment: stripeEnv,
         },
