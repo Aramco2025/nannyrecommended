@@ -87,6 +87,22 @@ Deno.serve(async (req) => {
         break;
       }
 
+      case "charge.succeeded": {
+        // Persist receipt URL + card metadata for the booking
+        const charge = event.data.object;
+        const pi = charge.payment_intent as string | null;
+        if (pi) {
+          await admin.from("charges").update({
+            receipt_url: charge.receipt_url ?? null,
+            stripe_charge_id: charge.id,
+            payment_method_brand: charge.payment_method_details?.card?.brand ?? null,
+            payment_method_last4: charge.payment_method_details?.card?.last4 ?? null,
+            status: "succeeded",
+          }).eq("stripe_payment_intent_id", pi);
+        }
+        break;
+      }
+
       case "checkout.session.expired":
       case "transaction.payment_failed": {
         const bookingId = event.data.object?.metadata?.booking_id;
