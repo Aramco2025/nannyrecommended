@@ -1,43 +1,27 @@
 // Stripe webhook — confirms booking, holds escrow, and records payment events.
 // Lovable registers this endpoint automatically: ?env=sandbox (test) or ?env=live.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { verifyWebhook, type StripeEnv } from "../_shared/stripe.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-async function verify(body: string, sigHeader: string, secret: string) {
-  const parts = Object.fromEntries(sigHeader.split(",").map(p => p.split("=")));
-  const t = parts.t;
-  const v1 = parts.v1;
-  if (!t || !v1) return false;
-  const payload = `${t}.${body}`;
-  const key = await crypto.subtle.importKey(
-    "raw", new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
-  );
-  const sigBuf = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
-  const hex = Array.from(new Uint8Array(sigBuf)).map(b => b.toString(16).padStart(2, "0")).join("");
-  return hex === v1;
-}
-
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("method not allowed", { status: 405 });
   const url = new URL(req.url);
-  const env = url.searchParams.get("env") === "live" ? "live" : "sandbox";
-  const secret = env === "live"
-    ? Deno.env.get("PAYMENTS_LIVE_WEBHOOK_SECRET")
-    : Deno.env.get("PAYMENTS_SANDBOX_WEBHOOK_SECRET");
-  if (!secret) return new Response("webhook secret missing", { status: 500 });
+  const rawEnv = url.searchParams.get("env");
+  if (rawEnv !== "sandbox" && rawEnv !== "live") {
+    return new Response(JSON.stringify({ ignored: "invalid env" }), { status: 200 });
+  }
+  const env: StripeEnv = rawEnv;
 
-  const body = await req.text();
-  const sig = req.headers.get("stripe-signature") ?? "";
-  const ok = await verify(body, sig, secret);
-  if (!ok) {
-    console.error("webhook signature invalid");
+  let event: { type: string; data: { object: any } };
+  try {
+    event = await verifyWebhook(req, env);
+  } catch (e) {
+    console.error("webhook verify failed", (e as Error).message);
     return new Response("invalid signature", { status: 400 });
   }
-
-  const event = JSON.parse(body);
   const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
   try {

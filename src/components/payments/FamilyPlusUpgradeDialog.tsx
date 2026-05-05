@@ -71,7 +71,7 @@ export function FamilyPlusUpgradeDialog({
         ) : (
           <StripeSubscriptionCheckout
             priceId={PRICE_IDS[plan]}
-            returnUrl={`${window.location.origin}/account?subscription=success`}
+            returnUrl={`${window.location.origin}/checkout/subscription-return`}
           />
         )}
       </DialogContent>

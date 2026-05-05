@@ -78,6 +78,9 @@ import ParentFamilyPage from "./pages/parent/Family.tsx";
 import SitterReviewsAll from "./pages/sitter/ReviewsAll.tsx";
 import Education from "./pages/sitter/Education.tsx";
 import EducationArticle from "./pages/sitter/EducationArticle.tsx";
+import BookingReturn from "./pages/checkout/BookingReturn.tsx";
+import SubscriptionReturn from "./pages/checkout/SubscriptionReturn.tsx";
+import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner.tsx";
 
 const queryClient = new QueryClient();
 
@@ -88,6 +91,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <PaymentTestModeBanner />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/sitters" element={<Sitters />} />
@@ -162,6 +166,8 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin/bookings" element={<AdminBookings />} />
+            <Route path="/checkout/booking-return" element={<BookingReturn />} />
+            <Route path="/checkout/subscription-return" element={<SubscriptionReturn />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -15,10 +14,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Loader2, Plus, Trash2 } from "lucide-react";
+import { getStripe, getStripeEnvironment, isTestMode } from "@/lib/stripe";
 
-const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string;
-const stripePromise = loadStripe(clientToken);
-const stripeEnv: "sandbox" | "live" = clientToken?.startsWith("pk_test_") ? "sandbox" : "live";
+const stripePromise = getStripe();
+const stripeEnv = getStripeEnvironment();
 
 type Child = { id: string; name: string; dob: string | null };
 type Pet = { type: string; name: string; notes: string };
@@ -99,7 +98,7 @@ const Booking = () => {
           children_ids: selectedChildren,
           pets,
           parking: parking || null,
-          return_url: `${window.location.origin}/account`,
+          return_url: `${window.location.origin}/checkout/booking-return`,
           environment: stripeEnv,
         },
       });
@@ -123,7 +122,7 @@ const Booking = () => {
         <main className="container max-w-2xl py-8">
           <button onClick={() => setClientSecret(null)} className="text-sm text-slate-grey hover:text-pitch-black">← Back to booking details</button>
           <h1 className="mt-4 font-display text-2xl font-semibold text-pitch-black">Complete payment</h1>
-          <p className="mt-1 text-sm text-slate-grey">Test mode — use card <code className="rounded bg-muted px-1">4242 4242 4242 4242</code>, any future date, any CVC.</p>
+          {isTestMode() && <p className="mt-1 text-sm text-slate-grey">Test mode — use card <code className="rounded bg-muted px-1">4242 4242 4242 4242</code>, any future date, any CVC.</p>}
           <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-card">
             <EmbeddedCheckoutProvider stripe={stripePromise} options={{ clientSecret }}>
               <EmbeddedCheckout />

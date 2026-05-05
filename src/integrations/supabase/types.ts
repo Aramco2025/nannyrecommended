@@ -1444,6 +1444,7 @@ export type Database = {
         Returns: string
       }
       ensure_wallet: { Args: { _user: string }; Returns: string }
+      expire_pending_payment_bookings: { Args: never; Returns: number }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean

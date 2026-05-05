@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Mail, MessageCircle, ShieldCheck, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { PrioritySupportBadge } from "@/components/payments/FamilyPlusGates";
 
 const CATEGORIES = [
   { value: "booking", label: "Booking issue" },
@@ -69,6 +70,7 @@ const Contact = () => {
             <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-grey">
               Real humans answer every message. Whether you're a parent, a sitter or just curious — let's talk.
             </p>
+            <div className="mt-4 flex justify-center"><PrioritySupportBadge /></div>
           </div>
         </section>
 
