@@ -170,6 +170,67 @@ Deno.serve(async (req) => {
         break;
       }
 
+      case "customer.subscription.created":
+      case "customer.subscription.updated": {
+        const sub = event.data.object;
+        const userId = sub.metadata?.userId;
+        if (!userId) break;
+        const item = sub.items?.data?.[0];
+        const priceId = item?.price?.metadata?.lovable_external_id
+          ?? sub.metadata?.priceId ?? item?.price?.id;
+        const productId = item?.price?.product;
+        const periodStart = item?.current_period_start ?? sub.current_period_start;
+        const periodEnd = item?.current_period_end ?? sub.current_period_end;
+        const plan = sub.metadata?.plan ?? "family_plus";
+
+        await admin.from("subscriptions").upsert({
+          user_id: userId,
+          stripe_subscription_id: sub.id,
+          stripe_customer_id: sub.customer,
+          plan,
+          price_id: priceId,
+          product_id: productId,
+          status: sub.status,
+          current_period_start: periodStart ? new Date(periodStart * 1000).toISOString() : null,
+          current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
+          cancel_at_period_end: sub.cancel_at_period_end || false,
+          environment: env,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: "stripe_subscription_id" });
+
+        // Revoke immediately on cancel-at-period-end (per project policy: revoke on cancel).
+        const isActive = ["active", "trialing"].includes(sub.status) && !sub.cancel_at_period_end;
+        await admin.from("profiles")
+          .update({ is_family_plus: isActive, stripe_customer_id: sub.customer as string })
+          .eq("id", userId);
+
+        if (event.type === "customer.subscription.created" && isActive) {
+          await admin.from("notifications").insert({
+            user_id: userId,
+            type: "subscription_active",
+            title: "Welcome to Family Plus 🎉",
+            body: "Unlimited messages, concierge sourcing and priority support are now active.",
+            link: "/account",
+          });
+        }
+        break;
+      }
+
+      case "customer.subscription.deleted": {
+        const sub = event.data.object;
+        await admin.from("subscriptions").update({
+          status: "canceled",
+          cancel_at_period_end: false,
+          updated_at: new Date().toISOString(),
+        }).eq("stripe_subscription_id", sub.id).eq("environment", env);
+        if (sub.metadata?.userId) {
+          await admin.from("profiles")
+            .update({ is_family_plus: false })
+            .eq("id", sub.metadata.userId);
+        }
+        break;
+      }
+
       default:
         // Unhandled events are fine — just 200.
         break;
