@@ -90,6 +90,7 @@ const PostJob = () => {
         area: form.area,
         hourly_rate_aed: form.hourly_rate_aed,
         notes: form.notes || null,
+        children_ids: selectedChildren,
       };
       if (editId) {
         const { error } = await supabase.from("job_posts").update(payload).eq("id", editId);
