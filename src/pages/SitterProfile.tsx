@@ -226,10 +226,10 @@ const SitterProfile = () => {
                   <li className="flex items-center gap-2 text-slate-grey">
                     <CheckCircle2 className="h-4 w-4 text-success-green" /> No charge until confirmed
                   </li>
-                  <li className="flex items-center gap-2 text-slate-grey">
-                    <CheckCircle2 className="h-4 w-4 text-success-green" /> Booking insurance included
-                  </li>
                 </ul>
+                <div className="mt-4">
+                  <InsuranceBadge variant="card" />
+                </div>
               </div>
 
               <div className="rounded-2xl bg-cream p-5 text-center text-xs text-slate-grey">

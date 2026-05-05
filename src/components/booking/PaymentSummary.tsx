@@ -1,6 +1,7 @@
 import { Info, ShieldCheck } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatCurrency } from "@/lib/fees";
+import { InsuranceBadge } from "@/components/trust/InsuranceBadge";
 
 type Props = {
   total: number;
@@ -84,6 +85,11 @@ export function PaymentSummary({ total, sitterPayout, hours, isSitter, released 
             />
           )}
         </dl>
+        {!isSitter && (
+          <div className="mt-4">
+            <InsuranceBadge />
+          </div>
+        )}
       </section>
     </TooltipProvider>
   );
