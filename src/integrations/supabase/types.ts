@@ -153,6 +153,7 @@ export type Database = {
           start_at: string
           started_at: string | null
           status: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id: string | null
           stripe_session_id: string | null
           subtotal_aed: number
           total_aed: number
@@ -186,6 +187,7 @@ export type Database = {
           start_at: string
           started_at?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           subtotal_aed: number
           total_aed: number
@@ -219,6 +221,7 @@ export type Database = {
           start_at?: string
           started_at?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           subtotal_aed?: number
           total_aed?: number
@@ -294,6 +297,60 @@ export type Database = {
           sitter_id?: string
           status?: Database["public"]["Enums"]["cash_out_status"]
           voucher_provider?: string | null
+        }
+        Relationships: []
+      }
+      charges: {
+        Row: {
+          amount_minor_units: number
+          booking_id: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          environment: string
+          id: string
+          payment_method_brand: string | null
+          payment_method_last4: string | null
+          status: string
+          stripe_charge_id: string | null
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_minor_units: number
+          booking_id?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          environment?: string
+          id?: string
+          payment_method_brand?: string | null
+          payment_method_last4?: string | null
+          status: string
+          stripe_charge_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_minor_units?: number
+          booking_id?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          environment?: string
+          id?: string
+          payment_method_brand?: string | null
+          payment_method_last4?: string | null
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -589,6 +646,45 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_methods: {
+        Row: {
+          brand: string | null
+          created_at: string
+          environment: string
+          exp_month: number | null
+          exp_year: number | null
+          id: string
+          is_default: boolean
+          last4: string | null
+          stripe_payment_method_id: string
+          user_id: string
+        }
+        Insert: {
+          brand?: string | null
+          created_at?: string
+          environment?: string
+          exp_month?: number | null
+          exp_year?: number | null
+          id?: string
+          is_default?: boolean
+          last4?: string | null
+          stripe_payment_method_id: string
+          user_id: string
+        }
+        Update: {
+          brand?: string | null
+          created_at?: string
+          environment?: string
+          exp_month?: number | null
+          exp_year?: number | null
+          id?: string
+          is_default?: boolean
+          last4?: string | null
+          stripe_payment_method_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pickup_locations: {
         Row: {
           active: boolean
@@ -641,6 +737,9 @@ export type Database = {
           phone: string | null
           phone_verified: boolean
           region: string | null
+          stripe_connect_account_id: string | null
+          stripe_connect_onboarded: boolean
+          stripe_customer_id: string | null
           updated_at: string
         }
         Insert: {
@@ -655,6 +754,9 @@ export type Database = {
           phone?: string | null
           phone_verified?: boolean
           region?: string | null
+          stripe_connect_account_id?: string | null
+          stripe_connect_onboarded?: boolean
+          stripe_customer_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -669,9 +771,53 @@ export type Database = {
           phone?: string | null
           phone_verified?: boolean
           region?: string | null
+          stripe_connect_account_id?: string | null
+          stripe_connect_onboarded?: boolean
+          stripe_customer_id?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      refunds: {
+        Row: {
+          amount_minor_units: number
+          charge_id: string
+          created_at: string
+          currency: string
+          id: string
+          reason: string | null
+          status: string
+          stripe_refund_id: string
+        }
+        Insert: {
+          amount_minor_units: number
+          charge_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          reason?: string | null
+          status: string
+          stripe_refund_id: string
+        }
+        Update: {
+          amount_minor_units?: number
+          charge_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          reason?: string | null
+          status?: string
+          stripe_refund_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_charge_id_fkey"
+            columns: ["charge_id"]
+            isOneToOne: false
+            referencedRelation: "charges"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
@@ -792,6 +938,59 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      sitter_payouts: {
+        Row: {
+          amount_minor_units: number
+          cash_out_request_id: string | null
+          created_at: string
+          currency: string
+          environment: string
+          failure_reason: string | null
+          id: string
+          sitter_id: string
+          status: string
+          stripe_destination_account: string | null
+          stripe_transfer_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_minor_units: number
+          cash_out_request_id?: string | null
+          created_at?: string
+          currency?: string
+          environment?: string
+          failure_reason?: string | null
+          id?: string
+          sitter_id: string
+          status: string
+          stripe_destination_account?: string | null
+          stripe_transfer_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_minor_units?: number
+          cash_out_request_id?: string | null
+          created_at?: string
+          currency?: string
+          environment?: string
+          failure_reason?: string | null
+          id?: string
+          sitter_id?: string
+          status?: string
+          stripe_destination_account?: string | null
+          stripe_transfer_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sitter_payouts_cash_out_request_id_fkey"
+            columns: ["cash_out_request_id"]
+            isOneToOne: false
+            referencedRelation: "cash_out_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sitters: {
         Row: {
@@ -1012,6 +1211,63 @@ export type Database = {
           phone?: string
           source?: string
           unsubscribed_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          environment: string
+          id: string
+          pause_until: string | null
+          plan: string
+          price_id: string | null
+          product_id: string | null
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          trial_end: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          environment?: string
+          id?: string
+          pause_until?: string | null
+          plan: string
+          price_id?: string | null
+          product_id?: string | null
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          trial_end?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          environment?: string
+          id?: string
+          pause_until?: string | null
+          plan?: string
+          price_id?: string | null
+          product_id?: string | null
+          status?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string
+          trial_end?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

@@ -14,9 +14,18 @@ type Ctx = {
   has: (id: string) => boolean;
 };
 const CompareCtx = createContext<Ctx | null>(null);
-export const useCompare = () => {
+const NOOP_CTX: Ctx = {
+  ids: [],
+  sitters: [],
+  toggle: () => {},
+  clear: () => {},
+  has: () => false,
+};
+/** Returns a no-op context when used outside CompareProvider so SitterCard
+ *  can be rendered on pages that don't mount the provider (home, favourites). */
+export const useCompare = () => useContext(CompareCtx) ?? NOOP_CTX;
+const useCompareStrict = () => {
   const c = useContext(CompareCtx);
-  if (!c) throw new Error("useCompare must be used inside CompareProvider");
   return c;
 };
 
@@ -105,13 +114,14 @@ const Row = ({ label, values }: { label: string; values: string[] }) => (
 );
 
 export function CompareToggle({ sitter }: { sitter: UISitter }) {
-  const { has, toggle, sitters } = useCompare();
-  const checked = has(sitter.id);
-  const disabled = !checked && sitters.length >= 3;
+  const ctx = useContext(CompareCtx);
+  if (!ctx) return null; // Hide outside the Sitters page provider
+  const checked = ctx.has(sitter.id);
+  const disabled = !checked && ctx.sitters.length >= 3;
   return (
     <button
       type="button"
-      onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!disabled) toggle(sitter); }}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!disabled) ctx.toggle(sitter); }}
       disabled={disabled}
       className={`absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-card backdrop-blur transition ${
         checked ? "bg-pitch-black text-pure-white" : "bg-pure-white/90 text-slate-grey hover:text-pitch-black"
