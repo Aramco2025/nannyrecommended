@@ -31,6 +31,11 @@ export function SitterCard({ sitter }: { sitter: UISitter }) {
             <ShieldCheck className="h-3 w-3 text-success-green" /> Verified
           </span>
         )}
+        {sitter.hasVideoIntro && (
+          <span className="absolute left-3 bottom-3 inline-flex items-center gap-1 rounded-full bg-pitch-black/85 px-2 py-1 text-[11px] font-semibold text-pure-white shadow-card backdrop-blur">
+            <PlayCircle className="h-3 w-3" /> Video intro
+          </span>
+        )}
       </Link>
       <CompareToggle sitter={sitter} />
 
