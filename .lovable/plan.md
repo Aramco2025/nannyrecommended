@@ -1,89 +1,56 @@
-## Goal
+## Final 3 Waves
 
-Close the gap between what's built and the full 78-screen / 12-section spec. Most of the core data layer (sitters, bookings, messages, wallet, jobs, favourites, friends) is already in place. The missing work is mainly **onboarding flows**, **lifecycle screens**, **the role switcher**, and **a proper account/trust hub**.
-
-I'll build this in 6 sequential batches so you can review each before the next.
+Closes the remaining gap against the 78-screen spec. No new tables required — all data lives in `sitters`, `bookings`, `children`, `reviews`, `profiles`, `user_roles`.
 
 ---
 
-## Coverage map (built ✅ / new 🆕 / enhance ✏️)
+### Wave L — Browse enhancements + Direct Requests
 
-**1. Pre-Auth & Onboarding** — Index ✅, Auth ✅ · 🆕 Welcome carousel, Region picker (UAE emirate), Role picker, Phone verification, Permissions primer
+**New screen**
+- `/sitter/requests` — inbox of pending bookings where a parent picked the sitter directly (no application). Accept / decline buttons update `bookings.status` (`confirmed` or `cancelled`).
 
-**2. Parent Onboarding** — 🆕 What kind of help, Family setup (children ages), Address, Connect-friends prompt, Payment method intro (5 short steps + final "you're set")
+**Enhancements on `/sitters`**
+- List ↔ Map toggle. "Map" view is a lightweight CSS grid grouping sitter pins by `area` (no Mapbox key). Pins open a mini preview card → profile.
+- Compare drawer: each sitter card gets a "Compare" checkbox (max 3). Sticky bottom drawer shows side-by-side rate / rating / verifications / years exp / response, with "Book" CTAs.
 
-**3. Parent Home & Tab Bar** — Tab bar ✅ (5 tabs) · 🆕 Parent Home (dashboard), My Family page, Bookings list page (currently embedded in Account)
-
-**4. Browse Sitters** — Sitters ✅, Filter modal ✅, Favourites ✅ · 🆕 Map view toggle, Compare drawer (up to 3), Empty state component
-
-**5. Sitter Profile (parent view)** — Profile ✅ · 🆕 Verification badge detail sheet, Full reviews page
-
-**6. Booking Flows** — Browse path ✅ (5 screens already work), Job-post path ✅ (PostJob → JobApplicants) · ✏️ add "choose applicant → confirm booking" handoff
-
-**7. Sitter Onboarding** — SitterSignup ✅, SetRate ✅, PaymentSetup ✅, Availability ✅ · 🆕 Eligibility gate (the filter), Experience step, Qualifications step, ID/verification upload, References step, Bio + video step, Review & submit, Pending approval screen
-
-**8. Sitter Home & Tab Bar** — Dashboard ✅, EarningsCalculator ✅ · 🆕 Profile completeness wizard, Education hub (tips/articles), Role switcher component (for users with both roles)
-
-**9. Sitter Jobs Flow** — SitterJobs feed ✅ · 🆕 Job filters, Job detail page, My applications page, Direct requests inbox
-
-**10. Bookings Lifecycle** — Booking create ✅ · 🆕 Booking detail page, Pre-sit reminder, Sit-start check-in, Live sit (timer + emergency), Sit ended (sitter view: log hours), Sit ended (parent view: confirm + pay), Review flow, Dispute flow
-
-**11. Wallet & Payments** — Wallet ✅, CashOut ✅, Transactions ✅ — no work needed
-
-**12. Account / Settings / Trust** — Account ✅ · 🆕 Notifications settings, Subscriptions, Verified+ upsell, Verification status, Safety hub, Help center, Support contact, Blocked users, Privacy controls, Sign-out + role switch
-
-**Cross-cutting** — Add `role` switcher in header for dual-role users; add `region` + `onboarding_completed` to profiles so we can route new users through the right onboarding.
+**Files**
+- create `src/pages/sitter/Requests.tsx`, `src/components/sitters/SittersMapView.tsx`, `src/components/sitters/CompareDrawer.tsx`, `src/hooks/useDirectRequests.ts`
+- edit `src/pages/Sitters.tsx`, `src/pages/SitterDashboard.tsx` (add request count badge), `src/App.tsx` (route)
 
 ---
 
-## Batch order
+### Wave M — Parent Home, Family hub, Bookings list, Role switcher
 
-**Batch A — Onboarding spine (Sections 1, 2, 7 gate)**
-Welcome, region, role picker, phone verify, permissions, parent onboarding wizard, sitter eligibility gate. Without this, new users land in a half-empty app. Adds `region`, `onboarding_completed`, `phone_verified` to `profiles`.
+**New screens**
+- `/parent/home` — dashboard: next booking hero (reuse `NextBookingCard`), quick actions (Find sitter, Post job, Messages), recent favourites, active job posts.
+- `/parent/family` — children CRUD against `children` table (name, dob, notes), with avatar initials.
+- `/parent/bookings` — dedicated paginated list with filters (Upcoming / Past / Cancelled), pulled out of Account page.
 
-**Batch B — Sitter onboarding (rest of Section 7) + Section 8 extras**
-Multi-step wizard: experience → qualifications → ID upload → references → bio + video → review → pending. Profile completeness widget on sitter home. Role switcher.
+**Cross-cutting**
+- `RoleSwitcher` component in `Header` for users with both `parent` and `sitter` rows in `user_roles`. Writes `profiles.active_role`, swaps the nav links + tab bar destinations. Hidden for single-role users.
 
-**Batch C — Bookings lifecycle (Section 10)**
-The biggest UX hole. Booking detail page with state machine: upcoming → reminder → check-in → live (with timer) → ended → reviewed. Sitter "log hours" flow. Parent "confirm & release escrow" flow. Reviews. Disputes (creates a support ticket row).
-
-**Batch D — Sitter Jobs (Section 9) + Browse enhancements (Section 4)**
-Job detail page, my-applications, direct requests inbox. Sitter map view + compare drawer for parents.
-
-**Batch E — Account & Trust hub (Section 12)**
-Notifications prefs page, Verified+ upsell, verification status tracker, safety hub, help, blocked users, privacy.
-
-**Batch F — Polish (Section 3, 5)**
-Parent home dashboard (next booking + shortcuts), My Family page, dedicated Bookings page, verification-badge detail sheet, full reviews page.
+**Files**
+- create `src/pages/parent/Home.tsx`, `src/pages/parent/Family.tsx`, `src/pages/parent/Bookings.tsx`, `src/components/parent/ChildEditor.tsx`, `src/components/RoleSwitcher.tsx`, `src/hooks/useChildren.ts`, `src/hooks/useUserRoles.ts`
+- edit `src/components/Header.tsx`, `src/pages/Account.tsx` (link to new bookings page), `src/App.tsx` (3 routes)
 
 ---
 
-## Technical notes
+### Wave N — Polish
 
-**New tables / columns**
-- `profiles`: add `region text`, `onboarding_completed boolean default false`, `phone_verified boolean default false`, `active_role app_role`
-- `children` (id, parent_id, name, dob, notes) — for My Family
-- `sitter_applications` (sitter_user_id, status: draft/submitted/approved/rejected, eligibility json, experience json, qualifications json, references json, id_doc_url, video_url, submitted_at) — drives the multi-step onboarding & "pending approval" screen
-- `booking_events` (booking_id, type: check_in/check_out/incident, lat, lng, at, by_user) — powers live-sit timeline
-- `disputes` (booking_id, opened_by, reason, status, resolution)
-- `blocked_users` (blocker_id, blocked_id)
-- `notification_prefs` (user_id, channel, type, enabled) — generic, replaces sitter-only table for parents
+- **Full reviews page** `/sitters/:id/reviews` — paginated review list with filter by stars.
+- **Verification badge sheet** — opening any "Verified" badge on a profile shows a slide-up sheet listing what's been checked (ID, police, references, first aid) and dates.
+- **Sitter education hub** `/sitter/education` — static articles grid (tips, safety, growing earnings) seeded from a local TS array, opens `/sitter/education/:slug` reader.
+- **Empty states** — uniform `EmptyState` component used across Favourites, Messages, Notifications, Applications.
+- **QA pass** — sweep new pages for missing `Footer`, broken links, mobile padding, dark-text contrast.
 
-**Routing additions** (all new routes mounted in `App.tsx`):
-`/onboarding/welcome`, `/onboarding/region`, `/onboarding/role`, `/onboarding/phone`, `/onboarding/permissions`, `/onboarding/parent/*` (5 sub-steps), `/sitter/apply/*` (eligibility, experience, qualifications, id, references, bio, review, pending), `/parent/home`, `/parent/bookings`, `/parent/family`, `/bookings/:id` (lifecycle hub), `/bookings/:id/review`, `/bookings/:id/dispute`, `/sitter/jobs/:id`, `/sitter/applications`, `/sitter/requests`, `/sitter/education`, `/account/notifications`, `/account/verified-plus`, `/account/verification`, `/account/safety`, `/account/help`, `/account/blocked`, `/account/privacy`.
-
-**Routing guard**: A small `<RequireOnboarding>` wrapper redirects signed-in users to the next onboarding step until `onboarding_completed = true`.
-
-**Role switcher**: Lives in Header for users with both roles. Writes `active_role` to profile and re-renders nav links + tab bar accordingly.
-
-**Lovable AI** powers the "What kind of help?" recommender (Section 2) and the booking-detail copy summarizer — no extra API key needed.
-
-**Storage**: One new bucket `verification-docs` (private) for ID + reference uploads.
+**Files**
+- create `src/pages/sitter/ReviewsAll.tsx`, `src/components/trust/VerificationSheet.tsx`, `src/pages/sitter/Education.tsx`, `src/pages/sitter/EducationArticle.tsx`, `src/lib/education/articles.ts`, `src/components/EmptyState.tsx`
+- edit `src/components/trust/VerificationPanel.tsx`, `src/pages/SitterProfile.tsx`, `src/pages/Favourites.tsx`, `src/pages/Messages.tsx`, `src/pages/Notifications.tsx`, `src/pages/sitter/Applications.tsx`, `src/App.tsx` (3 routes)
 
 ---
 
-## What I'll ask before each batch
+### Order of execution
 
-For each batch I'll quickly confirm any design preferences (e.g. eligibility-gate questions for Batch A, dispute reason categories for Batch C). Otherwise I'll use sensible defaults and you can iterate.
+I'll ship them sequentially — Wave L, then M, then N — pausing only if a destructive choice appears (none expected). After Wave N the original 78-screen spec is fully covered.
 
-Approve to start with **Batch A — Onboarding spine**.
+Approve to start with **Wave L**.
