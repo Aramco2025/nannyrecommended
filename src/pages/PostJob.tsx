@@ -145,7 +145,7 @@ const PostJob = () => {
               placeholder="2 children aged 4 and 7. Bedtime 8pm." /></div>
 
           <Button disabled={busy} type="submit" size="lg" className="w-full rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep">
-            {busy ? "Posting…" : "Post job"}
+            {busy ? (editId ? "Saving…" : "Posting…") : (editId ? "Save changes" : "Post job")}
           </Button>
         </form>
       </main>
