@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Clock, Wallet, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
 type Job = {
   id: string;
@@ -46,14 +47,19 @@ export function JobCard({
 
       {job.notes && <p className="mt-3 line-clamp-2 text-xs text-slate-grey">{job.notes}</p>}
 
-      <Button
-        size="sm"
-        disabled={applied || busy}
-        onClick={onApply}
-        className="mt-4 self-end rounded-full bg-salmon px-5 text-primary-foreground hover:bg-salmon-deep"
-      >
-        {applied ? "Applied" : busy ? "Applying…" : <>Apply <ArrowRight className="h-3.5 w-3.5" /></>}
-      </Button>
+      <div className="mt-4 flex items-center justify-between gap-2">
+        <Button asChild variant="ghost" size="sm" className="rounded-full text-xs text-slate-grey hover:text-pitch-black">
+          <Link to={`/sitter/jobs/${job.id}`}>View details</Link>
+        </Button>
+        <Button
+          size="sm"
+          disabled={applied || busy}
+          onClick={onApply}
+          className="rounded-full bg-salmon px-5 text-primary-foreground hover:bg-salmon-deep"
+        >
+          {applied ? "Applied" : busy ? "Applying…" : <>Apply <ArrowRight className="h-3.5 w-3.5" /></>}
+        </Button>
+      </div>
     </article>
   );
 }
