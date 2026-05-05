@@ -31,8 +31,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { sitter_id, start_at, hours, address, notes, return_url, environment, children_ids, pets, parking } =
-      await req.json();
+    const {
+      sitter_id, start_at, hours, address, notes, return_url, environment,
+      children_ids, pets, parking,
+      surcharges_aed, taxi_cover_aed, taxi_requested,
+    } = await req.json();
     if (!sitter_id || !start_at || !hours || !return_url) {
       return new Response(JSON.stringify({ error: "missing fields" }), {
         status: 400,
@@ -62,10 +65,12 @@ Deno.serve(async (req) => {
     }
 
     const rate = Number(sitter.hourly_rate_aed);
-    const subtotal = +(rate * hours).toFixed(2);
+    const surchargeTotal = Math.max(0, Number(surcharges_aed) || 0);
+    const taxi = Math.max(0, Number(taxi_cover_aed) || 0);
+    const subtotal = +(rate * hours + surchargeTotal).toFixed(2);
     const fee = +(subtotal * 0.08).toFixed(2);
     const payout = +(subtotal * 0.96).toFixed(2);
-    const total = +(subtotal + fee).toFixed(2);
+    const total = +(subtotal + fee + taxi).toFixed(2);
     const start = new Date(start_at);
     const end = new Date(start.getTime() + hours * 3600 * 1000);
 
@@ -88,6 +93,8 @@ Deno.serve(async (req) => {
         children_ids: Array.isArray(children_ids) ? children_ids : [],
         pets: Array.isArray(pets) ? pets : [],
         parking: parking ?? null,
+        taxi_cover_aed: taxi,
+        taxi_requested: !!taxi_requested,
       })
       .select("id")
       .single();

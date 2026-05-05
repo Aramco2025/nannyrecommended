@@ -33,6 +33,9 @@ export default function SitterSetRate() {
   const [hourly, setHourly] = useState<number>(60);
   const [monthly, setMonthly] = useState<number>(4000);
   const [openLiveIn, setOpenLiveIn] = useState(false);
+  const [surcharges, setSurcharges] = useState({
+    evening: 0, lateNight: 0, weekend: 0, holiday: 0, multiChild: 0, lastMinute: 0,
+  });
 
   useEffect(() => {
     if (!user) return;
@@ -45,6 +48,14 @@ export default function SitterSetRate() {
         const ft = !!data.open_to_full_time;
         const bs = data.open_to_babysitting !== false;
         setMode(ft && bs ? "both" : ft ? "fulltime" : "babysitting");
+        setSurcharges({
+          evening: Number(data.evening_surcharge_aed) || 0,
+          lateNight: Number(data.late_night_surcharge_aed) || 0,
+          weekend: Number(data.weekend_surcharge_aed) || 0,
+          holiday: Number(data.holiday_surcharge_aed) || 0,
+          multiChild: Number(data.multi_child_surcharge_aed) || 0,
+          lastMinute: Number(data.last_minute_surcharge_aed) || 0,
+        });
       }
     })();
   }, [user]);
@@ -77,6 +88,12 @@ export default function SitterSetRate() {
         monthly_full_time_aed: open_to_full_time ? monthly : null,
         open_to_babysitting,
         open_to_full_time,
+        evening_surcharge_aed: surcharges.evening,
+        late_night_surcharge_aed: surcharges.lateNight,
+        weekend_surcharge_aed: surcharges.weekend,
+        holiday_surcharge_aed: surcharges.holiday,
+        multi_child_surcharge_aed: surcharges.multiChild,
+        last_minute_surcharge_aed: surcharges.lastMinute,
       };
       if (sitterId) {
         const { error } = await supabase.from("sitters").update(payload).eq("id", sitterId);
@@ -178,6 +195,33 @@ export default function SitterSetRate() {
                 Many sitters offer babysitting at one rate and full-time at another. Babysitting typically pays 1.8–2.5× the full-time hourly equivalent because it's less consistent work.
               </p>
             )}
+          </section>
+        )}
+
+        {(mode === "babysitting" || mode === "both") && (
+          <section className="mt-4 rounded-2xl border border-border bg-card p-6 shadow-card">
+            <Label className="text-xs uppercase tracking-wide text-slate-grey">Surcharges (AED / hour)</Label>
+            <p className="mt-1 text-xs text-slate-grey">Optional extras that apply automatically when conditions are met. Parents see a clear breakdown before paying.</p>
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {([
+                ["evening", "Evening (after 9pm)"],
+                ["lateNight", "Late night (after 12am)"],
+                ["weekend", "Weekend"],
+                ["holiday", "Public holiday"],
+                ["multiChild", "Per extra child"],
+                ["lastMinute", "Last-minute (<4h)"],
+              ] as const).map(([key, label]) => (
+                <label key={key} className="flex flex-col gap-1 text-xs text-slate-grey">
+                  <span>{label}</span>
+                  <Input
+                    type="number" min={0} max={200} inputMode="numeric"
+                    value={surcharges[key]}
+                    onChange={(e) => setSurcharges(s => ({ ...s, [key]: Math.max(0, Number(e.target.value) || 0) }))}
+                    className="h-10"
+                  />
+                </label>
+              ))}
+            </div>
           </section>
         )}
 
