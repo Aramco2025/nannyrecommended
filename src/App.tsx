@@ -66,6 +66,7 @@ import Notifications from "./pages/Notifications.tsx";
 import ForgotPassword from "./pages/ForgotPassword.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminBookings from "./pages/AdminBookings.tsx";
+import AdminDisputes from "./pages/AdminDisputes.tsx";
 import AuthHelp from "./pages/AuthHelp.tsx";
 import NotificationPreferences from "./pages/NotificationPreferences.tsx";
 import NotFound from "./pages/NotFound.tsx";
