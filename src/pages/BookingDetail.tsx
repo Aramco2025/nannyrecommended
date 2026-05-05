@@ -264,6 +264,11 @@ export default function BookingDetail() {
                   <XCircle className="h-4 w-4" /> Cancel booking
                 </Button>
               )}
+              {isParent && !dispute && ["confirmed","in_progress","completed","cancelled"].includes(b.status) && (
+                <Button variant="ghost" className="text-slate-grey hover:text-pitch-black" onClick={() => setDisputeOpen(true)}>
+                  <ShieldAlert className="h-4 w-4" /> Report a problem
+                </Button>
+              )}
             </div>
           )}
         </div>
