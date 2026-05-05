@@ -72,6 +72,9 @@ import NotFound from "./pages/NotFound.tsx";
 import SitterJobDetail from "./pages/sitter/JobDetail.tsx";
 import SitterApplications from "./pages/sitter/Applications.tsx";
 import SitterRequests from "./pages/sitter/Requests.tsx";
+import ParentHome from "./pages/parent/Home.tsx";
+import ParentBookings from "./pages/parent/Bookings.tsx";
+import ParentFamilyPage from "./pages/parent/Family.tsx";
 
 const queryClient = new QueryClient();
 
@@ -123,6 +126,9 @@ const App = () => (
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/:bookingId" element={<MessageThread />} />
             <Route path="/parent/post-job" element={<PostJob />} />
+            <Route path="/parent/home" element={<ParentHome />} />
+            <Route path="/parent/bookings" element={<ParentBookings />} />
+            <Route path="/parent/family" element={<ParentFamilyPage />} />
             <Route path="/favourites" element={<Favourites />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/parent/jobs/:jobId/applicants" element={<JobApplicants />} />
