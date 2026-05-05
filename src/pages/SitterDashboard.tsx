@@ -88,11 +88,26 @@ const SitterDashboard = () => {
     } finally { setBusy(false); }
   };
 
-  const updateBookingStatus = async (id: string, status: "confirmed" | "declined" | "completed") => {
+  const updateBookingStatus = async (id: string, status: "confirmed" | "cancelled" | "completed") => {
     const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
     if (error) return toast({ title: "Error", description: error.message, variant: "destructive" });
     setBookings(bs => bs.map(b => b.id === id ? { ...b, status } : b));
-    toast({ title: `Booking ${status}` });
+    toast({
+      title: status === "confirmed"
+        ? "Booking accepted"
+        : status === "cancelled"
+        ? "Booking declined"
+        : "Booking completed",
+      description: status === "cancelled"
+        ? "The parent will be refunded manually via Stripe."
+        : undefined,
+    });
+  };
+
+  const acceptBooking = (id: string) => updateBookingStatus(id, "confirmed");
+  const declineBooking = (id: string) => {
+    if (!confirm("Decline this booking? The parent will need to be refunded.")) return;
+    updateBookingStatus(id, "cancelled");
   };
 
   return (
