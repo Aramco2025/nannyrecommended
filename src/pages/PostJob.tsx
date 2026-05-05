@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
@@ -28,6 +29,8 @@ const PostJob = () => {
   const [search] = useSearchParams();
   const editId = search.get("edit");
   const [busy, setBusy] = useState(false);
+  const [children, setChildren] = useState<{ id: string; name: string; dob: string | null }[]>([]);
+  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
   const [form, setForm] = useState({
     type: "one_off" as "one_off" | "repeat" | "permanent",
     date: new Date().toISOString().slice(0, 10),
@@ -37,6 +40,15 @@ const PostJob = () => {
     hourly_rate_aed: 60,
     notes: "",
   });
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("children").select("id,name,dob").eq("parent_id", user.id).then(({ data }) => {
+      const list = (data ?? []) as any[];
+      setChildren(list);
+      if (!editId) setSelectedChildren(list.map(c => c.id));
+    });
+  }, [user, editId]);
 
   useEffect(() => {
     if (!editId) return;
@@ -53,6 +65,7 @@ const PostJob = () => {
         hourly_rate_aed: Number(data.hourly_rate_aed),
         notes: data.notes ?? "",
       });
+      setSelectedChildren((data as any).children_ids ?? []);
     });
   }, [editId]);
 
@@ -77,6 +90,7 @@ const PostJob = () => {
         area: form.area,
         hourly_rate_aed: form.hourly_rate_aed,
         notes: form.notes || null,
+        children_ids: selectedChildren,
       };
       if (editId) {
         const { error } = await supabase.from("job_posts").update(payload).eq("id", editId);
@@ -139,6 +153,27 @@ const PostJob = () => {
               <Input type="number" min={30} max={1000} value={form.hourly_rate_aed}
                 onChange={e => setForm({ ...form, hourly_rate_aed: Number(e.target.value) })} required /></div>
           </div>
+
+          {children.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-xs text-slate-grey">Children for this job</Label>
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {children.map(c => {
+                  const checked = selectedChildren.includes(c.id);
+                  return (
+                    <li key={c.id} className="flex items-center gap-3 rounded-xl border border-cream-deep p-3">
+                      <Checkbox checked={checked}
+                        onCheckedChange={(v) => setSelectedChildren(prev => v ? [...prev, c.id] : prev.filter(x => x !== c.id))} />
+                      <div className="text-sm">
+                        <div className="font-medium text-pitch-black">{c.name}</div>
+                        {c.dob && <div className="text-xs text-slate-grey">DOB {c.dob}</div>}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
 
           <div className="space-y-1.5"><Label className="text-xs text-slate-grey">Notes (optional)</Label>
             <Textarea rows={4} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} maxLength={2000}

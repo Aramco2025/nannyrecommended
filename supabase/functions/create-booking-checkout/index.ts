@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { sitter_id, start_at, hours, address, notes, return_url, environment } =
+    const { sitter_id, start_at, hours, address, notes, return_url, environment, children_ids, pets, parking } =
       await req.json();
     if (!sitter_id || !start_at || !hours || !return_url) {
       return new Response(JSON.stringify({ error: "missing fields" }), {
@@ -85,6 +85,9 @@ Deno.serve(async (req) => {
         status: "pending_payment",
         address: address ?? null,
         notes: notes ?? null,
+        children_ids: Array.isArray(children_ids) ? children_ids : [],
+        pets: Array.isArray(pets) ? pets : [],
+        parking: parking ?? null,
       })
       .select("id")
       .single();

@@ -29,6 +29,9 @@ type Booking = {
   started_at: string | null;
   ended_at: string | null;
   released_at: string | null;
+  children_ids: string[] | null;
+  pets: any[] | null;
+  parking: string | null;
   sitters?: { full_name: string | null; photos: string[] | null; user_id: string | null } | null;
   profiles?: { full_name: string | null; phone: string | null } | null;
 };
@@ -49,6 +52,7 @@ export default function BookingDetail() {
   const [b, setB] = useState<Booking | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [hasReview, setHasReview] = useState<boolean | null>(null);
+  const [childNames, setChildNames] = useState<{ id: string; name: string; dob: string | null }[]>([]);
   const { messages } = useThreadMessages(id);
   const [text, setText] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
@@ -70,6 +74,13 @@ export default function BookingDetail() {
     supabase.from("reviews").select("id").eq("booking_id", id).maybeSingle()
       .then(({ data }) => setHasReview(!!data));
   }, [id, user, b?.status]);
+
+  useEffect(() => {
+    const ids = b?.children_ids ?? [];
+    if (!ids.length) { setChildNames([]); return; }
+    supabase.from("children").select("id,name,dob").in("id", ids)
+      .then(({ data }) => setChildNames((data ?? []) as any));
+  }, [b?.children_ids]);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
@@ -142,6 +153,33 @@ export default function BookingDetail() {
           )}
           {b.notes && (
             <p className="mt-3 rounded-2xl bg-cream p-3 text-sm text-pitch-black">{b.notes}</p>
+          )}
+
+          {(childNames.length > 0 || (b.pets && b.pets.length > 0) || b.parking) && (
+            <div className="mt-4 grid gap-3 rounded-2xl border border-border bg-off-white p-4 text-sm">
+              {childNames.length > 0 && (
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-grey">Children</div>
+                  <div className="mt-1 text-pitch-black">{childNames.map(c => c.name).join(", ")}</div>
+                </div>
+              )}
+              {b.pets && b.pets.length > 0 && (
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-grey">Pets</div>
+                  <ul className="mt-1 text-pitch-black">
+                    {b.pets.map((p: any, i: number) => (
+                      <li key={i}>{p.type}{p.name ? ` — ${p.name}` : ""}{p.notes ? ` (${p.notes})` : ""}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {b.parking && (
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-grey">Parking</div>
+                  <div className="mt-1 text-pitch-black">{b.parking}</div>
+                </div>
+              )}
+            </div>
           )}
 
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
