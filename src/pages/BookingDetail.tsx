@@ -155,6 +155,33 @@ export default function BookingDetail() {
             <p className="mt-3 rounded-2xl bg-cream p-3 text-sm text-pitch-black">{b.notes}</p>
           )}
 
+          {(childNames.length > 0 || (b.pets && b.pets.length > 0) || b.parking) && (
+            <div className="mt-4 grid gap-3 rounded-2xl border border-border bg-off-white p-4 text-sm">
+              {childNames.length > 0 && (
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-grey">Children</div>
+                  <div className="mt-1 text-pitch-black">{childNames.map(c => c.name).join(", ")}</div>
+                </div>
+              )}
+              {b.pets && b.pets.length > 0 && (
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-grey">Pets</div>
+                  <ul className="mt-1 text-pitch-black">
+                    {b.pets.map((p: any, i: number) => (
+                      <li key={i}>{p.type}{p.name ? ` — ${p.name}` : ""}{p.notes ? ` (${p.notes})` : ""}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {b.parking && (
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-grey">Parking</div>
+                  <div className="mt-1 text-pitch-black">{b.parking}</div>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
             <div><span className="text-slate-grey">Total: </span><span className="font-medium text-pitch-black">{formatCurrency(Number(b.total_aed))}</span></div>
             {isSitter && <div><span className="text-slate-grey">Your payout: </span><span className="font-medium text-pitch-black">{formatCurrency(Number(b.sitter_payout_aed))}</span></div>}
