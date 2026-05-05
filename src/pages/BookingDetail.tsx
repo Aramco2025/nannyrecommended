@@ -199,6 +199,22 @@ export default function BookingDetail() {
             released={!!b.released_at}
           />
 
+          <ReceiptCard bookingId={b.id} />
+
+          {dispute && (
+            <div className="mt-4 rounded-2xl border border-salmon/40 bg-salmon-soft/40 p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-salmon-deep">
+                <ShieldAlert className="h-4 w-4" /> Dispute {dispute.status.replace("_", " ")}
+              </div>
+              <p className="mt-1 text-xs text-pitch-black">
+                Filed {format(new Date(dispute.created_at), "do MMM, h:mma")} — our team reviews within 24 hours.
+              </p>
+              {dispute.resolution_note && (
+                <p className="mt-2 text-xs text-slate-grey">{dispute.resolution_note}</p>
+              )}
+            </div>
+          )}
+
           {(b.status === "confirmed" || b.status === "in_progress" || b.status === "completed") && (
             <div className="mt-5">
               <BookingTimer startedAt={b.started_at} endedAt={b.ended_at} />
