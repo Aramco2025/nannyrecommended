@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { FamilyPlusCard } from "@/components/payments/FamilyPlusCard";
 import { NextBookingCard } from "@/components/account/NextBookingCard";
 import { LoyaltyProgress } from "@/components/LoyaltyProgress";
+import { RecurringBookingsCard } from "@/components/parent/RecurringBookingsCard";
 
 type Booking = {
   id: string;
