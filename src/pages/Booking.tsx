@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
+import { Link, useParams, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Header } from "@/components/Header";
