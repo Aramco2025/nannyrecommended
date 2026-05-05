@@ -31,8 +31,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { sitter_id, start_at, hours, address, notes, return_url, environment, children_ids, pets, parking } =
-      await req.json();
+    const {
+      sitter_id, start_at, hours, address, notes, return_url, environment,
+      children_ids, pets, parking,
+      surcharges_aed, taxi_cover_aed, taxi_requested,
+    } = await req.json();
     if (!sitter_id || !start_at || !hours || !return_url) {
       return new Response(JSON.stringify({ error: "missing fields" }), {
         status: 400,
