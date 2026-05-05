@@ -5,21 +5,54 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Mail, MessageCircle, ShieldCheck, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+
+const CATEGORIES = [
+  { value: "booking", label: "Booking issue" },
+  { value: "payment", label: "Payment or refund" },
+  { value: "safety", label: "Safety concern", priority: "p1" as const },
+  { value: "account", label: "Account or sign-in" },
+  { value: "sitter", label: "Sitter application" },
+  { value: "feedback", label: "Feedback or suggestion" },
+  { value: "other", label: "Something else" },
+];
 
 const Contact = () => {
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
+  const [category, setCategory] = useState<string>("other");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const data = new FormData(form);
+    const name = String(data.get("name") || "");
+    const email = String(data.get("email") || "");
+    const subject = String(data.get("subject") || "");
+    const body = String(data.get("message") || "");
+    const cat = CATEGORIES.find(c => c.value === category);
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      toast({ title: "Message sent", description: "Our team will reply within one working day." });
-      (e.target as HTMLFormElement).reset();
-    }, 700);
+    const { data: sess } = await supabase.auth.getUser();
+    const { error } = await supabase.from("support_tickets").insert({
+      user_id: sess.user?.id ?? null,
+      contact_email: email,
+      category,
+      priority: cat?.priority ?? "p2",
+      subject: subject || `[${cat?.label}] from ${name}`,
+      body: `From: ${name} <${email}>\n\n${body}`,
+      debug_info: { source: "contact_form", url: window.location.href },
+    });
+    setSubmitting(false);
+    if (error) {
+      toast({ title: "Couldn't send", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Message sent", description: "Our team will reply within one working day." });
+    form.reset();
+    setCategory("other");
   };
 
   return (
@@ -70,20 +103,31 @@ const Contact = () => {
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="name">Your name</Label>
-                  <Input id="name" required placeholder="Jane Doe" />
+                  <Input id="name" name="name" required placeholder="Jane Doe" />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" required placeholder="you@example.com" />
+                  <Input id="email" name="email" type="email" required placeholder="you@example.com" />
+                </div>
+              </div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="category">Topic</Label>
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger id="category"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="subject">Subject</Label>
+                  <Input id="subject" name="subject" required placeholder="How can we help?" />
                 </div>
               </div>
               <div className="mt-4 space-y-1.5">
-                <Label htmlFor="subject">Subject</Label>
-                <Input id="subject" required placeholder="How can we help?" />
-              </div>
-              <div className="mt-4 space-y-1.5">
                 <Label htmlFor="message">Message</Label>
-                <Textarea id="message" required rows={5} placeholder="Tell us a bit more..." />
+                <Textarea id="message" name="message" required rows={5} placeholder="Tell us a bit more..." />
               </div>
               <Button
                 type="submit"
