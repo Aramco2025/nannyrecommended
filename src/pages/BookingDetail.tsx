@@ -15,7 +15,10 @@ import { BookingTimer } from "@/components/booking/BookingTimer";
 import { ReviewForm } from "@/components/booking/ReviewForm";
 import { PaymentSummary } from "@/components/booking/PaymentSummary";
 import { CancelBookingDialog } from "@/components/booking/CancelBookingDialog";
-import { XCircle } from "lucide-react";
+import { DisputeDialog } from "@/components/booking/DisputeDialog";
+import { ReceiptCard } from "@/components/booking/ReceiptCard";
+import { useBookingDispute } from "@/hooks/useDisputes";
+import { XCircle, ShieldAlert } from "lucide-react";
 
 type Booking = {
   id: string;
@@ -59,6 +62,8 @@ export default function BookingDetail() {
   const { messages } = useThreadMessages(id);
   const [text, setText] = useState("");
   const [cancelOpen, setCancelOpen] = useState(false);
+  const [disputeOpen, setDisputeOpen] = useState(false);
+  const { dispute, reload: reloadDispute } = useBookingDispute(id);
   const endRef = useRef<HTMLDivElement>(null);
 
   const reload = async () => {
@@ -194,6 +199,22 @@ export default function BookingDetail() {
             released={!!b.released_at}
           />
 
+          <ReceiptCard bookingId={b.id} />
+
+          {dispute && (
+            <div className="mt-4 rounded-2xl border border-salmon/40 bg-salmon-soft/40 p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-salmon-deep">
+                <ShieldAlert className="h-4 w-4" /> Dispute {dispute.status.replace("_", " ")}
+              </div>
+              <p className="mt-1 text-xs text-pitch-black">
+                Filed {format(new Date(dispute.created_at), "do MMM, h:mma")} — our team reviews within 24 hours.
+              </p>
+              {dispute.resolution_note && (
+                <p className="mt-2 text-xs text-slate-grey">{dispute.resolution_note}</p>
+              )}
+            </div>
+          )}
+
           {(b.status === "confirmed" || b.status === "in_progress" || b.status === "completed") && (
             <div className="mt-5">
               <BookingTimer startedAt={b.started_at} endedAt={b.ended_at} />
@@ -243,6 +264,11 @@ export default function BookingDetail() {
                   <XCircle className="h-4 w-4" /> Cancel booking
                 </Button>
               )}
+              {isParent && !dispute && ["confirmed","in_progress","completed","cancelled"].includes(b.status) && (
+                <Button variant="ghost" className="text-slate-grey hover:text-pitch-black" onClick={() => setDisputeOpen(true)}>
+                  <ShieldAlert className="h-4 w-4" /> Report a problem
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -258,6 +284,15 @@ export default function BookingDetail() {
           area={b.address ?? null}
           excludeSitterId={b.sitter_id}
           onCancelled={reload}
+        />
+
+        <DisputeDialog
+          open={disputeOpen}
+          onOpenChange={setDisputeOpen}
+          bookingId={b.id}
+          parentId={b.parent_id}
+          sitterId={b.sitter_id}
+          onCreated={reloadDispute}
         />
 
         {/* Review (parent, after completion) */}

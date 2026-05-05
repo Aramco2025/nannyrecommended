@@ -317,6 +317,7 @@ export type Database = {
           id: string
           payment_method_brand: string | null
           payment_method_last4: string | null
+          receipt_url: string | null
           status: string
           stripe_charge_id: string | null
           stripe_payment_intent_id: string | null
@@ -334,6 +335,7 @@ export type Database = {
           id?: string
           payment_method_brand?: string | null
           payment_method_last4?: string | null
+          receipt_url?: string | null
           status: string
           stripe_charge_id?: string | null
           stripe_payment_intent_id?: string | null
@@ -351,6 +353,7 @@ export type Database = {
           id?: string
           payment_method_brand?: string | null
           payment_method_last4?: string | null
+          receipt_url?: string | null
           status?: string
           stripe_charge_id?: string | null
           stripe_payment_intent_id?: string | null
@@ -389,6 +392,62 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      disputes: {
+        Row: {
+          booking_id: string
+          created_at: string
+          description: string
+          evidence_urls: string[]
+          id: string
+          parent_id: string
+          reason: string
+          refund_amount_aed: number | null
+          resolution_note: string | null
+          resolved_at: string | null
+          sitter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          description: string
+          evidence_urls?: string[]
+          id?: string
+          parent_id: string
+          reason: string
+          refund_amount_aed?: number | null
+          resolution_note?: string | null
+          resolved_at?: string | null
+          sitter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          description?: string
+          evidence_urls?: string[]
+          id?: string
+          parent_id?: string
+          reason?: string
+          refund_amount_aed?: number | null
+          resolution_note?: string | null
+          resolved_at?: string | null
+          sitter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputes_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       favourites: {
         Row: {
