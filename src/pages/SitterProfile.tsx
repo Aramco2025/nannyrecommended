@@ -49,12 +49,8 @@ const SitterProfile = () => {
     sitter.comfortableWithPets && "Pet-friendly",
   ].filter(Boolean) as string[];
 
-  // Mock reviews
-  const reviews = [
-    { name: "Layla H.", date: "March 2026", rating: 5, comment: `${firstName} is wonderful with our two-year-old. Punctual, warm, and our daughter asks for her every week.` },
-    { name: "Marc D.", date: "January 2026", rating: 5, comment: `Couldn't recommend more. Genuinely caring and great at suggesting fun activities.` },
-    { name: "Aisha K.", date: "December 2025", rating: 5, comment: `Trustworthy, organised and our newborn settled with her instantly. A real find.` },
-  ];
+  const reviews = reviewsData ?? [];
+  const dateFmt = new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" });
 
   return (
     <div className="min-h-screen bg-cream pb-28 lg:pb-0">
@@ -170,29 +166,42 @@ const SitterProfile = () => {
             />
 
             {/* REVIEWS */}
-            <Section title={`Reviews (${reviews.length})`}>
-              <div className="space-y-4">
-                {reviews.map((r, i) => (
-                  <div key={i} className="rounded-2xl bg-pure-white p-5 shadow-card">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-salmon-soft font-display font-bold text-salmon-deep">
-                          {r.name[0]}
+            <ReviewsSummary
+              reviews={reviews}
+              fallbackRating={sitter.rating}
+              fallbackBookings={sitter.bookingsCompleted}
+            />
+            {reviews.length > 0 && (
+              <Section title={`What families said (${reviews.length})`}>
+                <div className="space-y-4">
+                  {reviews.slice(0, 6).map((r) => (
+                    <div key={r.id} className="rounded-2xl bg-pure-white p-5 shadow-card">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-salmon-soft font-display font-bold text-salmon-deep">
+                            {r.parent_name[0]}
+                          </div>
+                          <div>
+                            <div className="text-sm font-semibold text-pitch-black">{r.parent_name}</div>
+                            <div className="text-xs text-slate-grey">
+                              {dateFmt.format(new Date(r.created_at))} · Verified booking
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="text-sm font-semibold text-pitch-black">{r.name}</div>
-                          <div className="text-xs text-slate-grey">{r.date}</div>
+                        <div className="flex gap-0.5">
+                          {Array.from({ length: r.rating }).map((_, j) => (
+                            <Star key={j} className="h-3.5 w-3.5 fill-salmon text-salmon" />
+                          ))}
                         </div>
                       </div>
-                      <div className="flex gap-0.5">
-                        {Array.from({ length: r.rating }).map((_, j) => <Star key={j} className="h-3.5 w-3.5 fill-salmon text-salmon" />)}
-                      </div>
+                      {r.comment && (
+                        <p className="mt-3 text-sm leading-relaxed text-pitch-black/85">"{r.comment}"</p>
+                      )}
                     </div>
-                    <p className="mt-3 text-sm leading-relaxed text-pitch-black/85">"{r.comment}"</p>
-                  </div>
-                ))}
-              </div>
-            </Section>
+                  ))}
+                </div>
+              </Section>
+            )}
           </div>
 
           {/* RIGHT — sticky booking */}
