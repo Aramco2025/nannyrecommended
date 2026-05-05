@@ -173,8 +173,8 @@ const SitterDashboard = () => {
                   </div>
                   {b.status === "pending" && (
                     <div className="mt-3 flex gap-2">
-                      <Button size="sm" onClick={() => updateBookingStatus(b.id, "confirmed")}>Accept</Button>
-                      <Button size="sm" variant="outline" onClick={() => updateBookingStatus(b.id, "declined")}>Decline</Button>
+                      <Button size="sm" onClick={() => acceptBooking(b.id)}>Accept</Button>
+                      <Button size="sm" variant="outline" onClick={() => declineBooking(b.id)}>Decline</Button>
                     </div>
                   )}
                   {b.status === "confirmed" && (
