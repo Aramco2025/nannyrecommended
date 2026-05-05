@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Star, MapPin, MessageCircle, ShieldCheck, Heart, ThumbsUp, Users } from "lucide-react";
+import { Star, MapPin, MessageCircle, ShieldCheck, Heart, ThumbsUp, Users, PlayCircle } from "lucide-react";
 import { UISitter } from "@/lib/sitterMapper";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/fees";
