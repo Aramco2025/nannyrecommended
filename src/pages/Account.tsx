@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/fees";
 import { Loader2 } from "lucide-react";
-import { NoSubscriptionCard } from "@/components/pricing/NoSubscriptionCard";
+import { FamilyPlusCard } from "@/components/payments/FamilyPlusCard";
 import { NextBookingCard } from "@/components/account/NextBookingCard";
 import { LoyaltyProgress } from "@/components/LoyaltyProgress";
 
@@ -81,7 +81,7 @@ const Account = () => {
             </div>
             <LoyaltyProgress completedBookings={completedCount} className="mt-5" />
           </div>
-          <NoSubscriptionCard />
+          <FamilyPlusCard />
         </div>
 
         <div className="mt-6 rounded-3xl bg-card p-6 shadow-card">
