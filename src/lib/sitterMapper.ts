@@ -91,5 +91,8 @@ export function mapSitter(s: DbSitter): UISitter {
     regularAvailable: (s as any).regular_available !== false,
     hasVideoIntro: !!(s as any).video_intro_url,
     ageGroups: (s as any).age_groups ?? [],
+    dogWalker: !!(s as any).dog_walker,
+    petSitter: !!(s as any).pet_sitter,
+    petBoarding: !!(s as any).pet_boarding,
   };
 }
