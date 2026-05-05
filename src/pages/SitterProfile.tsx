@@ -8,6 +8,8 @@ import {
   Star, Clock, MapPin, MessageCircle, Languages, ShieldCheck, Loader2,
   BadgeCheck, CheckCircle2, Calendar, Award, Heart,
 } from "lucide-react";
+import { VerificationPanel } from "@/components/trust/VerificationPanel";
+import { InsuranceBadge } from "@/components/trust/InsuranceBadge";
 
 const SitterProfile = () => {
   const { id } = useParams();
@@ -156,14 +158,13 @@ const SitterProfile = () => {
             </Section>
 
             {/* CHECKS */}
-            <Section title="Verification & checks">
-              <div className="grid gap-3 sm:grid-cols-2">
-                <CheckRow label="Identity verified" passed={sitter.verified} />
-                <CheckRow label="Police clearance" passed={sitter.policeCleared} />
-                <CheckRow label="Reference checks" passed={sitter.verified} />
-                <CheckRow label="Paediatric first aid" passed={sitter.firstAidCertified} />
-              </div>
-            </Section>
+            <VerificationPanel
+              verified={sitter.verified}
+              policeCleared={sitter.policeCleared}
+              firstAidCertified={sitter.firstAidCertified}
+              earlyYearsQualified={sitter.earlyYearsQualified}
+              bookingsCompleted={sitter.bookingsCompleted}
+            />
 
             {/* REVIEWS */}
             <Section title={`Reviews (${reviews.length})`}>
@@ -225,10 +226,10 @@ const SitterProfile = () => {
                   <li className="flex items-center gap-2 text-slate-grey">
                     <CheckCircle2 className="h-4 w-4 text-success-green" /> No charge until confirmed
                   </li>
-                  <li className="flex items-center gap-2 text-slate-grey">
-                    <CheckCircle2 className="h-4 w-4 text-success-green" /> Booking insurance included
-                  </li>
                 </ul>
+                <div className="mt-4">
+                  <InsuranceBadge variant="card" />
+                </div>
               </div>
 
               <div className="rounded-2xl bg-cream p-5 text-center text-xs text-slate-grey">
