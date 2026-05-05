@@ -15,7 +15,10 @@ import { BookingTimer } from "@/components/booking/BookingTimer";
 import { ReviewForm } from "@/components/booking/ReviewForm";
 import { PaymentSummary } from "@/components/booking/PaymentSummary";
 import { CancelBookingDialog } from "@/components/booking/CancelBookingDialog";
-import { XCircle } from "lucide-react";
+import { DisputeDialog } from "@/components/booking/DisputeDialog";
+import { ReceiptCard } from "@/components/booking/ReceiptCard";
+import { useBookingDispute } from "@/hooks/useDisputes";
+import { XCircle, ShieldAlert } from "lucide-react";
 
 type Booking = {
   id: string;
