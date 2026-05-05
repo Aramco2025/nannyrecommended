@@ -21,6 +21,8 @@ import { AvailabilityFilter, type SlotFilter } from "@/components/AvailabilityFi
 import { useAvailableSitters } from "@/hooks/useAvailableSitters";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { AreaDensityIndicator } from "@/components/AreaDensityIndicator";
+import { CompareProvider, CompareBar } from "@/components/sitters/CompareDrawer";
+import { SittersMapView } from "@/components/sitters/SittersMapView";
 
 type Section = { title: string; items: { key: FilterKey; label: string }[] };
 
@@ -252,6 +254,7 @@ const Sitters = () => {
   );
 
   return (
+    <CompareProvider>
     <div className="min-h-screen bg-cream pb-20 md:pb-0">
       <Header />
 
@@ -350,19 +353,7 @@ const Sitters = () => {
             {isLoading ? (
               <div className="py-20 text-center text-sm text-slate-grey">Loading sitters…</div>
             ) : view === "map" ? (
-              <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-card lg:aspect-auto lg:min-h-[600px]">
-                  <img
-                    src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&h=1000&fit=crop"
-                    alt="Map of nearby sitters"
-                    className="h-full w-full object-cover opacity-90"
-                  />
-                  <div className="absolute inset-0 bg-pitch-black/5" />
-                </div>
-                <div className="flex flex-col gap-4 lg:max-h-[600px] lg:overflow-y-auto lg:pr-1">
-                  {visible.map(s => <SitterCard key={s.id} sitter={s} />)}
-                </div>
-              </div>
+              <SittersMapView sitters={visible} />
             ) : (
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {visible.map(s => <SitterCard key={s.id} sitter={s} />)}

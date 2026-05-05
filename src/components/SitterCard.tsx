@@ -8,6 +8,7 @@ import { useFavourites, useToggleFavourite } from "@/hooks/useFavourites";
 import { useTrustCount } from "@/hooks/useFriends";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import { CompareToggle } from "@/components/sitters/CompareDrawer";
 
 export function SitterCard({ sitter }: { sitter: UISitter }) {
   const { user } = useAuth();
@@ -26,11 +27,12 @@ export function SitterCard({ sitter }: { sitter: UISitter }) {
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {sitter.verified && (
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-pure-white/95 px-2 py-1 text-[11px] font-semibold text-pitch-black shadow-card backdrop-blur">
+          <span className="absolute right-3 bottom-3 inline-flex items-center gap-1 rounded-full bg-pure-white/95 px-2 py-1 text-[11px] font-semibold text-pitch-black shadow-card backdrop-blur">
             <ShieldCheck className="h-3 w-3 text-success-green" /> Verified
           </span>
         )}
       </Link>
+      <CompareToggle sitter={sitter} />
 
       {user && (
         <button
