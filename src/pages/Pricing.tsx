@@ -1,10 +1,14 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LoyaltyProgress } from "@/components/LoyaltyProgress";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, Minus, ArrowRight } from "lucide-react";
+import { FamilyPlusUpgradeDialog } from "@/components/payments/FamilyPlusUpgradeDialog";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const rows: [string, string, string][] = [
   ["Browse all sitters", "✓", "✓"],
@@ -18,6 +22,17 @@ const rows: [string, string, string][] = [
 ];
 
 const Pricing = () => {
+  const { user } = useAuth();
+  const { isFamilyPlus } = useSubscription();
+  const navigate = useNavigate();
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+
+  const handleUpgrade = () => {
+    if (!user) { navigate("/auth?redirect=/pricing"); return; }
+    if (isFamilyPlus) { navigate("/account"); return; }
+    setUpgradeOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-cream">
       <Header />
@@ -66,8 +81,12 @@ const Pricing = () => {
                 </Button>
               </div>
               <div className="p-5 text-center">
-                <Button size="sm" className="rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep shadow-cta">
-                  Upgrade to Plus
+                <Button
+                  size="sm"
+                  onClick={handleUpgrade}
+                  className="rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep shadow-cta"
+                >
+                  {isFamilyPlus ? "Manage Plus" : "Upgrade to Plus"}
                 </Button>
               </div>
             </div>
@@ -146,6 +165,7 @@ const Pricing = () => {
       </main>
 
       <Footer />
+      <FamilyPlusUpgradeDialog open={upgradeOpen} onOpenChange={setUpgradeOpen} />
     </div>
   );
 };

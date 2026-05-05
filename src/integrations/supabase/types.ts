@@ -733,6 +733,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          is_family_plus: boolean
           onboarding_completed: boolean
           phone: string | null
           phone_verified: boolean
@@ -750,6 +751,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          is_family_plus?: boolean
           onboarding_completed?: boolean
           phone?: string | null
           phone_verified?: boolean
@@ -767,6 +769,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          is_family_plus?: boolean
           onboarding_completed?: boolean
           phone?: string | null
           phone_verified?: boolean
@@ -1441,6 +1444,10 @@ export type Database = {
         Returns: string
       }
       ensure_wallet: { Args: { _user: string }; Returns: string }
+      has_active_subscription: {
+        Args: { check_env?: string; user_uuid: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
