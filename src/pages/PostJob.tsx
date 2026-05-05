@@ -25,6 +25,8 @@ const schema = z.object({
 const PostJob = () => {
   const { user, loading } = useAuth();
   const nav = useNavigate();
+  const [search] = useSearchParams();
+  const editId = search.get("edit");
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
     type: "one_off" as "one_off" | "repeat" | "permanent",
@@ -35,6 +37,24 @@ const PostJob = () => {
     hourly_rate_aed: 60,
     notes: "",
   });
+
+  useEffect(() => {
+    if (!editId) return;
+    supabase.from("job_posts").select("*").eq("id", editId).maybeSingle().then(({ data }) => {
+      if (!data) return;
+      const s = new Date(data.start_at);
+      const e = new Date(data.end_at);
+      setForm({
+        type: data.type,
+        date: s.toISOString().slice(0, 10),
+        startTime: s.toTimeString().slice(0, 5),
+        endTime: e.toTimeString().slice(0, 5),
+        area: data.area ?? "",
+        hourly_rate_aed: Number(data.hourly_rate_aed),
+        notes: data.notes ?? "",
+      });
+    });
+  }, [editId]);
 
   if (loading) return <div className="grid min-h-screen place-items-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
   if (!user) return <Navigate to="/auth?mode=signin" replace />;
