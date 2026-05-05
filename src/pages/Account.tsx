@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/fees";
 import { Loader2 } from "lucide-react";
 import { NoSubscriptionCard } from "@/components/pricing/NoSubscriptionCard";
+import { NextBookingCard } from "@/components/account/NextBookingCard";
+import { LoyaltyProgress } from "@/components/LoyaltyProgress";
 
 type Booking = {
   id: string;
@@ -17,6 +19,7 @@ type Booking = {
   total_aed: number;
   status: string;
   sitter_id: string;
+  address?: string | null;
   sitters?: { full_name: string | null; photos: string[] | null } | null;
 };
 
@@ -31,7 +34,7 @@ const Account = () => {
       const [{ data: bks }, { data: loy }] = await Promise.all([
         supabase
           .from("bookings")
-          .select("id, start_at, end_at, hours, total_aed, status, sitter_id, sitters:sitter_id(full_name, photos)")
+          .select("id, start_at, end_at, hours, total_aed, status, sitter_id, address, sitters:sitter_id(full_name, photos)")
           .eq("parent_id", user.id)
           .order("start_at", { ascending: false }),
         supabase.from("loyalty").select("completed_bookings, tier").eq("parent_id", user.id).maybeSingle(),
@@ -44,42 +47,51 @@ const Account = () => {
   if (loading) return <div className="grid min-h-screen place-items-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
   if (!user) return <Navigate to="/auth" replace />;
 
+  const now = Date.now();
+  const upcoming = (bookings ?? [])
+    .filter((b) => ["pending", "confirmed", "in_progress"].includes(b.status))
+    .filter((b) => new Date(b.end_at).getTime() >= now)
+    .sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime());
+  const nextBooking = upcoming[0] ?? null;
+  const completedCount = loyalty?.completed_bookings ?? 0;
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container py-10">
-        <h1 className="text-3xl font-semibold text-pitch-black">Your account</h1>
+        <h1 className="font-display text-3xl font-semibold text-pitch-black">Your account</h1>
         <p className="mt-1 text-sm text-slate-grey">{user.email}</p>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
-            <div className="text-xs uppercase tracking-wide text-slate-grey">Loyalty tier</div>
-            <div className="mt-1 text-2xl font-semibold capitalize text-pitch-black">{loyalty?.tier ?? "bronze"}</div>
-            <div className="mt-1 text-xs text-slate-grey">{loyalty?.completed_bookings ?? 0} bookings completed</div>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
-            <div className="text-xs uppercase tracking-wide text-slate-grey">Active bookings</div>
-            <div className="mt-1 text-2xl font-semibold text-pitch-black">
-              {bookings?.filter(b => ["pending", "confirmed", "in_progress"].includes(b.status)).length ?? 0}
-            </div>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
-            <div className="text-xs uppercase tracking-wide text-slate-grey">Need a sitter?</div>
-            <Button asChild className="mt-3 w-full bg-salmon hover:bg-salmon-deep text-primary-foreground">
-              <Link to="/sitters">Find a sitter</Link>
-            </Button>
-          </div>
+        <div className="mt-8">
+          <NextBookingCard booking={nextBooking as any} />
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <NoSubscriptionCard />
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
-            <div className="text-xs uppercase tracking-wide text-slate-grey">Settings & support</div>
-            <div className="mt-3 grid gap-2">
-              <Button asChild variant="outline" className="justify-start"><Link to="/account/notifications">Notification preferences</Link></Button>
-              <Button asChild variant="outline" className="justify-start"><Link to="/auth/help">Sign-in help</Link></Button>
-              <Button asChild variant="outline" className="justify-start"><Link to="/contact">Contact support</Link></Button>
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+          <div className="rounded-3xl bg-card p-6 shadow-card">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-slate-grey">
+                  Loyalty · <span className="capitalize text-pitch-black">{loyalty?.tier ?? "bronze"}</span>
+                </div>
+                <h2 className="mt-1 font-display text-lg font-bold text-pitch-black">
+                  {completedCount} booking{completedCount === 1 ? "" : "s"} completed
+                </h2>
+              </div>
+              <span className="text-xs text-slate-grey">Lower fees as you go</span>
             </div>
+            <LoyaltyProgress completedBookings={completedCount} className="mt-5" />
+          </div>
+          <NoSubscriptionCard />
+        </div>
+
+        <div className="mt-6 rounded-3xl bg-card p-6 shadow-card">
+          <div className="text-xs font-semibold uppercase tracking-wider text-slate-grey">
+            Settings & support
+          </div>
+          <div className="mt-3 grid gap-2 sm:grid-cols-3">
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/account/notifications">Notification preferences</Link></Button>
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/auth/help">Sign-in help</Link></Button>
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/contact">Contact support</Link></Button>
           </div>
         </div>
 
