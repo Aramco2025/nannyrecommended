@@ -71,6 +71,7 @@ import NotificationPreferences from "./pages/NotificationPreferences.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SitterJobDetail from "./pages/sitter/JobDetail.tsx";
 import SitterApplications from "./pages/sitter/Applications.tsx";
+import SitterRequests from "./pages/sitter/Requests.tsx";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,7 @@ const App = () => (
             <Route path="/sitter/jobs" element={<SitterJobs />} />
             <Route path="/sitter/jobs/:id" element={<SitterJobDetail />} />
             <Route path="/sitter/applications" element={<SitterApplications />} />
+            <Route path="/sitter/requests" element={<SitterRequests />} />
             <Route path="/sitter/availability" element={<SitterAvailability />} />
             <Route path="/sitter/notifications" element={<SitterNotifications />} />
             <Route path="/messages" element={<Messages />} />
