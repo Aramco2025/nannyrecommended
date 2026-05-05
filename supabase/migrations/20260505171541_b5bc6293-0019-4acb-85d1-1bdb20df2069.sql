@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.expire_pending_payment_bookings() FROM PUBLIC, anon, authenticated;
