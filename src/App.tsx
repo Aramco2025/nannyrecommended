@@ -75,6 +75,9 @@ import SitterRequests from "./pages/sitter/Requests.tsx";
 import ParentHome from "./pages/parent/Home.tsx";
 import ParentBookings from "./pages/parent/Bookings.tsx";
 import ParentFamilyPage from "./pages/parent/Family.tsx";
+import SitterReviewsAll from "./pages/sitter/ReviewsAll.tsx";
+import Education from "./pages/sitter/Education.tsx";
+import EducationArticle from "./pages/sitter/EducationArticle.tsx";
 
 const queryClient = new QueryClient();
 
@@ -89,6 +92,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/sitters" element={<Sitters />} />
             <Route path="/sitters/:id" element={<SitterProfile />} />
+            <Route path="/sitters/:id/reviews" element={<SitterReviewsAll />} />
             <Route path="/book/:sitterId" element={<Booking />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
@@ -121,6 +125,8 @@ const App = () => (
             <Route path="/sitter/jobs/:id" element={<SitterJobDetail />} />
             <Route path="/sitter/applications" element={<SitterApplications />} />
             <Route path="/sitter/requests" element={<SitterRequests />} />
+            <Route path="/sitter/education" element={<Education />} />
+            <Route path="/sitter/education/:slug" element={<EducationArticle />} />
             <Route path="/sitter/availability" element={<SitterAvailability />} />
             <Route path="/sitter/notifications" element={<SitterNotifications />} />
             <Route path="/messages" element={<Messages />} />

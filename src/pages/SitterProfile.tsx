@@ -9,6 +9,7 @@ import {
   BadgeCheck, CheckCircle2, Calendar, Award, Heart,
 } from "lucide-react";
 import { VerificationPanel } from "@/components/trust/VerificationPanel";
+import { VerificationSheet } from "@/components/trust/VerificationSheet";
 import { InsuranceBadge } from "@/components/trust/InsuranceBadge";
 import { ReviewsSummary } from "@/components/trust/ReviewsSummary";
 import { useSitterReviews } from "@/hooks/useSitterReviews";
@@ -70,9 +71,19 @@ const SitterProfile = () => {
                     <img src={sitter.photo} alt={sitter.name} className="h-full w-full object-cover" />
                   </div>
                   {sitter.verified && (
-                    <span className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-success-green px-2.5 py-1 text-[10px] font-bold uppercase text-pure-white shadow-card">
-                      <BadgeCheck className="h-3 w-3" /> Verified
-                    </span>
+                    <VerificationSheet
+                      sitter={{
+                        verified: sitter.verified,
+                        police_cleared: sitter.policeCleared,
+                        first_aid_certified: sitter.firstAidCertified,
+                        early_years_qualified: sitter.earlyYearsQualified,
+                      }}
+                      trigger={
+                        <button className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-success-green px-2.5 py-1 text-[10px] font-bold uppercase text-pure-white shadow-card transition hover:scale-105">
+                          <BadgeCheck className="h-3 w-3" /> Verified
+                        </button>
+                      }
+                    />
                   )}
                 </div>
 
@@ -200,6 +211,13 @@ const SitterProfile = () => {
                     </div>
                   ))}
                 </div>
+                {reviews.length > 6 && (
+                  <div className="mt-4 text-center">
+                    <Link to={`/sitters/${sitter.id}/reviews`} className="text-sm font-semibold text-salmon-deep hover:text-salmon">
+                      See all {reviews.length} reviews →
+                    </Link>
+                  </div>
+                )}
               </Section>
             )}
           </div>
