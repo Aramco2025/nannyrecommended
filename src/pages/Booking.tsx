@@ -137,6 +137,19 @@ const Booking = () => {
         await supabase.from("job_applications").update({ status: "declined" }).eq("job_post_id", qJob).neq("id", qApp).eq("status", "pending");
         await supabase.from("job_posts").update({ status: "filled" }).eq("id", qJob);
       }
+      if (saveAsRepeat && user) {
+        const start = new Date(`${date}T${startTime}:00`);
+        await supabase.from("recurring_bookings").insert({
+          parent_id: user.id,
+          sitter_id: sitter.id,
+          day_of_week: start.getDay(),
+          start_time: startTime + ":00",
+          hours,
+          address: address || null,
+          notes: notes || null,
+          children_ids: selectedChildren,
+        });
+      }
       setClientSecret(data.client_secret);
     } catch (err: any) {
       toast({ title: "Could not start checkout", description: err.message, variant: "destructive" });
