@@ -20,6 +20,7 @@ import {
 import { AvailabilityFilter, type SlotFilter } from "@/components/AvailabilityFilter";
 import { useAvailableSitters } from "@/hooks/useAvailableSitters";
 import { MobileTabBar } from "@/components/MobileTabBar";
+import { AreaDensityIndicator } from "@/components/AreaDensityIndicator";
 
 type Section = { title: string; items: { key: FilterKey; label: string }[] };
 
@@ -343,6 +344,8 @@ const Sitters = () => {
                 <span className="font-semibold text-success-green">●</span> {visible.length} match{visible.length === 1 ? "" : "es"}
               </p>
             </div>
+
+            <AreaDensityIndicator area={null} visibleCount={visible.length} />
 
             {isLoading ? (
               <div className="py-20 text-center text-sm text-slate-grey">Loading sitters…</div>
