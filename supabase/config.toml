@@ -17,3 +17,12 @@ verify_jwt = false
 
 [functions.auth-help-ticket]
 verify_jwt = false
+
+[functions.refund-booking]
+verify_jwt = false
+
+[functions.stripe-connect-onboarding]
+verify_jwt = false
+
+[functions.stripe-transfer-payout]
+verify_jwt = false
