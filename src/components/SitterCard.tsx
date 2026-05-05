@@ -57,7 +57,10 @@ export function SitterCard({ sitter }: { sitter: UISitter }) {
                 <span className="font-medium text-pitch-black">{sitter.rating ? `${Math.round(sitter.rating * 20)}%` : "New"}</span>
               </span>
               {sitter.bookingsCompleted > 0 && (
-                <span>{sitter.bookingsCompleted} bookings</span>
+                <span>{sitter.bookingsCompleted} sits</span>
+              )}
+              {sitter.yearsExperience > 0 && (
+                <span>{sitter.yearsExperience}y exp</span>
               )}
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" /> {sitter.area}
