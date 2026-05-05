@@ -85,6 +85,9 @@ Deno.serve(async (req) => {
         status: "pending_payment",
         address: address ?? null,
         notes: notes ?? null,
+        children_ids: Array.isArray(children_ids) ? children_ids : [],
+        pets: Array.isArray(pets) ? pets : [],
+        parking: parking ?? null,
       })
       .select("id")
       .single();
