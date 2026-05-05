@@ -48,6 +48,14 @@ export default function SitterSetRate() {
         const ft = !!data.open_to_full_time;
         const bs = data.open_to_babysitting !== false;
         setMode(ft && bs ? "both" : ft ? "fulltime" : "babysitting");
+        setSurcharges({
+          evening: Number(data.evening_surcharge_aed) || 0,
+          lateNight: Number(data.late_night_surcharge_aed) || 0,
+          weekend: Number(data.weekend_surcharge_aed) || 0,
+          holiday: Number(data.holiday_surcharge_aed) || 0,
+          multiChild: Number(data.multi_child_surcharge_aed) || 0,
+          lastMinute: Number(data.last_minute_surcharge_aed) || 0,
+        });
       }
     })();
   }, [user]);
