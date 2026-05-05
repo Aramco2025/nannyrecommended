@@ -164,13 +164,13 @@ const SitterDashboard = () => {
               )}
               {bookings.map(b => (
                 <div key={b.id} className="rounded-2xl border border-border bg-card p-4 shadow-card">
-                  <div className="flex items-center justify-between">
+                  <a href={`/bookings/${b.id}`} className="flex items-center justify-between">
                     <div>
                       <div className="font-medium text-pitch-black">{new Date(b.start_at).toLocaleString()}</div>
                       <div className="text-xs text-slate-grey">{b.hours}h · payout {formatCurrency(Number(b.sitter_payout_aed))}</div>
                     </div>
                     <span className="rounded-full bg-off-white px-2 py-0.5 text-[11px] font-medium capitalize text-slate-grey">{b.status.replace("_", " ")}</span>
-                  </div>
+                  </a>
                   {b.status === "pending" && (
                     <div className="mt-3 flex gap-2">
                       <Button size="sm" onClick={() => acceptBooking(b.id)}>Accept</Button>
@@ -178,7 +178,7 @@ const SitterDashboard = () => {
                     </div>
                   )}
                   {b.status === "confirmed" && (
-                    <div className="mt-3 text-xs text-slate-grey">Waiting for the parent to confirm completion. Payment releases to your wallet automatically.</div>
+                    <div className="mt-3 text-xs text-slate-grey">Open the booking to start the sit when you arrive — the timer runs until you tap End sit.</div>
                   )}
                 </div>
               ))}

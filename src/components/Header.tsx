@@ -3,8 +3,9 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { LogOut, User as UserIcon, Menu, X } from "lucide-react";
+import { LogOut, User as UserIcon, Menu, Bell } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const guestLinks = [
   { to: "/sitters", label: "Find a sitter" },
@@ -31,6 +32,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const isSitter = roles.includes("sitter");
   const links = !user ? guestLinks : isSitter ? sitterLinks : parentLinks;
+  const { data: notifications } = useNotifications();
+  const unread = (notifications ?? []).filter(n => !n.read_at).length;
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-medium transition-colors ${isActive ? "text-pitch-black" : "text-slate-grey hover:text-pitch-black"}`;
@@ -56,6 +59,16 @@ export function Header() {
             </>
           ) : (
             <>
+              <Button asChild variant="ghost" size="icon" className="relative hidden md:inline-flex" aria-label="Notifications">
+                <Link to="/notifications">
+                  <Bell className="h-4 w-4" />
+                  {unread > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-salmon px-1 text-[10px] font-bold text-pure-white">
+                      {unread > 9 ? "9+" : unread}
+                    </span>
+                  )}
+                </Link>
+              </Button>
               <Button asChild variant="ghost" size="sm" className="hidden gap-1.5 md:inline-flex">
                 <Link to={isSitter ? "/sitter/dashboard" : "/account"}>
                   <UserIcon className="h-4 w-4" /> {isSitter ? "Dashboard" : "Account"}

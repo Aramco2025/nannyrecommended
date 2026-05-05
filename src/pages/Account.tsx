@@ -81,7 +81,7 @@ const Account = () => {
             const canRelease = b.status === "confirmed" || b.status === "in_progress";
             return (
               <div key={b.id} className="rounded-2xl border border-border bg-card p-4 shadow-card">
-                <div className="flex items-center justify-between gap-4">
+                <Link to={`/bookings/${b.id}`} className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <img src={b.sitters?.photos?.[0] ?? ""} alt="" className="h-12 w-12 rounded-full bg-muted object-cover" />
                     <div>
@@ -95,7 +95,7 @@ const Account = () => {
                       {b.status.replace("_", " ")}
                     </div>
                   </div>
-                </div>
+                </Link>
                 {canRelease && (
                   <Button size="sm" className="mt-3 bg-success-green hover:bg-success-green/90 text-primary-foreground"
                     onClick={async () => {

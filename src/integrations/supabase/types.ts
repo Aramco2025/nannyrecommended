@@ -57,6 +57,7 @@ export type Database = {
           address: string | null
           created_at: string
           end_at: string
+          ended_at: string | null
           escrow_held: boolean
           hourly_rate_aed: number
           hours: number
@@ -70,6 +71,7 @@ export type Database = {
           sitter_id: string
           sitter_payout_aed: number
           start_at: string
+          started_at: string | null
           status: Database["public"]["Enums"]["booking_status"]
           stripe_session_id: string | null
           subtotal_aed: number
@@ -80,6 +82,7 @@ export type Database = {
           address?: string | null
           created_at?: string
           end_at: string
+          ended_at?: string | null
           escrow_held?: boolean
           hourly_rate_aed: number
           hours: number
@@ -93,6 +96,7 @@ export type Database = {
           sitter_id: string
           sitter_payout_aed: number
           start_at: string
+          started_at?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           stripe_session_id?: string | null
           subtotal_aed: number
@@ -103,6 +107,7 @@ export type Database = {
           address?: string | null
           created_at?: string
           end_at?: string
+          ended_at?: string | null
           escrow_held?: boolean
           hourly_rate_aed?: number
           hours?: number
@@ -116,6 +121,7 @@ export type Database = {
           sitter_id?: string
           sitter_payout_aed?: number
           start_at?: string
+          started_at?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           stripe_session_id?: string | null
           subtotal_aed?: number
