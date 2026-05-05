@@ -22,7 +22,6 @@ const rows: [string, string, string][] = [
 ];
 
 const Pricing = () => {
-const Pricing = () => {
   const { user } = useAuth();
   const { isFamilyPlus } = useSubscription();
   const navigate = useNavigate();
@@ -166,6 +165,7 @@ const Pricing = () => {
       </main>
 
       <Footer />
+      <FamilyPlusUpgradeDialog open={upgradeOpen} onOpenChange={setUpgradeOpen} />
     </div>
   );
 };
