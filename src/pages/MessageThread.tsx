@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, Send, ArrowLeft } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { ThreadSafetyBanner } from "@/components/messaging/ThreadSafetyBanner";
+import { ContactWarningDialog } from "@/components/messaging/ContactWarningDialog";
+import { detectContactRisk } from "@/lib/messaging/safety";
 
 const MessageThread = () => {
   const { bookingId } = useParams();
@@ -16,6 +19,7 @@ const MessageThread = () => {
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [meta, setMeta] = useState<{ sitterName: string; parentId: string } | null>(null);
+  const [warning, setWarning] = useState<{ reasons: string[] } | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,17 +33,28 @@ const MessageThread = () => {
   if (loading) return <div className="grid min-h-screen place-items-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
   if (!user) return <Navigate to="/auth?mode=signin" replace />;
 
-  const send = async () => {
+  const doSend = async () => {
     if (!text.trim() || !bookingId) return;
     setBusy(true);
     try {
       await sendMessage(bookingId, text.trim());
       setText("");
+      setWarning(null);
     } catch (e: any) {
       toast({ title: "Couldn't send", description: e.message, variant: "destructive" });
     } finally {
       setBusy(false);
     }
+  };
+
+  const send = () => {
+    if (!text.trim()) return;
+    const risk = detectContactRisk(text);
+    if (risk.level === "hard") {
+      setWarning({ reasons: risk.reasons });
+      return;
+    }
+    void doSend();
   };
 
   return (
