@@ -242,6 +242,14 @@ const Booking = () => {
               </Field>
             </Card>
 
+            <label className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 text-sm text-pitch-black">
+              <Checkbox checked={saveAsRepeat} onCheckedChange={(v) => setSaveAsRepeat(!!v)} />
+              <span>
+                <span className="block font-medium">Save as weekly repeat</span>
+                <span className="block text-xs text-slate-grey">We'll suggest this slot every {new Date(`${date}T${startTime}:00`).toLocaleDateString("en-GB",{weekday:"long"})} — one tap to confirm.</span>
+              </span>
+            </label>
+
             <div className="rounded-2xl border border-border bg-off-white p-4 text-xs text-slate-grey">
               🔒 Your payment is held safely until the booking is complete.
             </div>
