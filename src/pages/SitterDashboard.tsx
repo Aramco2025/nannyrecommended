@@ -139,6 +139,7 @@ const SitterDashboard = () => {
               )}
             </a></Button>
             <Button asChild variant="outline" size="sm"><a href="/sitter/applications">My applications</a></Button>
+            <Button asChild variant="outline" size="sm"><a href="/sitter/education">Education hub</a></Button>
             <Button asChild variant="outline" size="sm"><a href="/sitter/set-rate">Set your rate</a></Button>
             <Button asChild variant="outline" size="sm"><a href="/sitter/payment-setup">Payout method</a></Button>
             <Button asChild size="sm" className="bg-salmon hover:bg-salmon-deep"><a href="/sitter/wallet">Open wallet</a></Button>
