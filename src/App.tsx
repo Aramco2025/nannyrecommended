@@ -66,6 +66,7 @@ import Notifications from "./pages/Notifications.tsx";
 import ForgotPassword from "./pages/ForgotPassword.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminBookings from "./pages/AdminBookings.tsx";
+import AuthHelp from "./pages/AuthHelp.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -92,6 +93,7 @@ const App = () => (
             <Route path="/sitter/set-rate" element={<SitterSetRate />} />
             <Route path="/admin/payouts" element={<AdminPayouts />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/auth/help" element={<AuthHelp />} />
             <Route path="/account" element={<Account />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />

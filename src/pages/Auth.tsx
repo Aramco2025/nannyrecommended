@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "@/hooks/use-toast";
+import { SmsOtpForm } from "@/components/auth/SmsOtpForm";
+import { logAuthAttempt } from "@/lib/auth/methods";
 
 const signInSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
@@ -31,6 +33,12 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [failedTries, setFailedTries] = useState(0);
+  const [showSms, setShowSms] = useState(false);
+
+  const recordError = (where: string, message: string) => {
+    sessionStorage.setItem("nr_last_auth_error", JSON.stringify({ at: where, message, ts: Date.now() }));
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +58,21 @@ const Auth = () => {
             data: { full_name: parsed.data.fullName, role: parsed.data.role },
           },
         });
-        if (error) throw error;
+        if (error) {
+          // Dual-account / role-merge nudge
+          if (/already.*registered|user already/i.test(error.message)) {
+            recordError("signup_dup", error.message);
+            await logAuthAttempt({ email_or_phone: parsed.data.email, method: "email_password", success: false, error_code: "duplicate_account", error_message: error.message });
+            toast({
+              title: "You already have an account",
+              description: "Sign in instead — we'll add the new role to your existing account.",
+            });
+            setMode("signin");
+            return;
+          }
+          throw error;
+        }
+        await logAuthAttempt({ email_or_phone: parsed.data.email, method: "email_password", success: true });
         toast({ title: "Welcome!", description: "Account created." });
         navigate("/onboarding/region");
       } else {
@@ -62,7 +84,13 @@ const Auth = () => {
         const { error } = await supabase.auth.signInWithPassword({
           email: parsed.data.email, password: parsed.data.password,
         });
-        if (error) throw error;
+        if (error) {
+          await logAuthAttempt({ email_or_phone: parsed.data.email, method: "email_password", success: false, error_code: "signin_failed", error_message: error.message });
+          recordError("signin", error.message);
+          setFailedTries((n) => n + 1);
+          throw error;
+        }
+        await logAuthAttempt({ email_or_phone: parsed.data.email, method: "email_password", success: true });
         toast({ title: "Signed in" });
         navigate("/account");
       }
@@ -171,6 +199,18 @@ const Auth = () => {
             </Button>
           </form>
 
+          <div className="my-5 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <button type="button" onClick={() => setShowSms((v) => !v)} className="text-xs uppercase tracking-wider text-slate-grey underline">
+              {showSms ? "Hide SMS option" : "Or use SMS code instead"}
+            </button>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          {showSms && (
+            <SmsOtpForm onVerified={() => { toast({ title: "Phone verified" }); navigate("/account"); }} />
+          )}
+
           <div className="mt-5 text-center text-sm text-slate-grey">
             {mode === "signup" ? (
               <>Already have an account?{" "}
@@ -187,7 +227,14 @@ const Auth = () => {
               <Link to="/forgot-password" className="text-slate-grey underline hover:text-pitch-black">Forgot password?</Link>
             </div>
           )}
+          {failedTries >= 3 && (
+            <div className="mt-3 rounded-lg bg-salmon/10 p-3 text-center text-xs text-salmon-deep">
+              Stuck? <Link to="/auth/help" className="font-medium underline">Talk to support</Link> — we'll get you in within 30 minutes.
+            </div>
+          )}
           <div className="mt-2 text-center text-xs text-slate-grey">
+            <Link to="/auth/help" className="underline">I can't sign in / I never got my code</Link>
+            {" · "}
             <Link to="/" className="underline">Back to home</Link>
           </div>
         </div>

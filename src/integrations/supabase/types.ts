@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      auth_attempts: {
+        Row: {
+          created_at: string
+          email_or_phone: string | null
+          error_code: string | null
+          error_message: string | null
+          id: string
+          ip_hint: string | null
+          method: string
+          success: boolean
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email_or_phone?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          ip_hint?: string | null
+          method: string
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email_or_phone?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          ip_hint?: string | null
+          method?: string
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       availability: {
         Row: {
           created_at: string
@@ -430,10 +469,47 @@ export type Database = {
           },
         ]
       }
+      notification_prefs: {
+        Row: {
+          email_enabled: boolean
+          marketing_enabled: boolean
+          paused_until: string | null
+          push_enabled: boolean
+          quiet_hours_end: number | null
+          quiet_hours_start: number | null
+          sms_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          email_enabled?: boolean
+          marketing_enabled?: boolean
+          paused_until?: string | null
+          push_enabled?: boolean
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
+          sms_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          email_enabled?: boolean
+          marketing_enabled?: boolean
+          paused_until?: string | null
+          push_enabled?: boolean
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
+          sms_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
           created_at: string
+          dedup_key: string | null
           id: string
           link: string | null
           read_at: string | null
@@ -444,6 +520,7 @@ export type Database = {
         Insert: {
           body?: string | null
           created_at?: string
+          dedup_key?: string | null
           id?: string
           link?: string | null
           read_at?: string | null
@@ -454,6 +531,7 @@ export type Database = {
         Update: {
           body?: string | null
           created_at?: string
+          dedup_key?: string | null
           id?: string
           link?: string | null
           read_at?: string | null
@@ -838,6 +916,105 @@ export type Database = {
           verified?: boolean
           video_intro_url?: string | null
           years_experience?: number
+        }
+        Relationships: []
+      }
+      sms_otp_codes: {
+        Row: {
+          attempts: number
+          code_hash: string
+          created_at: string
+          expires_at: string
+          id: string
+          phone: string
+          used: boolean
+        }
+        Insert: {
+          attempts?: number
+          code_hash: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          phone: string
+          used?: boolean
+        }
+        Update: {
+          attempts?: number
+          code_hash?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          phone?: string
+          used?: boolean
+        }
+        Relationships: []
+      }
+      sms_unsubscribes: {
+        Row: {
+          phone: string
+          source: string
+          unsubscribed_at: string
+        }
+        Insert: {
+          phone: string
+          source?: string
+          unsubscribed_at?: string
+        }
+        Update: {
+          phone?: string
+          source?: string
+          unsubscribed_at?: string
+        }
+        Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          body: string
+          category: string
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          debug_info: Json
+          id: string
+          priority: string
+          resolved_at: string | null
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          body: string
+          category: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          debug_info?: Json
+          id?: string
+          priority?: string
+          resolved_at?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          body?: string
+          category?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          debug_info?: Json
+          id?: string
+          priority?: string
+          resolved_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
