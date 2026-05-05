@@ -70,20 +70,28 @@ const PostJob = () => {
     try {
       const start_at = new Date(`${form.date}T${form.startTime}:00`).toISOString();
       const end_at = new Date(`${form.date}T${form.endTime}:00`).toISOString();
-      const { data: inserted, error } = await supabase.from("job_posts").insert({
-        parent_id: user.id,
+      const payload = {
         type: form.type,
         start_at,
         end_at,
         area: form.area,
         hourly_rate_aed: form.hourly_rate_aed,
         notes: form.notes || null,
-      }).select("id").single();
-      if (error) throw error;
-      toast({ title: "Job posted", description: "Sitters in your area will be notified." });
-      nav(`/parent/jobs/${inserted.id}/applicants`);
+      };
+      if (editId) {
+        const { error } = await supabase.from("job_posts").update(payload).eq("id", editId);
+        if (error) throw error;
+        toast({ title: "Job updated" });
+        nav(`/parent/jobs/${editId}/applicants`);
+      } else {
+        const { data: inserted, error } = await supabase.from("job_posts")
+          .insert({ parent_id: user.id, ...payload }).select("id").single();
+        if (error) throw error;
+        toast({ title: "Job posted", description: "Sitters in your area are being notified." });
+        nav(`/parent/jobs/${inserted.id}/applicants`);
+      }
     } catch (e: any) {
-      toast({ title: "Couldn't post job", description: e.message, variant: "destructive" });
+      toast({ title: "Couldn't save job", description: e.message, variant: "destructive" });
     } finally {
       setBusy(false);
     }
