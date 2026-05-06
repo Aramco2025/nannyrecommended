@@ -103,6 +103,8 @@ const SitterProfile = () => {
                     <p className="mt-4 text-base font-medium text-pitch-black">{sitter.headline}</p>
                   )}
 
+                  <div className="mt-3"><ActivitySignal lastActiveAt={sitter.lastActiveAt} avgResponseMinutes={sitter.avgResponseMinutes} /></div>
+
                   <div className="mt-4 flex flex-wrap gap-2">
                     {sitter.policeCleared && <Pill icon={ShieldCheck} label="Police cleared" />}
                     {sitter.firstAidCertified && <Pill icon={Heart} label="First aid" />}
