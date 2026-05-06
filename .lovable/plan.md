@@ -1,103 +1,71 @@
-## App Store Readiness Plan
+ns
+# iOS-Only App Store Readiness Plan
 
-Goal: get the app submission-ready for the Apple App Store (and Google Play), and avoid Apple's 30% IAP cut on Family+ by routing subscriptions to the website instead.
+You have an Apple Developer account — let's get the app submission-ready for iOS only (we'll skip Android entirely for now). Most of the foundation (Capacitor, account deletion, web-only Family+ routing, safe-area padding) is already in place from the previous wave. This plan closes the remaining gaps.
 
----
+## Wave I-A: Sign in with Apple (mandatory for App Store)
 
-### Wave S-A — Capacitor native wrap
+Apple **requires** Sign in with Apple in any app that offers third-party login (you have Google + Facebook coming soon), so this is a hard blocker.
 
-Wrap the existing web app as a native iOS + Android binary so it can be submitted to the stores.
+- The `lovable.auth.signInWithOAuth("apple", ...)` call already exists in `src/pages/Auth.tsx` and routes to a working Apple button — confirmed working on web.
+- For iOS native, the same call works through the in-app browser via the OAuth broker. No native plugin needed for the MVP path.
+- Action: verify Apple provider is enabled in Lovable Cloud → Auth Settings (managed mode is fine for v1; BYOC can come later for custom branding).
+- Add a short "Continue with Apple" priority on iOS (move Apple button to top of the OAuth list when `isNativeApp()` is true).
 
-- Install `@capacitor/core`, `@capacitor/cli` (dev), `@capacitor/ios`, `@capacitor/android`.
-- Create `capacitor.config.ts` with:
-  - `appId: app.lovable.e1e5d17a34de4ddfa367ad73ca194925`
-  - `appName: nannyrecommended`
-  - `server.url` pointing at the sandbox preview for hot-reload during dev
-- Add a `Capacitor.isNativePlatform()` helper (`src/lib/platform.ts`) used by later waves to branch UI behaviour (subscription routing, push, etc.).
-- Document the local steps the user must run on their own Mac: `npx cap add ios/android`, `npx cap sync`, `npx cap run ios`.
+## Wave I-B: iOS-only Capacitor configuration
 
-No store assets generated in this wave — that's a manual step on the user's Mac with Xcode.
+- Update `capacitor.config.ts`: keep iOS settings, drop the dev-server hot-reload `url`/`cleartext` block before production builds (leave a commented dev block so you can switch back). Production must bundle `dist/` directly — Apple rejects apps that load remote arbitrary HTML.
+- Add iOS-specific plugin config: `ios.contentInset = "always"`, `ios.scheme = "nannyrecommended"`, `ios.limitsNavigationsToAppBoundDomains = true`.
+- Add `App` plugin handling for back-gesture / deep links (`@capacitor/app`) so push-notification taps and universal links route through React Router.
 
----
+## Wave I-C: Required iOS assets & metadata
 
-### Wave S-B — App Store compliance: Sign in with Apple + account deletion
+- Create `public/apple-app-icon-1024.png` placeholder spec + `STORE_SUBMISSION.md` section listing every required size (Xcode generates the rest from the 1024 master in the asset catalog).
+- Create `public/ios-launch-screen.png` spec (2732×2732 centered logo on cream background to match brand).
+- Add iOS-specific meta to `index.html`: `apple-mobile-web-app-capable`, `apple-mobile-web-app-status-bar-style`, `apple-touch-icon` link tags (helps when running via in-app browser).
+- App Store metadata template in `STORE_SUBMISSION.md`: app name, subtitle, keywords, description, what's new, support URL, privacy policy URL, marketing URL, age rating answers, category (Lifestyle / primary, Kids / secondary — but **not** Kids category since that imposes COPPA constraints; document this choice).
 
-Apple rejects apps that offer Google login without also offering Apple, and now requires in-app account deletion.
+## Wave I-D: App Privacy & data declarations
 
-- **Sign in with Apple**
-  - Add Apple as an OAuth provider option in `src/pages/Auth.tsx` next to Google.
-  - Use the existing Lovable Cloud managed Apple auth (no Apple Developer credentials needed up front; user can swap to BYOC later).
-  - Add a small Apple logo button matching the existing Google button styling.
-- **In-app account deletion**
-  - Add a "Delete my account" section at the bottom of `src/pages/Account.tsx` with a confirmation dialog.
-  - Create edge function `delete-account` (verify_jwt = true) that:
-    - Verifies the caller, cancels any active Stripe subscription, anonymises `profiles`/`sitters` rows (so reviews/bookings stay referentially intact), then calls `auth.admin.deleteUser`.
-  - Sign the user out and route to `/` after success.
-- **Privacy & support links** — make sure the Apple-required URLs (`/privacy`, `/contact`) are linked from Account.
+Apple's "App Privacy" questionnaire is now strict. Create `STORE_SUBMISSION_PRIVACY.md` documenting exactly what to declare:
+- Data linked to user: name, email, phone, address, payment info, photos, messages, location (approximate), user content, identifiers.
+- Data used for tracking: none (we don't use IDFA).
+- Purposes: app functionality, account management, customer support.
+- Third parties: Stripe (payments), Lovable Cloud (backend), Twilio (SMS OTP).
+- Add a `/privacy` review pointing reviewers to existing `Privacy.tsx` (already exists) — and add a one-line "data deletion" link there to the Account → Danger Zone we just built.
 
----
+## Wave I-E: Reviewer-friendly subscription wording
 
-### Wave S-C — Family+ subscription routing (web-only billing)
+Apple reviewers are tough on "external purchase" routing. Polish the native Family+ card and Pricing page copy to match the Reader-rule pattern exactly:
+- Remove the word "Upgrade" on native — already done.
+- Remove all prices on native — verify, then add a line: "Family Plus is a website feature. Visit nannyrecommended.com to learn more."
+- Add a hidden "Reviewer test account" banner in `STORE_SUBMISSION.md` with credentials + a 5-step walkthrough so the reviewer can complete a full booking.
 
-This is the headline change you asked for: don't sell Family+ inside the iOS app. Instead, send users to the website to subscribe, then their account auto-unlocks.
+## Wave I-F: Submission handoff doc rewrite
 
-- **Native detection**
-  - In `FamilyPlusUpgradeDialog.tsx` and `FamilyPlusCard.tsx`, branch on `Capacitor.isNativePlatform()`.
-  - **Native (iOS/Android app):** replace the "Subscribe" CTA with a "Manage on web" button + short copy: "To start or change Family+, visit nannyrecommended.com/pricing on any browser. Your account here will update automatically."
-    - Tapping it opens the URL in the system browser (`window.open` → Capacitor Browser plugin).
-    - Critically: do **not** mention pricing, plans, or external purchase incentives in the native UI beyond "manage on web" — Apple's guideline 3.1.3(a) "Reader" exception requires no buy buttons, no price calls-to-action.
-  - **Web:** unchanged Stripe Embedded Checkout flow.
-- **Cross-device unlock**
-  - Already handled: subscriptions are keyed to `user_id` via webhook, so a web purchase under the same login unlocks Family+ on the native app automatically through the existing `useSubscription` hook.
-- **Customer portal**
-  - Same treatment in `src/pages/Pricing.tsx` / Account page: native build hides "Manage subscription" in-app and links to the web portal.
-- **Edge cases**
-  - Add a small "Refresh status" button on Family+ gated screens so users coming back from the web can force-refresh `useSubscription` if realtime hasn't fired yet.
-
-This keeps 100% of Family+ revenue (vs. losing 30% to Apple IAP) and is the same model Spotify/Netflix/Audible use.
+Rewrite `STORE_SUBMISSION.md` to be **iOS-only and step-by-step**:
+1. Apple Developer Console — create App ID, enable Sign in with Apple capability.
+2. App Store Connect — create app record (bundle ID `app.lovable.e1e5d17a34de4ddfa367ad73ca194925` — note: you may want to change this to `com.nannyrecommended.app` before first submission since bundle IDs are immutable; will flag this for decision).
+3. On a Mac: `git pull && npm install && npm run build && npx cap add ios && npx cap sync ios && npx cap open ios`.
+4. In Xcode: set team, signing, version 1.0.0 / build 1, capabilities (Sign in with Apple, Push if used), upload icon to asset catalog.
+5. Archive → Distribute → App Store Connect.
+6. Fill in metadata, App Privacy, reviewer notes (paste from doc), submit.
+7. Common rejection reasons + how we already handle them.
 
 ---
 
-### Wave S-D — Mobile polish + native niceties
+## Decision needed before I start
 
-Small but important once the app runs natively.
+**Bundle identifier**: the current Capacitor config uses `app.lovable.e1e5d17a34de4ddfa367ad73ca194925`. This is fine for testing but looks unprofessional in App Store listings (and is permanent once you submit). I recommend `com.nannyrecommended.app`. I'll ask you in a quick question after you approve.
 
-- **Safe areas:** add `env(safe-area-inset-*)` padding to `Header` and `MobileTabBar` so content doesn't sit under the iPhone notch/home indicator.
-- **Status bar:** install `@capacitor/status-bar`, set style to match the app's light/dark theme.
-- **Splash screen:** install `@capacitor/splash-screen`, add a basic branded splash (logo on background colour). Real artwork comes later from the user.
-- **Keyboard:** install `@capacitor/keyboard` to auto-resize inputs (chat, booking forms).
-- **External links:** route all `target="_blank"` (Privacy, Terms, Stripe portal, web pricing) through `@capacitor/browser` so they open in the in-app system browser instead of trying to navigate the WebView.
-- **App icon placeholder:** drop a 1024×1024 placeholder into the `ios/` and `android/` folders' resource locations (final icon is the user's job).
+## What you'll do manually (I can't from here)
+- Enable Sign in with Apple in Lovable Cloud Auth Settings (one click).
+- Run the Xcode steps on a Mac.
+- Upload screenshots (10 required at 6.7" + 6.5"; you can generate via simulator).
+- Pay $99 (already done) and submit.
 
----
+## What you do NOT need to do
+- Android setup, Google Play console, anything about Android Studio.
+- Native IAP / StoreKit — Family+ stays web-only as before.
 
-### Wave S-E — Submission checklist + handoff doc
-
-A read-me page in the repo (`STORE_SUBMISSION.md`) the user can follow on their Mac.
-
-Covers:
-1. Apple Developer account ($99/yr) signup link.
-2. Bundle ID + provisioning profile in App Store Connect.
-3. `npx cap sync ios && npx cap open ios` → archive in Xcode → upload to App Store Connect.
-4. Required metadata: app description, keywords, age rating questionnaire (childcare → likely 4+), screenshots for 6.7", 6.5", 5.5" iPhone + 12.9" iPad.
-5. App Privacy questionnaire — what data the app collects (email, name, location for sitter search, payment via web).
-6. Review notes template explicitly stating: "Family+ subscription is sold only on our website (nannyrecommended.com). The app provides no in-app purchase. This follows the 'Reader' app model (3.1.3(a))."
-7. Same outline for Google Play (Play Console $25 one-time, easier review).
-
----
-
-### Technical notes
-
-- No new tables required.
-- New edge function: `delete-account` (verify_jwt = true).
-- New files (approx): `capacitor.config.ts`, `src/lib/platform.ts`, `src/lib/native/openExternal.ts`, `STORE_SUBMISSION.md`.
-- Edited files: `src/pages/Auth.tsx`, `src/pages/Account.tsx`, `src/pages/Pricing.tsx`, `src/components/payments/FamilyPlusCard.tsx`, `src/components/payments/FamilyPlusUpgradeDialog.tsx`, `src/components/payments/FamilyPlusGates.tsx`, `src/components/Header.tsx`, `src/components/MobileTabBar.tsx`, `index.html`, `src/index.css` (safe areas).
-- Push notifications (APNs/FCM) deliberately deferred — needs Apple Developer account + certs to wire up. Web-side notifications keep working in the meantime.
-
----
-
-### Order
-
-S-A → S-B → S-C → S-D → S-E, sequentially. After S-E you'll have a buildable iOS project, all Apple compliance bases covered, and Family+ revenue routed through the web at full margin. The remaining manual steps (Mac, Xcode, Apple Developer account, screenshots, submission) are yours.
-
-Approve to start with **Wave S-A**.
+Approve and I'll start with **Wave I-A** (Sign in with Apple priority on iOS) and **Wave I-B** (iOS-only Capacitor config), then ask the bundle-ID question before generating the rewritten submission doc.
