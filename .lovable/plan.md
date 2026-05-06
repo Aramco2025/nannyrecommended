@@ -1,56 +1,103 @@
-## Final 3 Waves
+## App Store Readiness Plan
 
-Closes the remaining gap against the 78-screen spec. No new tables required — all data lives in `sitters`, `bookings`, `children`, `reviews`, `profiles`, `user_roles`.
-
----
-
-### Wave L — Browse enhancements + Direct Requests
-
-**New screen**
-- `/sitter/requests` — inbox of pending bookings where a parent picked the sitter directly (no application). Accept / decline buttons update `bookings.status` (`confirmed` or `cancelled`).
-
-**Enhancements on `/sitters`**
-- List ↔ Map toggle. "Map" view is a lightweight CSS grid grouping sitter pins by `area` (no Mapbox key). Pins open a mini preview card → profile.
-- Compare drawer: each sitter card gets a "Compare" checkbox (max 3). Sticky bottom drawer shows side-by-side rate / rating / verifications / years exp / response, with "Book" CTAs.
-
-**Files**
-- create `src/pages/sitter/Requests.tsx`, `src/components/sitters/SittersMapView.tsx`, `src/components/sitters/CompareDrawer.tsx`, `src/hooks/useDirectRequests.ts`
-- edit `src/pages/Sitters.tsx`, `src/pages/SitterDashboard.tsx` (add request count badge), `src/App.tsx` (route)
+Goal: get the app submission-ready for the Apple App Store (and Google Play), and avoid Apple's 30% IAP cut on Family+ by routing subscriptions to the website instead.
 
 ---
 
-### Wave M — Parent Home, Family hub, Bookings list, Role switcher
+### Wave S-A — Capacitor native wrap
 
-**New screens**
-- `/parent/home` — dashboard: next booking hero (reuse `NextBookingCard`), quick actions (Find sitter, Post job, Messages), recent favourites, active job posts.
-- `/parent/family` — children CRUD against `children` table (name, dob, notes), with avatar initials.
-- `/parent/bookings` — dedicated paginated list with filters (Upcoming / Past / Cancelled), pulled out of Account page.
+Wrap the existing web app as a native iOS + Android binary so it can be submitted to the stores.
 
-**Cross-cutting**
-- `RoleSwitcher` component in `Header` for users with both `parent` and `sitter` rows in `user_roles`. Writes `profiles.active_role`, swaps the nav links + tab bar destinations. Hidden for single-role users.
+- Install `@capacitor/core`, `@capacitor/cli` (dev), `@capacitor/ios`, `@capacitor/android`.
+- Create `capacitor.config.ts` with:
+  - `appId: app.lovable.e1e5d17a34de4ddfa367ad73ca194925`
+  - `appName: nannyrecommended`
+  - `server.url` pointing at the sandbox preview for hot-reload during dev
+- Add a `Capacitor.isNativePlatform()` helper (`src/lib/platform.ts`) used by later waves to branch UI behaviour (subscription routing, push, etc.).
+- Document the local steps the user must run on their own Mac: `npx cap add ios/android`, `npx cap sync`, `npx cap run ios`.
 
-**Files**
-- create `src/pages/parent/Home.tsx`, `src/pages/parent/Family.tsx`, `src/pages/parent/Bookings.tsx`, `src/components/parent/ChildEditor.tsx`, `src/components/RoleSwitcher.tsx`, `src/hooks/useChildren.ts`, `src/hooks/useUserRoles.ts`
-- edit `src/components/Header.tsx`, `src/pages/Account.tsx` (link to new bookings page), `src/App.tsx` (3 routes)
-
----
-
-### Wave N — Polish
-
-- **Full reviews page** `/sitters/:id/reviews` — paginated review list with filter by stars.
-- **Verification badge sheet** — opening any "Verified" badge on a profile shows a slide-up sheet listing what's been checked (ID, police, references, first aid) and dates.
-- **Sitter education hub** `/sitter/education` — static articles grid (tips, safety, growing earnings) seeded from a local TS array, opens `/sitter/education/:slug` reader.
-- **Empty states** — uniform `EmptyState` component used across Favourites, Messages, Notifications, Applications.
-- **QA pass** — sweep new pages for missing `Footer`, broken links, mobile padding, dark-text contrast.
-
-**Files**
-- create `src/pages/sitter/ReviewsAll.tsx`, `src/components/trust/VerificationSheet.tsx`, `src/pages/sitter/Education.tsx`, `src/pages/sitter/EducationArticle.tsx`, `src/lib/education/articles.ts`, `src/components/EmptyState.tsx`
-- edit `src/components/trust/VerificationPanel.tsx`, `src/pages/SitterProfile.tsx`, `src/pages/Favourites.tsx`, `src/pages/Messages.tsx`, `src/pages/Notifications.tsx`, `src/pages/sitter/Applications.tsx`, `src/App.tsx` (3 routes)
+No store assets generated in this wave — that's a manual step on the user's Mac with Xcode.
 
 ---
 
-### Order of execution
+### Wave S-B — App Store compliance: Sign in with Apple + account deletion
 
-I'll ship them sequentially — Wave L, then M, then N — pausing only if a destructive choice appears (none expected). After Wave N the original 78-screen spec is fully covered.
+Apple rejects apps that offer Google login without also offering Apple, and now requires in-app account deletion.
 
-Approve to start with **Wave L**.
+- **Sign in with Apple**
+  - Add Apple as an OAuth provider option in `src/pages/Auth.tsx` next to Google.
+  - Use the existing Lovable Cloud managed Apple auth (no Apple Developer credentials needed up front; user can swap to BYOC later).
+  - Add a small Apple logo button matching the existing Google button styling.
+- **In-app account deletion**
+  - Add a "Delete my account" section at the bottom of `src/pages/Account.tsx` with a confirmation dialog.
+  - Create edge function `delete-account` (verify_jwt = true) that:
+    - Verifies the caller, cancels any active Stripe subscription, anonymises `profiles`/`sitters` rows (so reviews/bookings stay referentially intact), then calls `auth.admin.deleteUser`.
+  - Sign the user out and route to `/` after success.
+- **Privacy & support links** — make sure the Apple-required URLs (`/privacy`, `/contact`) are linked from Account.
+
+---
+
+### Wave S-C — Family+ subscription routing (web-only billing)
+
+This is the headline change you asked for: don't sell Family+ inside the iOS app. Instead, send users to the website to subscribe, then their account auto-unlocks.
+
+- **Native detection**
+  - In `FamilyPlusUpgradeDialog.tsx` and `FamilyPlusCard.tsx`, branch on `Capacitor.isNativePlatform()`.
+  - **Native (iOS/Android app):** replace the "Subscribe" CTA with a "Manage on web" button + short copy: "To start or change Family+, visit nannyrecommended.com/pricing on any browser. Your account here will update automatically."
+    - Tapping it opens the URL in the system browser (`window.open` → Capacitor Browser plugin).
+    - Critically: do **not** mention pricing, plans, or external purchase incentives in the native UI beyond "manage on web" — Apple's guideline 3.1.3(a) "Reader" exception requires no buy buttons, no price calls-to-action.
+  - **Web:** unchanged Stripe Embedded Checkout flow.
+- **Cross-device unlock**
+  - Already handled: subscriptions are keyed to `user_id` via webhook, so a web purchase under the same login unlocks Family+ on the native app automatically through the existing `useSubscription` hook.
+- **Customer portal**
+  - Same treatment in `src/pages/Pricing.tsx` / Account page: native build hides "Manage subscription" in-app and links to the web portal.
+- **Edge cases**
+  - Add a small "Refresh status" button on Family+ gated screens so users coming back from the web can force-refresh `useSubscription` if realtime hasn't fired yet.
+
+This keeps 100% of Family+ revenue (vs. losing 30% to Apple IAP) and is the same model Spotify/Netflix/Audible use.
+
+---
+
+### Wave S-D — Mobile polish + native niceties
+
+Small but important once the app runs natively.
+
+- **Safe areas:** add `env(safe-area-inset-*)` padding to `Header` and `MobileTabBar` so content doesn't sit under the iPhone notch/home indicator.
+- **Status bar:** install `@capacitor/status-bar`, set style to match the app's light/dark theme.
+- **Splash screen:** install `@capacitor/splash-screen`, add a basic branded splash (logo on background colour). Real artwork comes later from the user.
+- **Keyboard:** install `@capacitor/keyboard` to auto-resize inputs (chat, booking forms).
+- **External links:** route all `target="_blank"` (Privacy, Terms, Stripe portal, web pricing) through `@capacitor/browser` so they open in the in-app system browser instead of trying to navigate the WebView.
+- **App icon placeholder:** drop a 1024×1024 placeholder into the `ios/` and `android/` folders' resource locations (final icon is the user's job).
+
+---
+
+### Wave S-E — Submission checklist + handoff doc
+
+A read-me page in the repo (`STORE_SUBMISSION.md`) the user can follow on their Mac.
+
+Covers:
+1. Apple Developer account ($99/yr) signup link.
+2. Bundle ID + provisioning profile in App Store Connect.
+3. `npx cap sync ios && npx cap open ios` → archive in Xcode → upload to App Store Connect.
+4. Required metadata: app description, keywords, age rating questionnaire (childcare → likely 4+), screenshots for 6.7", 6.5", 5.5" iPhone + 12.9" iPad.
+5. App Privacy questionnaire — what data the app collects (email, name, location for sitter search, payment via web).
+6. Review notes template explicitly stating: "Family+ subscription is sold only on our website (nannyrecommended.com). The app provides no in-app purchase. This follows the 'Reader' app model (3.1.3(a))."
+7. Same outline for Google Play (Play Console $25 one-time, easier review).
+
+---
+
+### Technical notes
+
+- No new tables required.
+- New edge function: `delete-account` (verify_jwt = true).
+- New files (approx): `capacitor.config.ts`, `src/lib/platform.ts`, `src/lib/native/openExternal.ts`, `STORE_SUBMISSION.md`.
+- Edited files: `src/pages/Auth.tsx`, `src/pages/Account.tsx`, `src/pages/Pricing.tsx`, `src/components/payments/FamilyPlusCard.tsx`, `src/components/payments/FamilyPlusUpgradeDialog.tsx`, `src/components/payments/FamilyPlusGates.tsx`, `src/components/Header.tsx`, `src/components/MobileTabBar.tsx`, `index.html`, `src/index.css` (safe areas).
+- Push notifications (APNs/FCM) deliberately deferred — needs Apple Developer account + certs to wire up. Web-side notifications keep working in the meantime.
+
+---
+
+### Order
+
+S-A → S-B → S-C → S-D → S-E, sequentially. After S-E you'll have a buildable iOS project, all Apple compliance bases covered, and Family+ revenue routed through the web at full margin. The remaining manual steps (Mac, Xcode, Apple Developer account, screenshots, submission) are yours.
+
+Approve to start with **Wave S-A**.
