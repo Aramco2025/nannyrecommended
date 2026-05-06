@@ -1,71 +1,109 @@
-ns
-# iOS-Only App Store Readiness Plan
+# iOS Pre-Submission Build Plan (Part 1)
 
-You have an Apple Developer account — let's get the app submission-ready for iOS only (we'll skip Android entirely for now). Most of the foundation (Capacitor, account deletion, web-only Family+ routing, safe-area padding) is already in place from the previous wave. This plan closes the remaining gaps.
+This plan covers everything **Lovable can build** from your protocol. Part 2 (the human testing) is yours to execute on a Mac with Xcode + TestFlight — no code can do that for you.
 
-## Wave I-A: Sign in with Apple (mandatory for App Store)
+What's already in place from earlier waves:
+- Capacitor wired up (`capacitor.config.ts`, bundle id `com.nannyrecommended`)
+- Sign in with Apple as the first OAuth option on iOS
+- Account-deletion edge function + `DeleteAccountSection`
+- Family Plus reader-rule copy on iOS (no prices, no buy button)
+- `STORE_SUBMISSION.md` + `STORE_SUBMISSION_PRIVACY.md`
+- `openExternal` helper using in-app SFSafariViewController
 
-Apple **requires** Sign in with Apple in any app that offers third-party login (you have Google + Facebook coming soon), so this is a hard blocker.
-
-- The `lovable.auth.signInWithOAuth("apple", ...)` call already exists in `src/pages/Auth.tsx` and routes to a working Apple button — confirmed working on web.
-- For iOS native, the same call works through the in-app browser via the OAuth broker. No native plugin needed for the MVP path.
-- Action: verify Apple provider is enabled in Lovable Cloud → Auth Settings (managed mode is fine for v1; BYOC can come later for custom branding).
-- Add a short "Continue with Apple" priority on iOS (move Apple button to top of the OAuth list when `isNativeApp()` is true).
-
-## Wave I-B: iOS-only Capacitor configuration
-
-- Update `capacitor.config.ts`: keep iOS settings, drop the dev-server hot-reload `url`/`cleartext` block before production builds (leave a commented dev block so you can switch back). Production must bundle `dist/` directly — Apple rejects apps that load remote arbitrary HTML.
-- Add iOS-specific plugin config: `ios.contentInset = "always"`, `ios.scheme = "nannyrecommended"`, `ios.limitsNavigationsToAppBoundDomains = true`.
-- Add `App` plugin handling for back-gesture / deep links (`@capacitor/app`) so push-notification taps and universal links route through React Router.
-
-## Wave I-C: Required iOS assets & metadata
-
-- Create `public/apple-app-icon-1024.png` placeholder spec + `STORE_SUBMISSION.md` section listing every required size (Xcode generates the rest from the 1024 master in the asset catalog).
-- Create `public/ios-launch-screen.png` spec (2732×2732 centered logo on cream background to match brand).
-- Add iOS-specific meta to `index.html`: `apple-mobile-web-app-capable`, `apple-mobile-web-app-status-bar-style`, `apple-touch-icon` link tags (helps when running via in-app browser).
-- App Store metadata template in `STORE_SUBMISSION.md`: app name, subtitle, keywords, description, what's new, support URL, privacy policy URL, marketing URL, age rating answers, category (Lifestyle / primary, Kids / secondary — but **not** Kids category since that imposes COPPA constraints; document this choice).
-
-## Wave I-D: App Privacy & data declarations
-
-Apple's "App Privacy" questionnaire is now strict. Create `STORE_SUBMISSION_PRIVACY.md` documenting exactly what to declare:
-- Data linked to user: name, email, phone, address, payment info, photos, messages, location (approximate), user content, identifiers.
-- Data used for tracking: none (we don't use IDFA).
-- Purposes: app functionality, account management, customer support.
-- Third parties: Stripe (payments), Lovable Cloud (backend), Twilio (SMS OTP).
-- Add a `/privacy` review pointing reviewers to existing `Privacy.tsx` (already exists) — and add a one-line "data deletion" link there to the Account → Danger Zone we just built.
-
-## Wave I-E: Reviewer-friendly subscription wording
-
-Apple reviewers are tough on "external purchase" routing. Polish the native Family+ card and Pricing page copy to match the Reader-rule pattern exactly:
-- Remove the word "Upgrade" on native — already done.
-- Remove all prices on native — verify, then add a line: "Family Plus is a website feature. Visit nannyrecommended.com to learn more."
-- Add a hidden "Reviewer test account" banner in `STORE_SUBMISSION.md` with credentials + a 5-step walkthrough so the reviewer can complete a full booking.
-
-## Wave I-F: Submission handoff doc rewrite
-
-Rewrite `STORE_SUBMISSION.md` to be **iOS-only and step-by-step**:
-1. Apple Developer Console — create App ID, enable Sign in with Apple capability.
-2. App Store Connect — create app record (bundle ID `app.lovable.e1e5d17a34de4ddfa367ad73ca194925` — note: you may want to change this to `com.nannyrecommended.app` before first submission since bundle IDs are immutable; will flag this for decision).
-3. On a Mac: `git pull && npm install && npm run build && npx cap add ios && npx cap sync ios && npx cap open ios`.
-4. In Xcode: set team, signing, version 1.0.0 / build 1, capabilities (Sign in with Apple, Push if used), upload icon to asset catalog.
-5. Archive → Distribute → App Store Connect.
-6. Fill in metadata, App Privacy, reviewer notes (paste from doc), submit.
-7. Common rejection reasons + how we already handle them.
+So this plan only fills the **remaining gaps** from your protocol.
 
 ---
 
-## Decision needed before I start
+## Wave T-A — Capacitor config tightening (10 min)
 
-**Bundle identifier**: the current Capacitor config uses `app.lovable.e1e5d17a34de4ddfa367ad73ca194925`. This is fine for testing but looks unprofessional in App Store listings (and is permanent once you submit). I recommend `com.nannyrecommended.app`. I'll ask you in a quick question after you approve.
+1. Add `limitsNavigationsToAppBoundDomains: true` (already set ✓) and add `WKAppBoundDomains` to the iOS `Info.plist` template note in `STORE_SUBMISSION.md` listing `nannyrecommended.com`.
+2. Confirm `bundleId` matches your Apple Dev console: **`com.nannyrecommended`** (currently set). Note in the submission doc that the App ID in Apple Developer must match exactly.
+3. Document the dev/prod toggle of the `server.url` block more loudly (add a `// PROD: COMMENT OUT` banner).
 
-## What you'll do manually (I can't from here)
-- Enable Sign in with Apple in Lovable Cloud Auth Settings (one click).
-- Run the Xcode steps on a Mac.
-- Upload screenshots (10 required at 6.7" + 6.5"; you can generate via simulator).
-- Pay $99 (already done) and submit.
+## Wave T-B — Required Info.plist permission strings (15 min)
 
-## What you do NOT need to do
-- Android setup, Google Play console, anything about Android Studio.
-- Native IAP / StoreKit — Family+ stays web-only as before.
+Create `ios-permissions.md` with the exact NSCameraUsageDescription / NSPhotoLibrary / NSLocationWhenInUse / NSContacts / NSFaceID / NSUserTracking strings from your brief, ready to paste into `ios/App/App/Info.plist` after `npx cap add ios` runs on your Mac. (Capacitor's CLI generates a starter Info.plist; we can't edit it from here because the `ios/` folder is created on your Mac, not in this repo.)
 
-Approve and I'll start with **Wave I-A** (Sign in with Apple priority on iOS) and **Wave I-B** (iOS-only Capacitor config), then ask the bundle-ID question before generating the rewritten submission doc.
+## Wave T-C — Sentry crash + error reporting (~30 min)
+
+1. Add `@sentry/react` and `@sentry/capacitor`.
+2. New `src/lib/observability/sentry.ts` initialised from `main.tsx`, gated on `import.meta.env.PROD` and a `VITE_SENTRY_DSN` env var.
+3. Wrap the app in `Sentry.ErrorBoundary` with a friendly fallback (no white screen).
+4. Add `add_secret` request for `VITE_SENTRY_DSN` (you create the project at sentry.io — free tier is fine for v1).
+
+## Wave T-D — Apple Reviewer accounts + Review Mode (~60 min)
+
+Database migration:
+- Add `is_apple_reviewer boolean default false` to `profiles`.
+- Seed three users via SQL migration:
+  - `apple.review.parent@nannyrecommended.com`
+  - `apple.review.sitter@nannyrecommended.com`
+  - `apple.review.both@nannyrecommended.com`
+  Password `AppleReview2026!` for all (created via `auth.admin.createUser` in a one-shot edge function so the password hash is correct).
+- Pre-load each: profile data, children for the parent, a verified sitter row, AED 1000 wallet balance, one completed past booking, an active Family Plus row in `subscriptions`.
+
+Review-mode helpers:
+- `src/hooks/useReviewMode.ts` returns `true` when the signed-in profile has `is_apple_reviewer = true`.
+- In cash-out flow: if reviewer, instantly mark request as `completed` with a mocked pickup code and skip real Twilio SMS.
+- In sitter verification: if reviewer, auto-grant verified badge.
+- In booking confirm: if reviewer, suppress real-sitter push notifications.
+- All Stripe calls already run in sandbox in non-published preview, so reviewers will use sandbox automatically — no extra change needed there.
+
+## Wave T-E — Offline + network resilience (~30 min)
+
+1. `src/hooks/useOnline.ts` — wraps `navigator.onLine` + `window.addEventListener('online'/'offline')` and Capacitor `Network` plugin when native.
+2. `<OfflineBanner />` mounted in `App.tsx`: friendly "You're offline — we'll retry when you reconnect" bar (not a scary error).
+3. Wrap booking-confirm and payment-confirm buttons with a "disable while offline + queue retry" guard so a mid-payment airplane-mode toggle doesn't double-charge.
+4. Add idempotency: the existing checkout buttons get a `useRef` lock to prevent rapid-tap double submission.
+
+## Wave T-F — Apple-required UI sweep (~20 min)
+
+- **Privacy policy link** inside the app — already at `/privacy`; add a visible link in `Account.tsx` footer (currently only in onboarding).
+- **Report a concern** button on each sitter profile (`SitterProfile.tsx`) → opens a dialog that POSTs to a new `report-concern` edge function which emails `safety@nannyrecommended.com` (or just inserts into a `safety_reports` table for v1).
+- **Block user** action in message thread overflow menu (`MessageThread.tsx`) → inserts into a new `blocked_users` table; messaging hooks already filter on user_id so we extend the query.
+- **Account deletion** — already shipped, but move the section into Account so it's reachable in ≤2 taps from the home tab bar. Verify path: Tab bar → Account → Danger zone → Delete (✓ 2 taps).
+- **Restore purchases** — N/A because we don't ship IAP, but add a one-line "Manage subscription on web →" CTA in Account that opens `nannyrecommended.com/account` via `openExternal`.
+
+## Wave T-G — Status / health page (~10 min)
+
+`/status` route showing: backend reachable (ping `subscriptions` head), auth reachable, Stripe reachable. Plain page, no auth required. Used by you (and indirectly by Apple if they hit it).
+
+## Wave T-H — Reviewer notes file (~5 min)
+
+Create `STORE_REVIEWER_NOTES.md` with the verbatim text block from your protocol, pre-filled with the seeded reviewer credentials. You paste this into App Store Connect → App Review Information.
+
+## Wave T-I — TestFlight pre-flight checklist file (~5 min)
+
+Append a new section to `STORE_SUBMISSION.md`: the 48-hour sweep checklist from Part 2 of your brief, formatted as a printable markdown checklist. Belt-and-braces for you on submission day.
+
+---
+
+## What this plan deliberately does NOT do
+
+- **Native Apple Pay button via Stripe PaymentRequest** — your booking flow already runs through Stripe Checkout (embedded), which renders Apple Pay automatically on iOS Safari/WKWebView when the device supports it. Building a separate native Apple Pay sheet would mean a second payments path to maintain. Recommend leaving as-is unless review flags it.
+- **Native push notifications** — your protocol lists this as expected, but you currently have no push backend. Adding APNs + a push edge function is a separate ~1 day of work. Suggest deferring to v1.1; in-app notifications already work and Apple does not require push.
+- **Image moderation (Sightengine/Rekognition)** — needs a paid third-party account. Your existing flow already requires manual sitter verification before profiles go live, which satisfies guideline 1.2 for v1. Add automated moderation in v1.1 once volume justifies it.
+- **Biometric Face ID app-unlock** — listed as "optional but expected". Skipping for v1; can add via `@capacitor-community/biometric-auth` later.
+- **iPad-optimised layouts** — out of scope; we'll declare iPhone-only in App Store Connect (Apple still tests iPad rendering but accepts iPhone-only listings).
+- **The `ios/` Xcode project itself** — created by `npx cap add ios` on your Mac. Cannot exist in this repo because Capacitor regenerates it from `capacitor.config.ts`.
+
+---
+
+## Order of execution if you approve
+
+1. T-D (reviewer accounts + review mode) — biggest unlock for your testing
+2. T-C (Sentry) — so you can see what reviewers/testers hit
+3. T-F (Apple UI sweep: report/block/privacy link)
+4. T-E (offline + idempotency)
+5. T-G, T-H, T-I, T-A, T-B (docs + small files)
+
+Estimated total agent time: ~3 hours of build + one DB migration approval + one secret request (`VITE_SENTRY_DSN`).
+
+## One question before I start
+
+**Where should "Report a concern" submissions go?**
+- A) Just insert into a new `safety_reports` table you'll review manually in the Lovable Cloud DB viewer (fastest, no email setup).
+- B) Insert + send email to a `safety@nannyrecommended.com` address via Resend (needs a Resend API key + verified domain).
+- C) Insert + Twilio SMS to your phone (you already have Twilio configured for OTP — cheapest reuse).
+
+Reply with A, B, or C and I'll start with Wave T-D.
