@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Clock, MapPin, Wallet, Inbox } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
+import { EmptyState } from "@/components/EmptyState";
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-cream-deep text-slate-grey",
