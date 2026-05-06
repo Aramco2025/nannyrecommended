@@ -51,10 +51,11 @@ export default function Notifications() {
         <div className="mt-6 space-y-2">
           {isLoading && <div className="grid h-32 place-items-center"><Loader2 className="h-5 w-5 animate-spin" /></div>}
           {!isLoading && items.length === 0 && (
-            <div className="rounded-3xl border border-dashed border-border bg-card p-10 text-center">
-              <Bell className="mx-auto h-8 w-8 text-slate-grey" />
-              <p className="mt-3 text-sm text-slate-grey">You're all caught up.</p>
-            </div>
+            <EmptyState
+              icon={<Bell className="h-5 w-5" />}
+              title="You're all caught up"
+              description="New booking updates and messages will land here."
+            />
           )}
           {items.map(n => {
             const Wrapper: any = n.link ? Link : "div";
