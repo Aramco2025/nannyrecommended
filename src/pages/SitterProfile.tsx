@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { VerificationPanel } from "@/components/trust/VerificationPanel";
 import { VerificationSheet } from "@/components/trust/VerificationSheet";
+import { ActivitySignal } from "@/components/sitters/ActivitySignal";
 import { InsuranceBadge } from "@/components/trust/InsuranceBadge";
 import { ReviewsSummary } from "@/components/trust/ReviewsSummary";
 import { useSitterReviews } from "@/hooks/useSitterReviews";
