@@ -73,6 +73,9 @@ export function applyFilters(sitters: UISitter[], f: SitterFilters, priceRange: 
     if (has("verified") && !s.verified) return false;
     if (has("videoIntro") && !s.hasVideoIntro) return false;
     if (has("recommended") && s.networkBadge === "none") return false;
+    if (has("recentlyActive")) {
+      if (!s.lastActiveAt || Date.now() - new Date(s.lastActiveAt).getTime() > 1000 * 60 * 60 * 48) return false;
+    }
 
     const ageChecks: [FilterKey, string][] = [
       ["ageNewborn", "0-1"], ["ageToddler", "2-4"], ["ageSchool", "5-10"], ["ageTween", "11+"],
