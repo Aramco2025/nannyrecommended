@@ -83,6 +83,8 @@ import BookingReturn from "./pages/checkout/BookingReturn.tsx";
 import SubscriptionReturn from "./pages/checkout/SubscriptionReturn.tsx";
 import Referrals from "./pages/Referrals.tsx";
 import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner.tsx";
+import { OfflineBanner } from "./components/OfflineBanner.tsx";
+import Status from "./pages/Status.tsx";
 
 const queryClient = new QueryClient();
 
@@ -93,8 +95,10 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <OfflineBanner />
           <PaymentTestModeBanner />
           <Routes>
+            <Route path="/status" element={<Status />} />
             <Route path="/" element={<Index />} />
             <Route path="/sitters" element={<Sitters />} />
             <Route path="/sitters/:id" element={<SitterProfile />} />
