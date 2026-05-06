@@ -11,6 +11,7 @@ import { FamilyPlusCard } from "@/components/payments/FamilyPlusCard";
 import { NextBookingCard } from "@/components/account/NextBookingCard";
 import { LoyaltyProgress } from "@/components/LoyaltyProgress";
 import { RecurringBookingsCard } from "@/components/parent/RecurringBookingsCard";
+import { DeleteAccountSection } from "@/components/account/DeleteAccountSection";
 
 type Booking = {
   id: string;
@@ -140,6 +141,8 @@ const Account = () => {
             );
           })}
         </div>
+
+        <DeleteAccountSection />
       </main>
       <Footer />
     </div>
