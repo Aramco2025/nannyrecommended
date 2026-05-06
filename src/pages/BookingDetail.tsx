@@ -17,7 +17,9 @@ import { PaymentSummary } from "@/components/booking/PaymentSummary";
 import { CancelBookingDialog } from "@/components/booking/CancelBookingDialog";
 import { DisputeDialog } from "@/components/booking/DisputeDialog";
 import { ReceiptCard } from "@/components/booking/ReceiptCard";
+import { ParentRatingForm } from "@/components/booking/ParentRatingForm";
 import { useBookingDispute } from "@/hooks/useDisputes";
+import { useParentReview } from "@/hooks/useParentReviews";
 import { XCircle, ShieldAlert } from "lucide-react";
 
 type Booking = {
@@ -64,6 +66,7 @@ export default function BookingDetail() {
   const [cancelOpen, setCancelOpen] = useState(false);
   const [disputeOpen, setDisputeOpen] = useState(false);
   const { dispute, reload: reloadDispute } = useBookingDispute(id);
+  const { review: parentReview, reload: reloadParentReview } = useParentReview(id);
   const endRef = useRef<HTMLDivElement>(null);
 
   const reload = async () => {
@@ -303,6 +306,19 @@ export default function BookingDetail() {
               parentId={b.parent_id}
               sitterId={b.sitter_id}
               onSubmitted={() => setHasReview(true)}
+            />
+          </div>
+        )}
+
+        {/* Sitter rates parent (after completion) */}
+        {isSitter && b.status === "completed" && !parentReview && (
+          <div className="mt-6">
+            <ParentRatingForm
+              bookingId={b.id}
+              parentId={b.parent_id}
+              sitterId={b.sitter_id}
+              parentName={b.profiles?.full_name ?? "this family"}
+              onSubmitted={reloadParentReview}
             />
           </div>
         )}
