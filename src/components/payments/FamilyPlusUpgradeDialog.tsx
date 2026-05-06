@@ -97,6 +97,8 @@ export function FamilyPlusUpgradeDialog({
             returnUrl={`${window.location.origin}/checkout/subscription-return`}
           />
         )}
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
