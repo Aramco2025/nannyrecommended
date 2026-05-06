@@ -30,4 +30,23 @@ export async function initNative(): Promise<void> {
   } catch {
     /* keyboard plugin is optional */
   }
+
+  // Universal links / deep links — route URL opens through React Router.
+  try {
+    const { App } = await import("@capacitor/app");
+    App.addListener("appUrlOpen", (event) => {
+      try {
+        const url = new URL(event.url);
+        const path = url.pathname + url.search + url.hash;
+        if (path && path !== "/") {
+          window.history.pushState({}, "", path);
+          window.dispatchEvent(new PopStateEvent("popstate"));
+        }
+      } catch {
+        /* non-http url, ignore */
+      }
+    });
+  } catch {
+    /* app plugin optional */
+  }
 }
