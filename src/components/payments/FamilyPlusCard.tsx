@@ -5,16 +5,24 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { FamilyPlusUpgradeDialog } from "./FamilyPlusUpgradeDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { isNativeApp, WEB_ORIGIN } from "@/lib/platform";
+import { openExternal } from "@/lib/native/openExternal";
 
 export function FamilyPlusCard() {
-  const { subscription, isFamilyPlus, loading } = useSubscription();
+  const { subscription, isFamilyPlus, loading, refetch } = useSubscription() as any;
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const { toast } = useToast();
+  const native = isNativeApp();
 
   const openPortal = async () => {
+    if (native) {
+      // Apple: don't open Stripe portal in-app for billing changes; route to web account.
+      await openExternal(`${WEB_ORIGIN}/account`);
+      return;
+    }
     setBusy(true);
     try {
       const { data, error } = await supabase.functions.invoke("customer-portal", {
@@ -47,9 +55,46 @@ export function FamilyPlusCard() {
             {subscription?.cancel_at_period_end ? `Ends ${renews}` : `Renews ${renews}`}
           </p>
         )}
-        <Button variant="outline" className="mt-4 rounded-full" onClick={openPortal} disabled={busy}>
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Manage subscription"}
-        </Button>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button variant="outline" className="rounded-full" onClick={openPortal} disabled={busy}>
+            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : (
+              <>{native && <ExternalLink className="mr-1 h-3.5 w-3.5" />}Manage on web</>
+            )}
+          </Button>
+          {native && refetch && (
+            <Button variant="ghost" className="rounded-full" onClick={() => refetch()}>
+              Refresh status
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Native (iOS/Android): no in-app purchase, no prices, no "Upgrade" CTA.
+  // Per Apple guideline 3.1.3(a) "Reader" exception — link out to web with neutral copy.
+  if (native) {
+    return (
+      <div className="rounded-3xl bg-pitch-black p-6 text-pure-white shadow-card">
+        <div className="text-xs font-semibold uppercase tracking-wider text-salmon">Family Plus</div>
+        <h3 className="mt-2 font-display text-lg font-bold">More features for families</h3>
+        <p className="mt-2 text-sm text-pure-white/70">
+          Family Plus is managed on our website. Sign in there with the same account and your features
+          will appear here automatically.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button
+            onClick={() => openExternal(`${WEB_ORIGIN}/account`)}
+            className="rounded-full bg-pure-white text-pitch-black hover:bg-pure-white/90"
+          >
+            <ExternalLink className="mr-1 h-3.5 w-3.5" /> Manage on web
+          </Button>
+          {refetch && (
+            <Button variant="ghost" className="rounded-full text-pure-white hover:bg-pure-white/10" onClick={() => refetch()}>
+              Refresh status
+            </Button>
+          )}
+        </div>
       </div>
     );
   }
