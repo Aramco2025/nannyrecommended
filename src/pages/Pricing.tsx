@@ -9,6 +9,8 @@ import { Check, Minus, ArrowRight } from "lucide-react";
 import { FamilyPlusUpgradeDialog } from "@/components/payments/FamilyPlusUpgradeDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { isNativeApp, WEB_ORIGIN } from "@/lib/platform";
+import { openExternal } from "@/lib/native/openExternal";
 
 const rows: [string, string, string][] = [
   ["Browse all sitters", "✓", "✓"],
@@ -28,6 +30,10 @@ const Pricing = () => {
   const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   const handleUpgrade = () => {
+    if (isNativeApp()) {
+      openExternal(`${WEB_ORIGIN}/pricing`);
+      return;
+    }
     if (!user) { navigate("/auth?redirect=/pricing"); return; }
     if (isFamilyPlus) { navigate("/account"); return; }
     setUpgradeOpen(true);

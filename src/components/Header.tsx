@@ -40,7 +40,7 @@ export function Header() {
     `text-sm font-medium transition-colors ${isActive ? "text-pitch-black" : "text-slate-grey hover:text-pitch-black"}`;
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-pure-white/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-pure-white/90 pt-[env(safe-area-inset-top)] backdrop-blur-md">
       <div className="container flex min-h-20 items-center justify-between gap-4 py-3 md:min-h-28">
         <Logo />
         <nav className="hidden items-center gap-7 md:flex">
