@@ -1199,6 +1199,7 @@ export type Database = {
         Row: {
           age_groups: string[]
           area: string | null
+          avg_response_minutes: number | null
           bio: string | null
           bookings_completed: number
           comfortable_with_pets: boolean
@@ -1219,6 +1220,7 @@ export type Database = {
           is_active: boolean
           is_demo: boolean
           languages: string[]
+          last_active_at: string | null
           last_minute_surcharge_aed: number
           late_night_surcharge_aed: number
           latitude: number | null
@@ -1262,6 +1264,7 @@ export type Database = {
         Insert: {
           age_groups?: string[]
           area?: string | null
+          avg_response_minutes?: number | null
           bio?: string | null
           bookings_completed?: number
           comfortable_with_pets?: boolean
@@ -1282,6 +1285,7 @@ export type Database = {
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          last_active_at?: string | null
           last_minute_surcharge_aed?: number
           late_night_surcharge_aed?: number
           latitude?: number | null
@@ -1325,6 +1329,7 @@ export type Database = {
         Update: {
           age_groups?: string[]
           area?: string | null
+          avg_response_minutes?: number | null
           bio?: string | null
           bookings_completed?: number
           comfortable_with_pets?: boolean
@@ -1345,6 +1350,7 @@ export type Database = {
           is_active?: boolean
           is_demo?: boolean
           languages?: string[]
+          last_active_at?: string | null
           last_minute_surcharge_aed?: number
           late_night_surcharge_aed?: number
           latitude?: number | null
@@ -1676,6 +1682,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      recompute_sitter_response_time: {
+        Args: { _sitter_user_id: string }
+        Returns: undefined
+      }
       release_booking_escrow: { Args: { _booking: string }; Returns: undefined }
       request_cash_out: {
         Args: {
@@ -1696,6 +1706,7 @@ export type Database = {
         Returns: number
       }
       tier_from_hourly_rate: { Args: { rate: number }; Returns: string }
+      touch_sitter_activity: { Args: never; Returns: undefined }
       wallet_credit: {
         Args: {
           _amount: number
