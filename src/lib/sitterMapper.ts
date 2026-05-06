@@ -112,5 +112,7 @@ export function mapSitter(s: DbSitter): UISitter {
       multiChild: Number((s as any).multi_child_surcharge_aed ?? 0),
       lastMinute: Number((s as any).last_minute_surcharge_aed ?? 0),
     },
+    lastActiveAt: (s as any).last_active_at ?? null,
+    avgResponseMinutes: (s as any).avg_response_minutes ?? null,
   };
 }
