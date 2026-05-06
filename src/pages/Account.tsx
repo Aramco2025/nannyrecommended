@@ -96,7 +96,14 @@ const Account = () => {
             <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/account/notifications">Notifications</Link></Button>
             <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/referrals">Refer & earn AED 50</Link></Button>
             <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/contact">Contact support</Link></Button>
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/privacy">Privacy policy</Link></Button>
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/terms">Terms of service</Link></Button>
+            <Button asChild variant="outline" className="justify-start rounded-full"><Link to="/status">System status</Link></Button>
           </div>
+          <p className="mt-3 text-xs text-slate-grey">
+            Family Plus subscriptions are managed on the web at{" "}
+            <a href="https://nannyrecommended.com/account" target="_blank" rel="noreferrer" className="underline">nannyrecommended.com/account</a>.
+          </p>
         </div>
 
         <div className="mt-6"><RecurringBookingsCard /></div>

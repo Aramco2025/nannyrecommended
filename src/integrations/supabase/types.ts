@@ -124,6 +124,30 @@ export type Database = {
           },
         ]
       }
+      blocked_users: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           address: string | null
@@ -831,6 +855,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          is_apple_reviewer: boolean
           is_family_plus: boolean
           onboarding_completed: boolean
           phone: string | null
@@ -849,6 +874,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          is_apple_reviewer?: boolean
           is_family_plus?: boolean
           onboarding_completed?: boolean
           phone?: string | null
@@ -867,6 +893,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          is_apple_reviewer?: boolean
           is_family_plus?: boolean
           onboarding_completed?: boolean
           phone?: string | null
@@ -1063,6 +1090,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      safety_reports: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          reported_sitter_id: string | null
+          reported_user_id: string | null
+          reporter_id: string
+          resolution_note: string | null
+          resolved_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          reported_sitter_id?: string | null
+          reported_user_id?: string | null
+          reporter_id: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          reported_sitter_id?: string | null
+          reported_user_id?: string | null
+          reporter_id?: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       saved_searches: {
         Row: {
