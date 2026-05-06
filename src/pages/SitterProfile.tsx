@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { VerificationPanel } from "@/components/trust/VerificationPanel";
 import { VerificationSheet } from "@/components/trust/VerificationSheet";
+import { ActivitySignal } from "@/components/sitters/ActivitySignal";
 import { InsuranceBadge } from "@/components/trust/InsuranceBadge";
 import { ReviewsSummary } from "@/components/trust/ReviewsSummary";
 import { useSitterReviews } from "@/hooks/useSitterReviews";
@@ -102,6 +103,8 @@ const SitterProfile = () => {
                   {sitter.headline && (
                     <p className="mt-4 text-base font-medium text-pitch-black">{sitter.headline}</p>
                   )}
+
+                  <div className="mt-3"><ActivitySignal lastActiveAt={sitter.lastActiveAt} avgResponseMinutes={sitter.avgResponseMinutes} /></div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
                     {sitter.policeCleared && <Pill icon={ShieldCheck} label="Police cleared" />}

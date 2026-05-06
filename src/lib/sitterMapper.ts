@@ -54,6 +54,8 @@ export type UISitter = {
     multiChild: number;
     lastMinute: number;
   };
+  lastActiveAt: string | null;
+  avgResponseMinutes: number | null;
 };
 
 const FALLBACK_PHOTO = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop";
@@ -110,5 +112,7 @@ export function mapSitter(s: DbSitter): UISitter {
       multiChild: Number((s as any).multi_child_surcharge_aed ?? 0),
       lastMinute: Number((s as any).last_minute_surcharge_aed ?? 0),
     },
+    lastActiveAt: (s as any).last_active_at ?? null,
+    avgResponseMinutes: (s as any).avg_response_minutes ?? null,
   };
 }

@@ -32,7 +32,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(sess);
       setUser(sess?.user ?? null);
       // Defer to avoid deadlock inside the callback
-      setTimeout(() => loadRoles(sess?.user?.id), 0);
+      setTimeout(() => {
+        loadRoles(sess?.user?.id);
+        if (sess?.user?.id) {
+          // Fire-and-forget: ignored if user isn't a sitter
+          supabase.rpc("touch_sitter_activity").then(() => {}, () => {});
+        }
+      }, 0);
     });
 
     supabase.auth.getSession().then(({ data: { session: sess } }) => {
