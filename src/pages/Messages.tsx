@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMyThreads } from "@/hooks/useMessages";
 import { Loader2, MessageCircle } from "lucide-react";
 import { format } from "date-fns";
+import { EmptyState } from "@/components/EmptyState";
 
 const Messages = () => {
   const { user, loading } = useAuth();
