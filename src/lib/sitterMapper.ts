@@ -54,6 +54,8 @@ export type UISitter = {
     multiChild: number;
     lastMinute: number;
   };
+  lastActiveAt: string | null;
+  avgResponseMinutes: number | null;
 };
 
 const FALLBACK_PHOTO = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop";
