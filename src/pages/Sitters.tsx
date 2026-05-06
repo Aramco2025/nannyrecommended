@@ -89,6 +89,7 @@ const SECTIONS: Section[] = [
       { key: "verified", label: "Verified+ only" },
       { key: "recommended", label: "Recommended by friends" },
       { key: "videoIntro", label: "Has video intro" },
+      { key: "recentlyActive", label: "Active in last 48h" },
     ],
   },
 ];
