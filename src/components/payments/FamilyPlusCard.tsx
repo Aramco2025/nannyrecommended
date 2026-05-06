@@ -79,8 +79,7 @@ export function FamilyPlusCard() {
         <div className="text-xs font-semibold uppercase tracking-wider text-salmon">Family Plus</div>
         <h3 className="mt-2 font-display text-lg font-bold">More features for families</h3>
         <p className="mt-2 text-sm text-pure-white/70">
-          Family Plus is managed on our website. Sign in there with the same account and your features
-          will appear here automatically.
+          Family Plus is a website feature. Visit nannyrecommended.com on the same account to learn more — any features you add there will appear here automatically.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Button
