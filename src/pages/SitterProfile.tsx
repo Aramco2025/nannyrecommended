@@ -14,6 +14,7 @@ import { ActivitySignal } from "@/components/sitters/ActivitySignal";
 import { InsuranceBadge } from "@/components/trust/InsuranceBadge";
 import { ReviewsSummary } from "@/components/trust/ReviewsSummary";
 import { useSitterReviews } from "@/hooks/useSitterReviews";
+import { ReportConcernDialog } from "@/components/safety/ReportConcernDialog";
 
 const SitterProfile = () => {
   const { id } = useParams();
@@ -285,6 +286,10 @@ const SitterProfile = () => {
             <Link to={`/book/${sitter.id}`}>Book now</Link>
           </Button>
         </div>
+      </div>
+
+      <div className="container py-6 text-center">
+        <ReportConcernDialog reportedSitterId={sitter.id} triggerLabel={`Report a concern about ${firstName}`} />
       </div>
 
       <Footer />

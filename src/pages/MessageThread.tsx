@@ -11,6 +11,8 @@ import { toast } from "@/hooks/use-toast";
 import { ThreadSafetyBanner } from "@/components/messaging/ThreadSafetyBanner";
 import { ContactWarningDialog } from "@/components/messaging/ContactWarningDialog";
 import { detectContactRisk } from "@/lib/messaging/safety";
+import { ReportConcernDialog } from "@/components/safety/ReportConcernDialog";
+import { BlockUserButton } from "@/components/safety/BlockUserButton";
 
 const MessageThread = () => {
   const { bookingId } = useParams();
@@ -18,14 +20,18 @@ const MessageThread = () => {
   const { messages, loading: msgsLoading } = useThreadMessages(bookingId);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
-  const [meta, setMeta] = useState<{ sitterName: string; parentId: string } | null>(null);
+  const [meta, setMeta] = useState<{ sitterName: string; parentId: string; sitterUserId: string | null } | null>(null);
   const [warning, setWarning] = useState<{ reasons: string[] } | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!bookingId) return;
-    supabase.from("bookings").select("parent_id, sitters(full_name)").eq("id", bookingId).maybeSingle()
-      .then(({ data }) => data && setMeta({ sitterName: (data.sitters as any)?.full_name ?? "Sitter", parentId: data.parent_id }));
+    supabase.from("bookings").select("parent_id, sitters(full_name, user_id)").eq("id", bookingId).maybeSingle()
+      .then(({ data }) => data && setMeta({
+        sitterName: (data.sitters as any)?.full_name ?? "Sitter",
+        parentId: data.parent_id,
+        sitterUserId: (data.sitters as any)?.user_id ?? null,
+      }));
   }, [bookingId]);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
@@ -66,6 +72,20 @@ const MessageThread = () => {
           <div className="flex-1">
             <div className="font-semibold text-pitch-black">{meta?.sitterName ?? "Conversation"}</div>
           </div>
+          {meta && (
+            <div className="flex items-center gap-1">
+              <ReportConcernDialog
+                reportedUserId={user.id === meta.parentId ? (meta.sitterUserId ?? undefined) : meta.parentId}
+                triggerLabel="Report"
+              />
+              {(user.id === meta.parentId ? meta.sitterUserId : meta.parentId) && (
+                <BlockUserButton
+                  blockedUserId={(user.id === meta.parentId ? meta.sitterUserId : meta.parentId) as string}
+                  displayName={meta.sitterName}
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
 
