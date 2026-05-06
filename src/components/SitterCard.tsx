@@ -92,6 +92,8 @@ export function SitterCard({ sitter }: { sitter: UISitter }) {
           <p className="line-clamp-2 text-xs text-slate-grey">{sitter.headline}</p>
         )}
 
+        <ActivitySignal lastActiveAt={sitter.lastActiveAt} avgResponseMinutes={sitter.avgResponseMinutes} compact />
+
         {(() => {
           const quals: string[] = [];
           if (sitter.firstAidCertified) quals.push("First aid");
