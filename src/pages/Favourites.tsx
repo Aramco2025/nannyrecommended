@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Link, Navigate } from "react-router-dom";
 import { Heart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/EmptyState";
 
 const Favourites = () => {
   const { user, loading } = useAuth();
