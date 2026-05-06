@@ -215,3 +215,48 @@ to paste into the App Privacy section. Summary:
 - **Universal links** (open `nannyrecommended.com/sitter/xxx` directly in app) — requires `apple-app-site-association` file on the web domain.
 - **Custom-branded Apple sheet** — switch to BYOC mode in Lovable Cloud auth settings.
 - **iPad-optimised layout** — currently iPhone-only.
+
+---
+
+## 13. Reviewer accounts — one-time seeding
+
+After publishing, seed the three Apple reviewer test accounts:
+
+```bash
+curl -X POST https://dwrejqdytmpdkcaoidbv.supabase.co/functions/v1/seed-reviewer-accounts \
+  -H "x-admin-secret: $SUPABASE_SERVICE_ROLE_KEY"
+```
+
+Accounts created (all password `AppleReview2026!`):
+- `apple.review.parent@nannyrecommended.com`
+- `apple.review.sitter@nannyrecommended.com`
+- `apple.review.both@nannyrecommended.com`
+
+These are flagged `is_apple_reviewer = true` so cash-out, verification,
+and sitter notifications are mocked safely for the reviewer.
+
+Paste reviewer notes from `STORE_REVIEWER_NOTES.md` into App Store Connect.
+Paste Info.plist strings from `ios-permissions.md` into Xcode.
+
+---
+
+## 14. 48-hour pre-submit sweep checklist
+
+- [ ] Run Tests 1-5 from the protocol on iPhone + older iPhone/sim
+- [ ] `capacitor.config.ts` — `server` block commented out
+- [ ] `npm run build && npx cap sync ios` ran clean
+- [ ] Bundle build number bumped in Xcode
+- [ ] Sign in with Apple verified on real device
+- [ ] Apple Pay verified with real card via Stripe sandbox
+- [ ] Account → Danger zone → Delete account — works end-to-end
+- [ ] Family Plus screen on iOS shows NO prices, NO buy button
+- [ ] "Report a concern" submits successfully (check `safety_reports` table)
+- [ ] "Block user" submits successfully (check `blocked_users` table)
+- [ ] /privacy URL loads
+- [ ] /status URL loads and shows green
+- [ ] Privacy policy + support URLs reachable from public web
+- [ ] Reviewer accounts seeded and login confirmed
+- [ ] Reviewer notes pasted into App Store Connect
+- [ ] App Privacy questionnaire completed per `STORE_SUBMISSION_PRIVACY.md`
+- [ ] Screenshots uploaded for 6.7" and 6.5"
+- [ ] App icon 1024×1024 PNG, no transparency
