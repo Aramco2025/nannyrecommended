@@ -9,6 +9,7 @@ import { useTrustCount } from "@/hooks/useFriends";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { CompareToggle } from "@/components/sitters/CompareDrawer";
+import { ActivitySignal } from "@/components/sitters/ActivitySignal";
 
 export function SitterCard({ sitter }: { sitter: UISitter }) {
   const { user } = useAuth();
