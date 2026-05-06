@@ -3,6 +3,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { StripeSubscriptionCheckout } from "./StripeSubscriptionCheckout";
 import { isTestMode } from "@/lib/stripe";
+import { isNativeApp, WEB_ORIGIN } from "@/lib/platform";
+import { openExternal } from "@/lib/native/openExternal";
+import { ExternalLink } from "lucide-react";
 
 type Plan = "monthly" | "yearly";
 
@@ -21,13 +24,33 @@ export function FamilyPlusUpgradeDialog({
   const [plan, setPlan] = useState<Plan>("monthly");
   const [started, setStarted] = useState(false);
 
+  const native = isNativeApp();
+
   return (
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setStarted(false); }}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">Upgrade to Family Plus</DialogTitle>
+          <DialogTitle className="font-display text-2xl">
+            {native ? "Family Plus" : "Upgrade to Family Plus"}
+          </DialogTitle>
         </DialogHeader>
 
+        {native ? (
+          <div className="space-y-4">
+            <p className="text-sm text-slate-grey">
+              Family Plus is managed on our website. Open it in your browser, sign in with the same
+              account, and your benefits will appear here automatically.
+            </p>
+            <Button
+              size="lg"
+              className="w-full rounded-full bg-pitch-black text-pure-white hover:bg-pitch-black/90"
+              onClick={() => { openExternal(`${WEB_ORIGIN}/account`); onOpenChange(false); }}
+            >
+              <ExternalLink className="mr-2 h-4 w-4" /> Manage on web
+            </Button>
+          </div>
+        ) : (
+          <>
         {isTestMode() && (
           <div className="rounded-md bg-orange-100 px-3 py-2 text-xs text-orange-900">
             Test mode — use card 4242 4242 4242 4242, any future expiry, any CVC.
