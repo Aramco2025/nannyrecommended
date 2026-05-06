@@ -6,7 +6,7 @@ export type FilterKey =
   | "dogWalker" | "petSitter" | "petBoarding"
   | "firstAid" | "policeCleared"
   | "drives" | "ownCar" | "swims" | "cooks" | "housework" | "homework" | "nonSmoker" | "pets"
-  | "verified" | "videoIntro" | "recommended"
+  | "verified" | "videoIntro" | "recommended" | "recentlyActive"
   | "ageNewborn" | "ageToddler" | "ageSchool" | "ageTween";
 
 export type LangKey = "English" | "Arabic" | "French" | "Tagalog" | "Hindi" | "Urdu" | "Russian" | "Spanish" | "Mandarin";
