@@ -714,6 +714,36 @@ export type Database = {
         }
         Relationships: []
       }
+      parent_reviews: {
+        Row: {
+          booking_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          parent_id: string
+          rating: number
+          sitter_id: string
+        }
+        Insert: {
+          booking_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          parent_id: string
+          rating: number
+          sitter_id: string
+        }
+        Update: {
+          booking_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          parent_id?: string
+          rating?: number
+          sitter_id?: string
+        }
+        Relationships: []
+      }
       payment_methods: {
         Row: {
           brand: string | null
@@ -1649,7 +1679,15 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      referral_leaderboard_monthly: {
+        Row: {
+          initial: string | null
+          referrals_count: number | null
+          referrer_id: string | null
+          total_reward_aed: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       cancel_booking: {
