@@ -25,6 +25,8 @@ import { CompareProvider, CompareBar } from "@/components/sitters/CompareDrawer"
 import { SittersMapView } from "@/components/sitters/SittersMapView";
 import { ConciergeCTA } from "@/components/payments/FamilyPlusGates";
 import { SavedSearchesSheet } from "@/components/sitters/SavedSearchesSheet";
+import { sortSitters, SORT_OPTIONS, type SortKey } from "@/lib/sitterRanking";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Section = { title: string; items: { key: FilterKey; label: string }[] };
 
@@ -96,6 +98,7 @@ const SECTIONS: Section[] = [
 
 const Sitters = () => {
   const [view, setView] = useState<"list" | "map">("list");
+  const [sort, setSort] = useState<SortKey>("best");
   const [tierFilter, setTierFilter] = useState<SitterTier | "any">("any");
   const [priceRange, setPriceRange] = useState<[number, number]>([35, 200]);
   const [filters, setFilters] = useState<SitterFilters>(emptyFilters());
@@ -118,8 +121,8 @@ const Sitters = () => {
     let v = applyFilters(sitters, filters, priceRange);
     if (tierFilter !== "any") v = v.filter(s => s.tier === tierFilter);
     if (slot && availableIds) v = v.filter(s => availableIds.has(s.id));
-    return v;
-  }, [sitters, filters, priceRange, tierFilter, slot, availableIds]);
+    return sortSitters(v, sort);
+  }, [sitters, filters, priceRange, tierFilter, slot, availableIds, sort]);
 
   const activeCount =
     filters.flags.size +
@@ -371,7 +374,17 @@ const Sitters = () => {
               </h1>
               <div className="flex items-center gap-3">
                 <ConciergeCTA />
-                <p className="text-sm text-slate-grey">
+                <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
+                  <SelectTrigger className="h-9 w-[160px] rounded-full border-cream-deep bg-pure-white text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SORT_OPTIONS.map(o => (
+                      <SelectItem key={o.key} value={o.key} className="text-xs">{o.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="hidden text-sm text-slate-grey sm:block">
                   <span className="font-semibold text-success-green">●</span> {visible.length} match{visible.length === 1 ? "" : "es"}
                 </p>
               </div>
