@@ -4,14 +4,16 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { useReferralCode, useReferralStats } from "@/hooks/useReferral";
+import { useReferralLeaderboard } from "@/hooks/useReferralLeaderboard";
 import { Button } from "@/components/ui/button";
-import { Loader2, Copy, Share2, Gift, Check } from "lucide-react";
+import { Loader2, Copy, Share2, Gift, Check, Trophy } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function Referrals() {
   const { user, loading } = useAuth();
   const { data: code } = useReferralCode();
   const { data: stats } = useReferralStats();
+  const { rows: leaders, loading: leadersLoading } = useReferralLeaderboard();
   const [copied, setCopied] = useState(false);
 
   const link = useMemo(() => code ? `${window.location.origin}/auth?mode=signup&ref=${code}` : "", [code]);
@@ -60,6 +62,50 @@ export default function Referrals() {
             <Stat label="Rewarded" value={stats?.rewarded ?? 0} />
             <Stat label="Earned" value={`AED ${stats?.earnedAed ?? 0}`} />
           </div>
+        </div>
+
+        {/* Leaderboard */}
+        <div className="mt-6 rounded-3xl bg-pure-white p-6 shadow-card md:p-8">
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-pitch-black text-pure-white">
+              <Trophy className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="font-display text-xl font-bold text-pitch-black">This month's top referrers</h2>
+              <p className="text-xs text-slate-grey">Anonymized to protect privacy. Resets the 1st of each month.</p>
+            </div>
+          </div>
+
+          {leadersLoading ? (
+            <div className="mt-4 grid place-items-center py-8"><Loader2 className="h-5 w-5 animate-spin text-slate-grey" /></div>
+          ) : leaders.length === 0 ? (
+            <p className="mt-4 rounded-2xl bg-off-white p-4 text-center text-sm text-slate-grey">
+              Be the first on the board this month — share your code now.
+            </p>
+          ) : (
+            <ol className="mt-4 divide-y divide-cream-deep">
+              {leaders.map((row, i) => {
+                const isYou = row.referrer_id === user.id;
+                return (
+                  <li key={row.referrer_id} className={`flex items-center gap-3 py-3 ${isYou ? "rounded-xl bg-salmon-soft px-3" : ""}`}>
+                    <span className={`grid h-8 w-8 place-items-center rounded-full text-xs font-bold ${i < 3 ? "bg-pitch-black text-pure-white" : "bg-cream text-slate-grey"}`}>
+                      {i + 1}
+                    </span>
+                    <div className="grid h-8 w-8 place-items-center rounded-full bg-cream-deep text-sm font-semibold text-pitch-black">
+                      {row.initial}
+                    </div>
+                    <div className="flex-1 text-sm">
+                      <div className="font-semibold text-pitch-black">
+                        {isYou ? "You" : `Member ${row.initial}.`}
+                      </div>
+                      <div className="text-xs text-slate-grey">{row.referrals_count} referral{row.referrals_count === 1 ? "" : "s"}</div>
+                    </div>
+                    <div className="text-sm font-semibold text-salmon-deep">AED {Number(row.total_reward_aed)}</div>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
         </div>
       </main>
       <Footer />
