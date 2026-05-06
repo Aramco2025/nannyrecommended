@@ -35,16 +35,13 @@ const Favourites = () => {
         {isLoading ? (
           <div className="py-20 text-center text-sm text-slate-grey">Loading…</div>
         ) : favs.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-cream-deep bg-pure-white p-10 text-center">
-            <Heart className="mx-auto mb-3 h-8 w-8 text-slate-grey" />
-            <h3 className="font-display text-lg font-bold text-pitch-black">No favourites yet</h3>
-            <p className="mt-2 text-sm text-slate-grey">
-              Tap the heart on any sitter's card to save them to your shortlist.
-            </p>
-            <Button asChild className="mt-4 bg-salmon text-pure-white hover:bg-salmon-deep">
-              <Link to="/sitters">Browse sitters</Link>
-            </Button>
-          </div>
+          <EmptyState
+            icon={<Heart className="h-5 w-5" />}
+            title="No favourites yet"
+            description="Tap the heart on any sitter's card to save them to your shortlist."
+            ctaLabel="Browse sitters"
+            ctaTo="/sitters"
+          />
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {favs.map(s => <SitterCard key={s.id} sitter={s} />)}
