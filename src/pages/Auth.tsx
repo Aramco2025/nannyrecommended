@@ -152,6 +152,15 @@ const Auth = () => {
           </p>
 
           <div className="mt-5 space-y-2">
+            {isNativeApp() && nativePlatform() === "ios" && (
+              <Button type="button" variant="outline" size="lg" onClick={() => handleOAuth("apple")}
+                className="w-full justify-center gap-3 border-border bg-pitch-black text-pure-white hover:bg-pitch-black/90">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
+                  <path d="M16.365 1.43c0 1.14-.49 2.27-1.27 3.05-.83.84-2.21 1.49-3.32 1.4-.13-1.13.43-2.31 1.21-3.07.86-.85 2.32-1.48 3.38-1.38zM21 17.21c-.53 1.18-.79 1.71-1.47 2.76-.95 1.45-2.29 3.27-3.95 3.28-1.48.02-1.86-.96-3.86-.95-2 .01-2.42.97-3.9.95-1.66-.02-2.93-1.66-3.88-3.11C1.49 16.2 1.21 11.4 2.85 8.91c1.16-1.77 3-2.81 4.72-2.81 1.76 0 2.86.97 4.31.97 1.4 0 2.26-.97 4.29-.97 1.54 0 3.18.84 4.34 2.29-3.81 2.09-3.19 7.55.49 8.82z"/>
+                </svg>
+                Continue with Apple
+              </Button>
+            )}
             <Button type="button" variant="outline" size="lg" onClick={() => handleOAuth("google")}
               className="w-full justify-center gap-3 border-border bg-pure-white text-pitch-black hover:bg-muted">
               <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
@@ -162,20 +171,24 @@ const Auth = () => {
               </svg>
               Continue with Google
             </Button>
-            <Button type="button" variant="outline" size="lg" onClick={() => handleOAuth("apple")}
-              className="w-full justify-center gap-3 border-border bg-pitch-black text-pure-white hover:bg-pitch-black/90">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
-                <path d="M16.365 1.43c0 1.14-.49 2.27-1.27 3.05-.83.84-2.21 1.49-3.32 1.4-.13-1.13.43-2.31 1.21-3.07.86-.85 2.32-1.48 3.38-1.38zM21 17.21c-.53 1.18-.79 1.71-1.47 2.76-.95 1.45-2.29 3.27-3.95 3.28-1.48.02-1.86-.96-3.86-.95-2 .01-2.42.97-3.9.95-1.66-.02-2.93-1.66-3.88-3.11C1.49 16.2 1.21 11.4 2.85 8.91c1.16-1.77 3-2.81 4.72-2.81 1.76 0 2.86.97 4.31.97 1.4 0 2.26-.97 4.29-.97 1.54 0 3.18.84 4.34 2.29-3.81 2.09-3.19 7.55.49 8.82z"/>
-              </svg>
-              Continue with Apple
-            </Button>
-            <Button type="button" variant="outline" size="lg" onClick={handleFacebookNotice}
-              className="w-full justify-center gap-3 border-transparent bg-[#1877F2] text-pure-white hover:bg-[#166fe0]">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
-                <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/>
-              </svg>
-              Continue with Facebook
-            </Button>
+            {!(isNativeApp() && nativePlatform() === "ios") && (
+              <Button type="button" variant="outline" size="lg" onClick={() => handleOAuth("apple")}
+                className="w-full justify-center gap-3 border-border bg-pitch-black text-pure-white hover:bg-pitch-black/90">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
+                  <path d="M16.365 1.43c0 1.14-.49 2.27-1.27 3.05-.83.84-2.21 1.49-3.32 1.4-.13-1.13.43-2.31 1.21-3.07.86-.85 2.32-1.48 3.38-1.38zM21 17.21c-.53 1.18-.79 1.71-1.47 2.76-.95 1.45-2.29 3.27-3.95 3.28-1.48.02-1.86-.96-3.86-.95-2 .01-2.42.97-3.9.95-1.66-.02-2.93-1.66-3.88-3.11C1.49 16.2 1.21 11.4 2.85 8.91c1.16-1.77 3-2.81 4.72-2.81 1.76 0 2.86.97 4.31.97 1.4 0 2.26-.97 4.29-.97 1.54 0 3.18.84 4.34 2.29-3.81 2.09-3.19 7.55.49 8.82z"/>
+                </svg>
+                Continue with Apple
+              </Button>
+            )}
+            {!isNativeApp() && (
+              <Button type="button" variant="outline" size="lg" onClick={handleFacebookNotice}
+                className="w-full justify-center gap-3 border-transparent bg-[#1877F2] text-pure-white hover:bg-[#166fe0]">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
+                  <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/>
+                </svg>
+                Continue with Facebook
+              </Button>
+            )}
           </div>
 
           <div className="my-5 flex items-center gap-3">
