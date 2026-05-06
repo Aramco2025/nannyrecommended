@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Clock, MapPin, Wallet, Inbox } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
+import { EmptyState } from "@/components/EmptyState";
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-cream-deep text-slate-grey",
@@ -44,13 +45,14 @@ const SitterApplications = () => {
         {isLoading ? (
           <div className="mt-10 grid min-h-[200px] place-items-center"><Loader2 className="h-5 w-5 animate-spin" /></div>
         ) : (apps ?? []).length === 0 ? (
-          <div className="mt-8 rounded-3xl border border-dashed border-cream-deep bg-pure-white p-12 text-center">
-            <Inbox className="mx-auto h-8 w-8 text-slate-grey" />
-            <h2 className="mt-3 font-display text-lg font-bold text-pitch-black">No applications yet</h2>
-            <p className="mt-1 text-sm text-slate-grey">Browse open jobs and apply to start.</p>
-            <Button asChild size="sm" className="mt-4 rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep">
-              <Link to="/sitter/jobs">Browse jobs</Link>
-            </Button>
+          <div className="mt-8">
+            <EmptyState
+              icon={<Inbox className="h-5 w-5" />}
+              title="No applications yet"
+              description="Browse open jobs and apply to start picking up sits."
+              ctaLabel="Browse jobs"
+              ctaTo="/sitter/jobs"
+            />
           </div>
         ) : (
           <div className="mt-8 space-y-8">

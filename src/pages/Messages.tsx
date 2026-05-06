@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMyThreads } from "@/hooks/useMessages";
 import { Loader2, MessageCircle } from "lucide-react";
 import { format } from "date-fns";
+import { EmptyState } from "@/components/EmptyState";
 
 const Messages = () => {
   const { user, loading } = useAuth();
@@ -24,10 +25,13 @@ const Messages = () => {
           {isLoading ? (
             <div className="grid h-40 place-items-center"><Loader2 className="h-5 w-5 animate-spin" /></div>
           ) : (threads ?? []).length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-cream-deep bg-pure-white p-10 text-center">
-              <MessageCircle className="mx-auto h-8 w-8 text-slate-grey" />
-              <p className="mt-3 text-sm text-slate-grey">No conversations yet. Start by booking a sitter.</p>
-            </div>
+            <EmptyState
+              icon={<MessageCircle className="h-5 w-5" />}
+              title="No conversations yet"
+              description="Once you book a sitter, your messages will appear here."
+              ctaLabel="Find a sitter"
+              ctaTo="/sitters"
+            />
           ) : (
             (threads ?? []).map((t: any) => (
               <Link
