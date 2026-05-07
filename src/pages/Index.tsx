@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import {
   ArrowRight, MapPin, Star, ShieldCheck, Search, MessageCircle, Calendar,
-  Heart, Users, BadgeCheck, Phone, FileCheck, Lock,
-  Baby, Moon, GraduationCap, Sun,
+  Heart, Users, BadgeCheck, Phone, FileCheck, Lock, Check,
+  Baby, Moon, GraduationCap, Sun, PawPrint,
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -14,10 +14,11 @@ import { SitterCard } from "@/components/SitterCard";
 import heroFamily from "@/assets/hero-family.jpg";
 
 const careTypes = [
-  { icon: Baby, label: "Babysitter", desc: "One-off or regular evenings", to: "/sitters?type=babysitter" },
-  { icon: Sun, label: "Full-time Nanny", desc: "Weekday daytime care", to: "/sitters?type=nanny" },
-  { icon: GraduationCap, label: "After-school", desc: "Pick-up & homework help", to: "/sitters?type=after-school" },
-  { icon: Moon, label: "Night Nanny", desc: "Overnight newborn support", to: "/sitters?type=night-nanny" },
+  { icon: Baby, label: "Babysitter", desc: "One-off or regular evenings", to: "/sitters?type=babysitter", tint: "bg-salmon-soft text-salmon-deep" },
+  { icon: Sun, label: "Full-time Nanny", desc: "Weekday daytime care", to: "/sitters?type=nanny", tint: "bg-amber-100 text-amber-700" },
+  { icon: GraduationCap, label: "After-school", desc: "Pick-up & homework help", to: "/sitters?type=after-school", tint: "bg-sky-100 text-sky-700" },
+  { icon: Moon, label: "Night Nanny", desc: "Overnight newborn support", to: "/sitters?type=night-nanny", tint: "bg-indigo-100 text-indigo-700" },
+  { icon: PawPrint, label: "Pet Sitting", desc: "Dog walks, drop-ins & boarding", to: "/sitters?type=pet", tint: "bg-emerald-100 text-emerald-700" },
 ];
 
 const Index = () => {
