@@ -141,6 +141,7 @@ const App = () => (
             <Route path="/sitter/notifications" element={<SitterNotifications />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/:bookingId" element={<MessageThread />} />
+            <Route path="/parent/post-job/start" element={<PostJobStart />} />
             <Route path="/parent/post-job" element={<PostJob />} />
             <Route path="/parent/home" element={<ParentHome />} />
             <Route path="/parent/bookings" element={<ParentBookings />} />
