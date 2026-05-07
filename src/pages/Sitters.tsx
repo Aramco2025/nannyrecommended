@@ -12,7 +12,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
 } from "@/components/ui/accordion";
-import { Search, MapPin, List, X, SlidersHorizontal } from "lucide-react";
+import { Search, MapPin, List, X, SlidersHorizontal, Megaphone } from "lucide-react";
+import { Link } from "react-router-dom";
 import { PRICING_TIERS, SitterTier } from "@/lib/pricing/tiers";
 import {
   applyFilters, emptyFilters, FilterKey, LANGUAGES, LangKey, SitterFilters,
@@ -263,6 +264,24 @@ const Sitters = () => {
     <CompareProvider>
     <div className="min-h-screen bg-cream pb-20 md:pb-0">
       <Header />
+
+      {/* Post-a-job CTA strip */}
+      <section className="border-b border-cream-deep bg-gradient-to-r from-salmon-soft via-cream to-pure-white">
+        <div className="container flex flex-col items-start gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-pure-white text-salmon-deep shadow-card">
+              <Megaphone className="h-5 w-5" />
+            </span>
+            <div>
+              <div className="font-display text-base font-bold text-pitch-black">Don't see the perfect fit?</div>
+              <div className="text-xs text-slate-grey">Post a job and let verified sitters apply to you.</div>
+            </div>
+          </div>
+          <Button asChild size="sm" className="rounded-full bg-pitch-black text-pure-white hover:bg-pitch-black/90">
+            <Link to="/parent/post-job/start">Post a job</Link>
+          </Button>
+        </div>
+      </section>
 
       {/* Search bar */}
       <section className="border-b border-cream-deep bg-pure-white">

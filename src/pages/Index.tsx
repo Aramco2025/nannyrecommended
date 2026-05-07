@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import {
   ArrowRight, MapPin, Star, ShieldCheck, Search, MessageCircle, Calendar,
-  Heart, Users, BadgeCheck, Phone, FileCheck, Lock,
-  Baby, Moon, GraduationCap, Sun,
+  Heart, Users, BadgeCheck, Phone, FileCheck, Lock, Check,
+  Baby, Moon, GraduationCap, Sun, PawPrint,
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -14,10 +14,11 @@ import { SitterCard } from "@/components/SitterCard";
 import heroFamily from "@/assets/hero-family.jpg";
 
 const careTypes = [
-  { icon: Baby, label: "Babysitter", desc: "One-off or regular evenings", to: "/sitters?type=babysitter" },
-  { icon: Sun, label: "Full-time Nanny", desc: "Weekday daytime care", to: "/sitters?type=nanny" },
-  { icon: GraduationCap, label: "After-school", desc: "Pick-up & homework help", to: "/sitters?type=after-school" },
-  { icon: Moon, label: "Night Nanny", desc: "Overnight newborn support", to: "/sitters?type=night-nanny" },
+  { icon: Baby, label: "Babysitter", desc: "One-off or regular evenings", to: "/sitters?type=babysitter", tint: "bg-salmon-soft text-salmon-deep" },
+  { icon: Sun, label: "Full-time Nanny", desc: "Weekday daytime care", to: "/sitters?type=nanny", tint: "bg-amber-100 text-amber-700" },
+  { icon: GraduationCap, label: "After-school", desc: "Pick-up & homework help", to: "/sitters?type=after-school", tint: "bg-sky-100 text-sky-700" },
+  { icon: Moon, label: "Night Nanny", desc: "Overnight newborn support", to: "/sitters?type=night-nanny", tint: "bg-indigo-100 text-indigo-700" },
+  { icon: PawPrint, label: "Pet Sitting", desc: "Dog walks, drop-ins & boarding", to: "/sitters?type=pet", tint: "bg-emerald-100 text-emerald-700" },
 ];
 
 const Index = () => {
@@ -67,6 +68,13 @@ const Index = () => {
                   <Link to="/sitters">Find a sitter <ArrowRight className="h-4 w-4" /></Link>
                 </Button>
               </form>
+
+              <div className="mt-3 text-sm text-slate-grey">
+                Looking to earn?{" "}
+                <Link to="/auth?mode=signup&role=sitter" className="font-semibold text-salmon-deep underline-offset-2 hover:underline">
+                  Sign up as a sitter →
+                </Link>
+              </div>
 
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-grey">
                 <div className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-success-green" /> Reference-checked</div>
@@ -138,15 +146,15 @@ const Index = () => {
             </h2>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {careTypes.map(c => (
               <Link
                 key={c.label}
                 to={c.to}
-                className="group flex flex-col items-start rounded-3xl bg-pure-white p-7 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
+                className="group relative flex flex-col items-start overflow-hidden rounded-3xl bg-pure-white p-7 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
               >
-                <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-salmon-soft text-salmon-deep transition-colors group-hover:bg-salmon group-hover:text-pure-white">
-                  <c.icon className="h-6 w-6" />
+                <div className={`mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl ${c.tint} transition-transform group-hover:scale-110`}>
+                  <c.icon className="h-8 w-8" strokeWidth={1.75} />
                 </div>
                 <h3 className="font-display text-lg font-bold text-pitch-black">{c.label}</h3>
                 <p className="mt-1 text-sm text-slate-grey">{c.desc}</p>
@@ -310,44 +318,59 @@ const Index = () => {
                 <Link to="/how-it-works">Learn more about our checks <ArrowRight className="h-4 w-4" /></Link>
               </Button>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[
-                { icon: BadgeCheck, title: "ID verification", desc: "Every sitter's identity confirmed via Emirates ID or passport." },
-                { icon: FileCheck, title: "Police clearance", desc: "Enhanced background checks against UAE records." },
-                { icon: Phone, title: "Reference calls", desc: "Two prior families personally called by our team." },
-                { icon: ShieldCheck, title: "Insured bookings", desc: "Every confirmed sit is covered for your protection." },
-              ].map(s => (
-                <div key={s.title} className="rounded-2xl bg-pure-white p-6 shadow-card">
-                  <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-success-green/15 text-success-green">
-                    <s.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-display text-base font-bold text-pitch-black">{s.title}</h3>
-                  <p className="mt-1 text-sm text-slate-grey">{s.desc}</p>
-                </div>
-              ))}
+            <div className="rounded-3xl bg-pure-white p-8 shadow-card-hover">
+              <ul className="divide-y divide-cream-deep">
+                {[
+                  { title: "Identity verified", desc: "Emirates ID or passport on file for every sitter." },
+                  { title: "Police-cleared", desc: "Enhanced background checks against UAE records." },
+                  { title: "References called", desc: "Two prior families personally interviewed by our team." },
+                  { title: "Insured bookings", desc: "Every confirmed sit is covered — no excess to you." },
+                  { title: "Secure in-app payments", desc: "Funds released only after the sit is completed." },
+                  { title: "24/7 support", desc: "Real humans, based in the UAE, on hand to help." },
+                ].map(s => (
+                  <li key={s.title} className="flex items-start gap-4 py-4 first:pt-0 last:pb-0">
+                    <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-success-green text-pure-white shadow-card">
+                      <Check className="h-4 w-4" strokeWidth={3} />
+                    </span>
+                    <div>
+                      <div className="font-display text-base font-bold text-pitch-black">{s.title}</div>
+                      <p className="mt-0.5 text-sm text-slate-grey">{s.desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>
 
         {/* FOR SITTERS */}
         <section className="container py-12">
-          <div className="overflow-hidden rounded-[2rem] bg-pitch-black p-10 text-pure-white md:p-14">
-            <div className="grid gap-8 md:grid-cols-2 md:items-center">
+          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-salmon-soft via-cream to-pure-white p-10 shadow-card md:p-14">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-salmon/20 blur-3xl" aria-hidden />
+            <div className="pointer-events-none absolute -left-10 -bottom-10 h-48 w-48 rounded-full bg-amber-200/40 blur-3xl" aria-hidden />
+            <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-salmon">For sitters</span>
-                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-                  Earn doing what you <span className="italic text-salmon">love</span>.
+                <span className="text-xs font-semibold uppercase tracking-wider text-salmon-deep">For sitters</span>
+                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-pitch-black md:text-4xl">
+                  Earn doing what you <span className="italic text-salmon-deep">love</span>.
                 </h2>
-                <p className="mt-4 max-w-lg text-base text-pure-white/70">
+                <p className="mt-4 max-w-lg text-base text-slate-grey">
                   Set your own hours and rate. Meet families in your area. Build a loyal client base — we never take your tips.
                 </p>
+                <ul className="mt-5 space-y-2 text-sm text-pitch-black">
+                  {["Keep 100% of your tips", "Get paid weekly to your bank or wallet", "Free training & first-aid resources"].map(b => (
+                    <li key={b} className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-success-green" strokeWidth={3} /> {b}
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div className="flex flex-col gap-3 md:items-end">
-                <Button asChild size="lg" className="rounded-full bg-salmon px-8 text-primary-foreground shadow-cta hover:bg-salmon-deep">
-                  <Link to="/sitter/signup">Become a sitter</Link>
+                <Button asChild size="lg" className="rounded-full bg-pitch-black px-8 text-pure-white shadow-cta hover:bg-pitch-black/90">
+                  <Link to="/auth?mode=signup&role=sitter">Sign up as a sitter</Link>
                 </Button>
-                <Button asChild variant="ghost" className="text-pure-white hover:bg-pure-white/10 hover:text-pure-white">
-                  <Link to="/how-it-works">How it works →</Link>
+                <Button asChild variant="ghost" className="text-pitch-black hover:bg-pitch-black/5">
+                  <Link to="/sitter/signup">Already started? Continue →</Link>
                 </Button>
               </div>
             </div>

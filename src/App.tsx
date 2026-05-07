@@ -40,6 +40,7 @@ import SitterNotifications from "./pages/SitterNotifications.tsx";
 import Messages from "./pages/Messages.tsx";
 import MessageThread from "./pages/MessageThread.tsx";
 import PostJob from "./pages/PostJob.tsx";
+import PostJobStart from "./pages/PostJobStart.tsx";
 import Favourites from "./pages/Favourites.tsx";
 import Friends from "./pages/Friends.tsx";
 import JobApplicants from "./pages/JobApplicants.tsx";
@@ -82,7 +83,6 @@ import EducationArticle from "./pages/sitter/EducationArticle.tsx";
 import BookingReturn from "./pages/checkout/BookingReturn.tsx";
 import SubscriptionReturn from "./pages/checkout/SubscriptionReturn.tsx";
 import Referrals from "./pages/Referrals.tsx";
-import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner.tsx";
 import { OfflineBanner } from "./components/OfflineBanner.tsx";
 import Status from "./pages/Status.tsx";
 
@@ -96,7 +96,6 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <OfflineBanner />
-          <PaymentTestModeBanner />
           <Routes>
             <Route path="/status" element={<Status />} />
             <Route path="/" element={<Index />} />
@@ -142,6 +141,7 @@ const App = () => (
             <Route path="/sitter/notifications" element={<SitterNotifications />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/:bookingId" element={<MessageThread />} />
+            <Route path="/parent/post-job/start" element={<PostJobStart />} />
             <Route path="/parent/post-job" element={<PostJob />} />
             <Route path="/parent/home" element={<ParentHome />} />
             <Route path="/parent/bookings" element={<ParentBookings />} />
