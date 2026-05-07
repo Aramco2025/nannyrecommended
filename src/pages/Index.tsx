@@ -146,15 +146,15 @@ const Index = () => {
             </h2>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {careTypes.map(c => (
               <Link
                 key={c.label}
                 to={c.to}
-                className="group flex flex-col items-start rounded-3xl bg-pure-white p-7 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
+                className="group relative flex flex-col items-start overflow-hidden rounded-3xl bg-pure-white p-7 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
               >
-                <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-salmon-soft text-salmon-deep transition-colors group-hover:bg-salmon group-hover:text-pure-white">
-                  <c.icon className="h-6 w-6" />
+                <div className={`mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl ${c.tint} transition-transform group-hover:scale-110`}>
+                  <c.icon className="h-8 w-8" strokeWidth={1.75} />
                 </div>
                 <h3 className="font-display text-lg font-bold text-pitch-black">{c.label}</h3>
                 <p className="mt-1 text-sm text-slate-grey">{c.desc}</p>
