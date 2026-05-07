@@ -274,11 +274,11 @@ const Sitters = () => {
             </span>
             <div>
               <div className="font-display text-base font-bold text-pitch-black">Don't see the perfect fit?</div>
-              <div className="text-xs text-slate-grey">Post a job and let verified sitters apply to you.</div>
+              <div className="text-xs text-slate-grey">Book a sit and let verified sitters apply to you.</div>
             </div>
           </div>
           <Button asChild size="sm" className="rounded-full bg-pitch-black text-pure-white hover:bg-pitch-black/90">
-            <Link to="/parent/post-job/start">Post a job</Link>
+            <Link to="/parent/post-job/start">Book a sit</Link>
           </Button>
         </div>
       </section>

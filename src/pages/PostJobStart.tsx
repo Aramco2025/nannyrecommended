@@ -73,7 +73,7 @@ export default function PostJobStart() {
           What do you need help with?
         </h1>
         <p className="mt-2 text-sm text-slate-grey">
-          Pick a category and we'll send your request to verified sitters near you.
+          Pick a category and we'll match your request with verified sitters near you.
         </p>
 
         <section className="mt-8">

@@ -115,8 +115,8 @@ const PostJob = () => {
     <div className="min-h-screen bg-cream">
       <Header />
       <main className="container max-w-xl py-10">
-        <h1 className="font-display text-3xl font-bold text-pitch-black">{editId ? "Edit job" : "Post a job"}</h1>
-        <p className="mt-1 text-sm text-slate-grey">{editId ? "Update the details — applicants will see the changes." : "Tell us what you need and verified sitters will apply."}</p>
+        <h1 className="font-display text-3xl font-bold text-pitch-black">{editId ? "Edit request" : "Tell us what you need"}</h1>
+        <p className="mt-1 text-sm text-slate-grey">{editId ? "Update the details — applicants will see the changes." : "Share a few details and verified sitters near you can respond."}</p>
 
         <form onSubmit={submit} className="mt-8 space-y-5 rounded-3xl bg-pure-white p-6 shadow-card">
           <div className="space-y-1.5">
@@ -180,7 +180,7 @@ const PostJob = () => {
               placeholder="2 children aged 4 and 7. Bedtime 8pm." /></div>
 
           <Button disabled={busy} type="submit" size="lg" className="w-full rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep">
-            {busy ? (editId ? "Saving…" : "Posting…") : (editId ? "Save changes" : "Post job")}
+            {busy ? (editId ? "Saving…" : "Sending…") : (editId ? "Save changes" : "See who's free")}
           </Button>
         </form>
       </main>

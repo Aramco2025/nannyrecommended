@@ -53,7 +53,7 @@ const ParentHome = () => {
           <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-grey">Quick actions</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <ActionTile to="/sitters" icon={<Search className="h-5 w-5" />} title="Find a sitter" subtitle="Browse vetted profiles" />
-            <ActionTile to="/parent/post-job" icon={<FileText className="h-5 w-5" />} title="Post a job" subtitle="Sitters apply to you" />
+            <ActionTile to="/parent/post-job/start" icon={<FileText className="h-5 w-5" />} title="Book a sit" subtitle="Sitters apply to you" />
             <ActionTile to="/messages" icon={<MessageCircle className="h-5 w-5" />} title="Messages" subtitle="Inbox & threads" />
             <ActionTile to="/favourites" icon={<Heart className="h-5 w-5" />} title={`Favourites (${favCount})`} subtitle="Saved sitters" />
           </div>
@@ -89,11 +89,11 @@ const ParentHome = () => {
 
           <section className="rounded-3xl bg-pure-white p-6 shadow-card">
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-lg font-bold text-pitch-black">Open job posts</h2>
-              <Button asChild variant="ghost" size="sm" className="rounded-full text-slate-grey"><Link to="/parent/post-job">New <ArrowRight className="h-3.5 w-3.5" /></Link></Button>
+              <h2 className="font-display text-lg font-bold text-pitch-black">Open sit requests</h2>
+              <Button asChild variant="ghost" size="sm" className="rounded-full text-slate-grey"><Link to="/parent/post-job/start">New <ArrowRight className="h-3.5 w-3.5" /></Link></Button>
             </div>
             {openJobs.length === 0 ? (
-              <p className="mt-3 rounded-2xl bg-cream p-4 text-center text-sm text-slate-grey">No open posts. Post a job to receive applications from sitters.</p>
+              <p className="mt-3 rounded-2xl bg-cream p-4 text-center text-sm text-slate-grey">No open requests. Book a sit to receive applications from sitters.</p>
             ) : (
               <div className="mt-3 space-y-2">
                 {openJobs.slice(0, 3).map(j => (
