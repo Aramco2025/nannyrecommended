@@ -69,6 +69,13 @@ const Index = () => {
                 </Button>
               </form>
 
+              <div className="mt-3 text-sm text-slate-grey">
+                Looking to earn?{" "}
+                <Link to="/auth?mode=signup&role=sitter" className="font-semibold text-salmon-deep underline-offset-2 hover:underline">
+                  Sign up as a sitter →
+                </Link>
+              </div>
+
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-grey">
                 <div className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-success-green" /> Reference-checked</div>
                 <div className="flex items-center gap-1.5"><Star className="h-4 w-4 fill-salmon text-salmon" /> 4.9 from 8,400+ bookings</div>
