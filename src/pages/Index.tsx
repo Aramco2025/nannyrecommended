@@ -318,21 +318,27 @@ const Index = () => {
                 <Link to="/how-it-works">Learn more about our checks <ArrowRight className="h-4 w-4" /></Link>
               </Button>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[
-                { icon: BadgeCheck, title: "ID verification", desc: "Every sitter's identity confirmed via Emirates ID or passport." },
-                { icon: FileCheck, title: "Police clearance", desc: "Enhanced background checks against UAE records." },
-                { icon: Phone, title: "Reference calls", desc: "Two prior families personally called by our team." },
-                { icon: ShieldCheck, title: "Insured bookings", desc: "Every confirmed sit is covered for your protection." },
-              ].map(s => (
-                <div key={s.title} className="rounded-2xl bg-pure-white p-6 shadow-card">
-                  <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-success-green/15 text-success-green">
-                    <s.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-display text-base font-bold text-pitch-black">{s.title}</h3>
-                  <p className="mt-1 text-sm text-slate-grey">{s.desc}</p>
-                </div>
-              ))}
+            <div className="rounded-3xl bg-pure-white p-8 shadow-card-hover">
+              <ul className="divide-y divide-cream-deep">
+                {[
+                  { title: "Identity verified", desc: "Emirates ID or passport on file for every sitter." },
+                  { title: "Police-cleared", desc: "Enhanced background checks against UAE records." },
+                  { title: "References called", desc: "Two prior families personally interviewed by our team." },
+                  { title: "Insured bookings", desc: "Every confirmed sit is covered — no excess to you." },
+                  { title: "Secure in-app payments", desc: "Funds released only after the sit is completed." },
+                  { title: "24/7 support", desc: "Real humans, based in the UAE, on hand to help." },
+                ].map(s => (
+                  <li key={s.title} className="flex items-start gap-4 py-4 first:pt-0 last:pb-0">
+                    <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-success-green text-pure-white shadow-card">
+                      <Check className="h-4 w-4" strokeWidth={3} />
+                    </span>
+                    <div>
+                      <div className="font-display text-base font-bold text-pitch-black">{s.title}</div>
+                      <p className="mt-0.5 text-sm text-slate-grey">{s.desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>
