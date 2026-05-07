@@ -30,16 +30,16 @@ function countdown(target: Date): string {
 export function NextBookingCard({ booking }: Props) {
   if (!booking) {
     return (
-      <div className="overflow-hidden rounded-3xl bg-pitch-black p-6 text-pure-white shadow-card md:p-8">
+      <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-salmon-soft via-cream to-pure-white p-6 text-pitch-black shadow-card md:p-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-salmon">
+            <span className="text-xs font-semibold uppercase tracking-wider text-salmon-deep">
               Nothing booked
             </span>
             <h2 className="mt-2 font-display text-2xl font-bold md:text-3xl">
               Plan your next sit
             </h2>
-            <p className="mt-1 text-sm text-pure-white/70">
+            <p className="mt-1 text-sm text-slate-grey">
               Browse verified sitters in your area or book a sit and let them apply.
             </p>
           </div>
@@ -47,7 +47,7 @@ export function NextBookingCard({ booking }: Props) {
             <Button asChild className="rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep">
               <Link to="/sitters">Find a sitter <ArrowRight className="h-4 w-4" /></Link>
             </Button>
-            <Button asChild variant="outline" className="rounded-full border-pure-white/20 bg-transparent text-pure-white hover:bg-pure-white/10 hover:text-pure-white">
+            <Button asChild variant="outline" className="rounded-full border-pitch-black/15 bg-transparent text-pitch-black hover:bg-pitch-black/5">
               <Link to="/parent/post-job/start">Book a sit</Link>
             </Button>
           </div>
