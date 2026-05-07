@@ -6,7 +6,7 @@ import { Shield, Heart, Clock } from "lucide-react";
 const slides = [
   { icon: Shield, title: "Vetted, trusted sitters", body: "Every sitter is ID-checked, reference-checked, and reviewed by other parents." },
   { icon: Heart, title: "Sitters your friends trust", body: "See who in your network has booked, favourited, or recommended a sitter." },
-  { icon: Clock, title: "Book in minutes, not days", body: "Instant book a free slot, or post a job and let sitters apply to you." },
+  { icon: Clock, title: "Book in minutes, not days", body: "Instant book a free slot, or book a sit and let sitters apply to you." },
 ];
 
 export default function OnboardingWelcome() {

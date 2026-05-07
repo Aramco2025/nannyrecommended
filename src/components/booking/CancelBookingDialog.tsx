@@ -205,8 +205,8 @@ export function CancelBookingDialog({
 
             <DialogFooter className="gap-2">
               <Button asChild variant="outline">
-                <Link to="/post-job" onClick={() => onOpenChange(false)}>
-                  <Users className="mr-1 h-4 w-4" /> Post a job
+                <Link to="/parent/post-job/start" onClick={() => onOpenChange(false)}>
+                  <Users className="mr-1 h-4 w-4" /> Book a sit
                 </Link>
               </Button>
               <Button

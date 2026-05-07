@@ -40,7 +40,7 @@ export function NextBookingCard({ booking }: Props) {
               Plan your next sit
             </h2>
             <p className="mt-1 text-sm text-pure-white/70">
-              Browse verified sitters in your area or post a job and let them apply.
+              Browse verified sitters in your area or book a sit and let them apply.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -48,7 +48,7 @@ export function NextBookingCard({ booking }: Props) {
               <Link to="/sitters">Find a sitter <ArrowRight className="h-4 w-4" /></Link>
             </Button>
             <Button asChild variant="outline" className="rounded-full border-pure-white/20 bg-transparent text-pure-white hover:bg-pure-white/10 hover:text-pure-white">
-              <Link to="/parent/post-job">Post a job</Link>
+              <Link to="/parent/post-job/start">Book a sit</Link>
             </Button>
           </div>
         </div>

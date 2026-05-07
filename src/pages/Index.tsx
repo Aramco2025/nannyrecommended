@@ -12,6 +12,19 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useSitters } from "@/hooks/useSitters";
 import { SitterCard } from "@/components/SitterCard";
 import heroFamily from "@/assets/hero-family.jpg";
+import schoolKings from "@/assets/schools/kings.png";
+import schoolNordAnglia from "@/assets/schools/nord-anglia.png";
+import schoolBrighton from "@/assets/schools/brighton.png";
+import schoolRepton from "@/assets/schools/repton.png";
+import schoolJess from "@/assets/schools/jess.png";
+
+const trustedSchools = [
+  { src: schoolKings, alt: "Kings' School Dubai" },
+  { src: schoolNordAnglia, alt: "Nord Anglia International School Dubai" },
+  { src: schoolBrighton, alt: "Brighton College" },
+  { src: schoolRepton, alt: "Repton School" },
+  { src: schoolJess, alt: "JESS Dubai" },
+];
 
 const careTypes = [
   { icon: Baby, label: "Babysitter", desc: "One-off or regular evenings", to: "/sitters?type=babysitter", tint: "bg-salmon-soft text-salmon-deep" },
@@ -127,12 +140,16 @@ const Index = () => {
             <p className="mb-5 text-center text-xs font-semibold uppercase tracking-wider text-slate-grey">
               Trusted by parents at
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-base font-display font-semibold text-slate-grey/70 sm:text-lg">
-              <span>GEMS Wellington</span><span>·</span>
-              <span>Kings' School Dubai</span><span>·</span>
-              <span>Nord Anglia</span><span>·</span>
-              <span>Repton</span><span>·</span>
-              <span>Brighton College</span>
+            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 sm:gap-x-14">
+              {trustedSchools.map(s => (
+                <img
+                  key={s.alt}
+                  src={s.src}
+                  alt={s.alt}
+                  loading="lazy"
+                  className="h-14 w-auto object-contain opacity-80 grayscale transition hover:opacity-100 hover:grayscale-0 sm:h-16"
+                />
+              ))}
             </div>
           </div>
         </section>
