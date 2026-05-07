@@ -40,6 +40,7 @@ import SitterNotifications from "./pages/SitterNotifications.tsx";
 import Messages from "./pages/Messages.tsx";
 import MessageThread from "./pages/MessageThread.tsx";
 import PostJob from "./pages/PostJob.tsx";
+import PostJobStart from "./pages/PostJobStart.tsx";
 import Favourites from "./pages/Favourites.tsx";
 import Friends from "./pages/Friends.tsx";
 import JobApplicants from "./pages/JobApplicants.tsx";
