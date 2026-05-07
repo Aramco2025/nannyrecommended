@@ -12,7 +12,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
 } from "@/components/ui/accordion";
-import { Search, MapPin, List, X, SlidersHorizontal } from "lucide-react";
+import { Search, MapPin, List, X, SlidersHorizontal, Megaphone } from "lucide-react";
+import { Link } from "react-router-dom";
 import { PRICING_TIERS, SitterTier } from "@/lib/pricing/tiers";
 import {
   applyFilters, emptyFilters, FilterKey, LANGUAGES, LangKey, SitterFilters,
