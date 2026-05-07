@@ -30,16 +30,16 @@ function countdown(target: Date): string {
 export function NextBookingCard({ booking }: Props) {
   if (!booking) {
     return (
-      <div className="overflow-hidden rounded-3xl bg-pitch-black p-6 text-pure-white shadow-card md:p-8">
+      <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-salmon-soft via-cream to-pure-white p-6 text-pitch-black shadow-card md:p-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-salmon">
+            <span className="text-xs font-semibold uppercase tracking-wider text-salmon-deep">
               Nothing booked
             </span>
             <h2 className="mt-2 font-display text-2xl font-bold md:text-3xl">
               Plan your next sit
             </h2>
-            <p className="mt-1 text-sm text-pure-white/70">
+            <p className="mt-1 text-sm text-slate-grey">
               Browse verified sitters in your area or book a sit and let them apply.
             </p>
           </div>
@@ -47,7 +47,7 @@ export function NextBookingCard({ booking }: Props) {
             <Button asChild className="rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep">
               <Link to="/sitters">Find a sitter <ArrowRight className="h-4 w-4" /></Link>
             </Button>
-            <Button asChild variant="outline" className="rounded-full border-pure-white/20 bg-transparent text-pure-white hover:bg-pure-white/10 hover:text-pure-white">
+            <Button asChild variant="outline" className="rounded-full border-pitch-black/15 bg-transparent text-pitch-black hover:bg-pitch-black/5">
               <Link to="/parent/post-job/start">Book a sit</Link>
             </Button>
           </div>
@@ -66,10 +66,10 @@ export function NextBookingCard({ booking }: Props) {
   });
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-pitch-black p-6 text-pure-white shadow-card md:p-8">
+    <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-salmon-soft via-cream to-pure-white p-6 text-pitch-black shadow-card md:p-8">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-salmon">
+          <span className="text-xs font-semibold uppercase tracking-wider text-salmon-deep">
             Next sit · {countdown(start)}
           </span>
           <h2 className="mt-2 font-display text-2xl font-bold md:text-3xl">
@@ -80,7 +80,7 @@ export function NextBookingCard({ booking }: Props) {
           <img
             src={booking.sitters.photos[0]}
             alt=""
-            className="h-14 w-14 rounded-2xl object-cover ring-2 ring-pure-white/20"
+            className="h-14 w-14 rounded-2xl object-cover ring-2 ring-pitch-black/10"
           />
         )}
       </div>
@@ -95,7 +95,7 @@ export function NextBookingCard({ booking }: Props) {
         <Button asChild className="rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep">
           <Link to={`/bookings/${booking.id}`}>View booking <ArrowRight className="h-4 w-4" /></Link>
         </Button>
-        <Button asChild variant="outline" className="rounded-full border-pure-white/20 bg-transparent text-pure-white hover:bg-pure-white/10 hover:text-pure-white">
+        <Button asChild variant="outline" className="rounded-full border-pitch-black/15 bg-transparent text-pitch-black hover:bg-pitch-black/5">
           <Link to={`/messages/${booking.id}`}>
             <MessageCircle className="h-4 w-4" /> Message sitter
           </Link>
@@ -107,9 +107,9 @@ export function NextBookingCard({ booking }: Props) {
 
 function Fact({ icon: Icon, label }: { icon: typeof Calendar; label: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl bg-pure-white/5 px-3 py-2.5">
-      <Icon className="h-4 w-4 shrink-0 text-salmon" />
-      <span className="truncate text-pure-white/90">{label}</span>
+    <div className="flex items-center gap-2 rounded-xl bg-pure-white/70 px-3 py-2.5">
+      <Icon className="h-4 w-4 shrink-0 text-salmon-deep" />
+      <span className="truncate text-pitch-black/90">{label}</span>
     </div>
   );
 }
