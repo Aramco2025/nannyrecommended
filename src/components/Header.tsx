@@ -23,7 +23,7 @@ const parentLinks = [
   { to: "/parent/home", label: "Home" },
   { to: "/sitters", label: "Find a sitter" },
   { to: "/favourites", label: "Favourites" },
-  { to: "/parent/post-job/start", label: "Post a job" },
+  { to: "/parent/post-job/start", label: "Book a sit" },
   { to: "/messages", label: "Inbox" },
 ];
 
