@@ -54,6 +54,9 @@ export function Header() {
               <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
                 <Link to="/auth?mode=signin">Sign in</Link>
               </Button>
+              <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex border-pitch-black/20">
+                <Link to="/auth?mode=signup&role=sitter">Become a sitter</Link>
+              </Button>
               <Button asChild size="sm" className="hidden sm:inline-flex bg-pitch-black text-pure-white hover:bg-pitch-black/90">
                 <Link to="/sitters">Find a sitter</Link>
               </Button>
