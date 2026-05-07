@@ -345,23 +345,32 @@ const Index = () => {
 
         {/* FOR SITTERS */}
         <section className="container py-12">
-          <div className="overflow-hidden rounded-[2rem] bg-pitch-black p-10 text-pure-white md:p-14">
-            <div className="grid gap-8 md:grid-cols-2 md:items-center">
+          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-salmon-soft via-cream to-pure-white p-10 shadow-card md:p-14">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-salmon/20 blur-3xl" aria-hidden />
+            <div className="pointer-events-none absolute -left-10 -bottom-10 h-48 w-48 rounded-full bg-amber-200/40 blur-3xl" aria-hidden />
+            <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-salmon">For sitters</span>
-                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-                  Earn doing what you <span className="italic text-salmon">love</span>.
+                <span className="text-xs font-semibold uppercase tracking-wider text-salmon-deep">For sitters</span>
+                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-pitch-black md:text-4xl">
+                  Earn doing what you <span className="italic text-salmon-deep">love</span>.
                 </h2>
-                <p className="mt-4 max-w-lg text-base text-pure-white/70">
+                <p className="mt-4 max-w-lg text-base text-slate-grey">
                   Set your own hours and rate. Meet families in your area. Build a loyal client base — we never take your tips.
                 </p>
+                <ul className="mt-5 space-y-2 text-sm text-pitch-black">
+                  {["Keep 100% of your tips", "Get paid weekly to your bank or wallet", "Free training & first-aid resources"].map(b => (
+                    <li key={b} className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-success-green" strokeWidth={3} /> {b}
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div className="flex flex-col gap-3 md:items-end">
-                <Button asChild size="lg" className="rounded-full bg-salmon px-8 text-primary-foreground shadow-cta hover:bg-salmon-deep">
-                  <Link to="/sitter/signup">Become a sitter</Link>
+                <Button asChild size="lg" className="rounded-full bg-pitch-black px-8 text-pure-white shadow-cta hover:bg-pitch-black/90">
+                  <Link to="/auth?mode=signup&role=sitter">Sign up as a sitter</Link>
                 </Button>
-                <Button asChild variant="ghost" className="text-pure-white hover:bg-pure-white/10 hover:text-pure-white">
-                  <Link to="/how-it-works">How it works →</Link>
+                <Button asChild variant="ghost" className="text-pitch-black hover:bg-pitch-black/5">
+                  <Link to="/sitter/signup">Already started? Continue →</Link>
                 </Button>
               </div>
             </div>
