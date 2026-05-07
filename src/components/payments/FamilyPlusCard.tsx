@@ -75,21 +75,21 @@ export function FamilyPlusCard() {
   // Per Apple guideline 3.1.3(a) "Reader" exception — link out to web with neutral copy.
   if (native) {
     return (
-      <div className="rounded-3xl bg-pitch-black p-6 text-pure-white shadow-card">
-        <div className="text-xs font-semibold uppercase tracking-wider text-salmon">Family Plus</div>
+      <div className="rounded-3xl bg-gradient-to-br from-salmon-soft via-cream to-pure-white p-6 text-pitch-black shadow-card">
+        <div className="text-xs font-semibold uppercase tracking-wider text-salmon-deep">Family Plus</div>
         <h3 className="mt-2 font-display text-lg font-bold">More features for families</h3>
-        <p className="mt-2 text-sm text-pure-white/70">
+        <p className="mt-2 text-sm text-slate-grey">
           Family Plus is a website feature. Visit nannyrecommended.com on the same account to learn more — any features you add there will appear here automatically.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Button
             onClick={() => openExternal(`${WEB_ORIGIN}/account`)}
-            className="rounded-full bg-pure-white text-pitch-black hover:bg-pure-white/90"
+            className="rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep"
           >
             <ExternalLink className="mr-1 h-3.5 w-3.5" /> Manage on web
           </Button>
           {refetch && (
-            <Button variant="ghost" className="rounded-full text-pure-white hover:bg-pure-white/10" onClick={() => refetch()}>
+            <Button variant="ghost" className="rounded-full text-pitch-black hover:bg-pitch-black/5" onClick={() => refetch()}>
               Refresh status
             </Button>
           )}
@@ -100,15 +100,15 @@ export function FamilyPlusCard() {
 
   return (
     <>
-      <div className="rounded-3xl bg-pitch-black p-6 text-pure-white shadow-card">
-        <div className="text-xs font-semibold uppercase tracking-wider text-salmon">Family Plus</div>
+      <div className="rounded-3xl bg-gradient-to-br from-salmon-soft via-cream to-pure-white p-6 text-pitch-black shadow-card">
+        <div className="text-xs font-semibold uppercase tracking-wider text-salmon-deep">Family Plus</div>
         <h3 className="mt-2 font-display text-lg font-bold">Unlock unlimited messages & concierge</h3>
-        <p className="mt-2 text-sm text-pure-white/70">From AED 39/month. Cancel any time.</p>
+        <p className="mt-2 text-sm text-slate-grey">From AED 39/month. Cancel any time.</p>
         <div className="mt-4 flex gap-2">
           <Button onClick={() => setOpen(true)} className="rounded-full bg-salmon text-primary-foreground hover:bg-salmon-deep shadow-cta">
             Upgrade
           </Button>
-          <Button asChild variant="outline" className="rounded-full border-pure-white/30 bg-transparent text-pure-white hover:bg-pure-white/10">
+          <Button asChild variant="outline" className="rounded-full border-pitch-black/15 bg-transparent text-pitch-black hover:bg-pitch-black/5">
             <Link to="/pricing">Compare plans</Link>
           </Button>
         </div>
