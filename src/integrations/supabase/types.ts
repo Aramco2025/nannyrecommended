@@ -417,6 +417,30 @@ export type Database = {
         }
         Relationships: []
       }
+      data_export_requests: {
+        Row: {
+          fulfilled_at: string | null
+          id: string
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          fulfilled_at?: string | null
+          id?: string
+          requested_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          fulfilled_at?: string | null
+          id?: string
+          requested_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       disputes: {
         Row: {
           booking_id: string
@@ -853,6 +877,7 @@ export type Database = {
           avatar_url: string | null
           care_needs: string[]
           created_at: string
+          data_export_requested_at: string | null
           full_name: string | null
           id: string
           is_apple_reviewer: boolean
@@ -872,6 +897,7 @@ export type Database = {
           avatar_url?: string | null
           care_needs?: string[]
           created_at?: string
+          data_export_requested_at?: string | null
           full_name?: string | null
           id: string
           is_apple_reviewer?: boolean
@@ -891,6 +917,7 @@ export type Database = {
           avatar_url?: string | null
           care_needs?: string[]
           created_at?: string
+          data_export_requested_at?: string | null
           full_name?: string | null
           id?: string
           is_apple_reviewer?: boolean
