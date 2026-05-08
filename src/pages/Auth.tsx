@@ -92,8 +92,8 @@ const Auth = () => {
           } catch (e) { /* non-fatal */ }
         }
 
-        toast({ title: "Welcome!", description: refCode ? "Account created. Your AED 50 credit unlocks after your first booking." : "Account created." });
-        navigate("/onboarding/region");
+        toast({ title: "Welcome!", description: refCode ? "Account created. Your AED 50 credit unlocks after your first booking." : "Account created. Check your email to verify." });
+        navigate(`/verify-email?email=${encodeURIComponent(parsed.data.email)}`);
       } else {
         const parsed = signInSchema.safeParse({ email, password });
         if (!parsed.success) {
