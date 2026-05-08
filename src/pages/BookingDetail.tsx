@@ -275,13 +275,17 @@ export default function BookingDetail() {
                 </Button>
               )}
               {isParent && !dispute && ["confirmed","in_progress","completed","cancelled"].includes(b.status) && (
-                <Button variant="ghost" className="text-slate-grey hover:text-pitch-black" onClick={() => setDisputeOpen(true)}>
-                  <ShieldAlert className="h-4 w-4" /> Report a problem
+                <Button asChild variant="ghost" className="text-slate-grey hover:text-pitch-black">
+                  <Link to={`/bookings/${b.id}/dispute`}>
+                    <ShieldAlert className="h-4 w-4" /> Report a problem
+                  </Link>
                 </Button>
               )}
             </div>
           )}
         </div>
+
+        <PreSitReminder bookingId={b.id} startAt={b.start_at} address={b.address} status={b.status} />
 
         <CancelBookingDialog
           open={cancelOpen}
