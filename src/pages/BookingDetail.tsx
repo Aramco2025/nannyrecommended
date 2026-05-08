@@ -225,6 +225,12 @@ export default function BookingDetail() {
             </div>
           )}
 
+          {b.status === "in_progress" && (
+            <Button asChild className="mt-3 w-full bg-success-green text-primary-foreground hover:bg-success-green/90">
+              <Link to={`/bookings/${b.id}/live`}>Open live sit</Link>
+            </Button>
+          )}
+
           {/* Sitter actions */}
           {isSitter && (
             <div className="mt-5 flex flex-wrap gap-2">
