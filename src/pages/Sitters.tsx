@@ -27,6 +27,7 @@ import { SittersMapView } from "@/components/sitters/SittersMapView";
 import { ConciergeCTA } from "@/components/payments/FamilyPlusGates";
 import { SavedSearchesSheet } from "@/components/sitters/SavedSearchesSheet";
 import { sortSitters, SORT_OPTIONS, type SortKey } from "@/lib/sitterRanking";
+import { NewInAreaCard } from "@/components/sitters/NewInAreaCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Section = { title: string; items: { key: FilterKey; label: string }[] };
