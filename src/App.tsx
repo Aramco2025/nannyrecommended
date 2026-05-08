@@ -117,6 +117,10 @@ const App = () => (
             <Route path="/sitter/set-rate" element={<SitterSetRate />} />
             <Route path="/admin/payouts" element={<AdminPayouts />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/account/delete" element={<DeleteAccount />} />
+            <Route path="/account/privacy" element={<Privacy_ />} />
             <Route path="/auth/help" element={<AuthHelp />} />
             <Route path="/account" element={<Account />} />
             <Route path="/referrals" element={<Referrals />} />
