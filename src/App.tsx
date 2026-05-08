@@ -96,6 +96,9 @@ import Status from "./pages/Status.tsx";
 import Splash from "./pages/Splash.tsx";
 import PreviewProfile from "./pages/sitter/PreviewProfile.tsx";
 import SittersFilters from "./pages/sitters/Filters.tsx";
+import SitterCalculator from "./pages/sitter/Calculator.tsx";
+import PaymentMethods from "./pages/account/PaymentMethods.tsx";
+import Redirect from "./components/Redirect.tsx";
 
 const queryClient = new QueryClient();
 
@@ -199,6 +202,17 @@ const App = () => (
             <Route path="/admin/disputes" element={<AdminDisputes />} />
             <Route path="/checkout/booking-return" element={<BookingReturn />} />
             <Route path="/checkout/subscription-return" element={<SubscriptionReturn />} />
+            {/* Route aliases */}
+            <Route path="/login" element={<Redirect to="/auth" />} />
+            <Route path="/signup" element={<Redirect to="/auth" />} />
+            <Route path="/welcome" element={<Redirect to="/onboarding/role" />} />
+            <Route path="/setup/region" element={<Redirect to="/onboarding/region" />} />
+            <Route path="/setup/permissions" element={<Redirect to="/onboarding/permissions" />} />
+            <Route path="/safety" element={<Redirect to="/trust-safety" />} />
+            <Route path="/home" element={<Redirect to="/parent/home" />} />
+            <Route path="/sitters/saved" element={<Redirect to="/favourites" />} />
+            <Route path="/sitter/calculator" element={<SitterCalculator />} />
+            <Route path="/account/payment-methods" element={<PaymentMethods />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
