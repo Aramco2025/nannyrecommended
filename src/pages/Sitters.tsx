@@ -13,7 +13,7 @@ import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
 } from "@/components/ui/accordion";
 import { Search, MapPin, List, X, SlidersHorizontal, Megaphone } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { PRICING_TIERS, SitterTier } from "@/lib/pricing/tiers";
 import {
   applyFilters, emptyFilters, FilterKey, LANGUAGES, LangKey, SitterFilters,
@@ -98,7 +98,9 @@ const SECTIONS: Section[] = [
 ];
 
 const Sitters = () => {
-  const [view, setView] = useState<"list" | "map">("list");
+  const [params] = useSearchParams();
+  const initialView = params.get("view") === "map" ? "map" : "list";
+  const [view, setView] = useState<"list" | "map">(initialView);
   const [sort, setSort] = useState<SortKey>("best");
   const [tierFilter, setTierFilter] = useState<SitterTier | "any">("any");
   const [priceRange, setPriceRange] = useState<[number, number]>([35, 200]);
