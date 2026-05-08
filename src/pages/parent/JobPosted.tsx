@@ -27,7 +27,7 @@ export default function JobPosted() {
     if (!jobId) return;
     const [{ data: j }, { count: c }] = await Promise.all([
       supabase.from("job_posts").select("*").eq("id", jobId).maybeSingle(),
-      supabase.from("job_applications").select("id", { count: "exact", head: true }).eq("job_post_id", jobId).in("status", ["pending", "submitted"]),
+      supabase.from("job_applications").select("id", { count: "exact", head: true }).eq("job_post_id", jobId).eq("status", "pending"),
     ]);
     setJob(j as any);
     setCount(c ?? 0);
