@@ -149,6 +149,16 @@ const Account = () => {
           })}
         </div>
 
+        <div className="mt-6 rounded-3xl border border-border bg-card p-6 shadow-card">
+          <h3 className="font-display text-lg font-bold text-pitch-black">Privacy & data</h3>
+          <p className="mt-1 text-sm text-slate-grey">
+            See what data we hold, download a copy, or change your contact preferences.
+          </p>
+          <Button asChild variant="outline" className="mt-4 rounded-full">
+            <Link to="/account/privacy">Open privacy dashboard</Link>
+          </Button>
+        </div>
+
         <DeleteAccountSection />
       </main>
       <Footer />

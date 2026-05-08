@@ -71,6 +71,10 @@ import AdminDisputes from "./pages/AdminDisputes.tsx";
 import AuthHelp from "./pages/AuthHelp.tsx";
 import NotificationPreferences from "./pages/NotificationPreferences.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import DeleteAccount from "./pages/account/DeleteAccount.tsx";
+import Privacy_ from "./pages/account/Privacy.tsx";
+import VerifyEmail from "./pages/VerifyEmail.tsx";
+import AuthCallback from "./pages/AuthCallback.tsx";
 import SitterJobDetail from "./pages/sitter/JobDetail.tsx";
 import SitterApplications from "./pages/sitter/Applications.tsx";
 import SitterRequests from "./pages/sitter/Requests.tsx";
@@ -113,6 +117,10 @@ const App = () => (
             <Route path="/sitter/set-rate" element={<SitterSetRate />} />
             <Route path="/admin/payouts" element={<AdminPayouts />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/account/delete" element={<DeleteAccount />} />
+            <Route path="/account/privacy" element={<Privacy_ />} />
             <Route path="/auth/help" element={<AuthHelp />} />
             <Route path="/account" element={<Account />} />
             <Route path="/referrals" element={<Referrals />} />

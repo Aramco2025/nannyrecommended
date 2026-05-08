@@ -1,48 +1,117 @@
-## Plan: Seed reviewer accounts + generate App Store screenshots
+# Batch 1 — Apple Submission Blockers
 
-Two parallel tracks so you can keep moving on the Mac side while I prep the rest.
+Five screens/flows required before App Store submission. All other batches wait for verification.
 
-### Track 1 — Seed the three Apple reviewer accounts
+---
 
-1. Invoke the existing `seed-reviewer-accounts` edge function from the sandbox (using the service role key already stored as a secret — no curl needed on your side).
-2. Verify all three accounts exist in `auth.users` and `profiles` with `is_apple_reviewer = true`:
-   - `apple.review.parent@nannyrecommended.com`
-   - `apple.review.sitter@nannyrecommended.com`
-   - `apple.review.both@nannyrecommended.com`
-3. Confirm the parent has: 2 children rows, AED 1,000 wallet balance, 1 completed past booking, an active Family Plus subscription row.
-4. Confirm the sitter has: a verified `sitters` row, hourly rate set, an availability window, AED 1,000 wallet.
-5. Sign in once as each account in the preview to sanity-check the login works (catches password-hash issues now, not on submission day).
+## 1. P3 — Global Error Boundary
 
-### Track 2 — Generate 10 App Store screenshots at 1290×2796
+**New file:** `src/components/ErrorBoundary.tsx`
+- Class component with `componentDidCatch` / `getDerivedStateFromError`
+- Friendly fallback UI: brand-styled card, "Something went wrong" heading, short reassurance, "Try again" (resets state) and "Go home" (window.location = '/') buttons
+- Logs error to console (Sentry hook stub — add TODO; Sentry isn't wired yet, so use `console.error` and prepare a `reportError(err)` shim that can be swapped later)
+- Show error message + "Copy details" only in dev mode (`import.meta.env.DEV`)
 
-Use Puppeteer against the published web build (`https://nannyrecommended.com`) at iPhone 15 Pro Max viewport with `deviceScaleFactor: 3`. Sign in as `apple.review.parent@nannyrecommended.com` so screenshots show realistic data, not empty states.
+**Edit:** `src/main.tsx` — wrap `<App />` with `<ErrorBoundary>`.
 
-Pages captured (in App Store display order):
+---
 
-1. **Home** — `/` parent home with next booking card
-2. **Find a sitter** — `/sitters` list with filters visible
-3. **Sitter profile** — `/sitter/{id}` showing verification + reviews
-4. **Booking flow** — `/booking/{sitter-id}` with date/time picked
-5. **Payment summary** — booking confirm step with fee breakdown
-6. **Messages** — `/messages` thread list
-7. **Message thread** — `/messages/{id}` with safety banner
-8. **Account** — `/account` showing wallet + Family Plus state
-9. **Family Plus** — `/pricing` (iOS-style, no buy button)
-10. **Trust & Safety** — `/trust-safety` for App Review's "what makes this safe" answer
+## 2. N7 — Multi-step Delete Account Flow
 
-Each screenshot:
-- Saved as `/mnt/documents/screenshots/01-home.png` … `10-trust.png`
-- A second pass at 1242×2688 (6.5") for the older required size, saved to `/mnt/documents/screenshots/6.5/`
+**New page:** `src/pages/account/DeleteAccount.tsx` at `/account/delete`
 
-Then bundle into `/mnt/documents/nannyrecommended-screenshots.zip` for one-click drag into App Store Connect.
+Three steps in a single page (state machine):
+1. **Consequences** — explains: active bookings cancelled per policy, data anonymised after 30-day grace, profile/messages/reviews removed; lists what's kept (anonymised booking history for the other party). Continue / Cancel.
+2. **Final confirm** — type `DELETE` to enable button (reuse pattern from existing `DeleteAccountSection.tsx`).
+3. **Success** — "Account deleted, confirmation sent to {email}", auto sign-out and route to `/` after 5s.
 
-### What I need from you before starting
+Calls existing `delete-account` edge function (already supports anonymisation). No backend changes needed for v1; the "30-day grace" copy is policy-only since the function deletes immediately — flag this as a known gap to align later.
 
-Nothing — both tracks use credentials already in the project (service role key + the seeded reviewer login). Approve and I'll run them back-to-back, then post the artifact links here.
+**Edit:** `src/components/account/DeleteAccountSection.tsx` — replace inline modal with a Link to `/account/delete` (keeps the entry point, simplifies UX).
 
-### Out of scope (deferred unless you ask)
+**Edit:** `src/App.tsx` — add route.
 
-- Sentry wiring (needs a free DSN from sentry.io — say the word)
-- Native Apple Pay sheet (Stripe Checkout already covers this in WKWebView)
-- iPad screenshots (you're listing iPhone-only)
-- Marketing copy variants on screenshots (plain UI capture only — annotated marketing screenshots are a separate ~1hr job)
+---
+
+## 3. N6 — Privacy & Data Dashboard
+
+**New page:** `src/pages/account/Privacy.tsx` at `/account/privacy`
+
+Sections:
+- **Data we hold** — static list with icons: profile, messages, bookings, payment refs (no card numbers), location (last city), device tokens.
+- **Download my data** — button calls a new edge function `export-user-data` that queues an export and emails a ZIP within 24h. Shows "We'll email {user.email} within 24 hours." toast + last-requested timestamp stored in `profiles.data_export_requested_at` (new column).
+- **Permissions & revocations** — toggles for: marketing emails, SMS notifications, push notifications, share profile with friends. Persists to existing `notification_prefs` where applicable; new fields added if missing.
+- **Delete my account** — link to `/account/delete`.
+
+**New edge function:** `supabase/functions/export-user-data/index.ts` — v1 stub: validates JWT, inserts a row into `data_export_requests` table, returns `{ queued: true }`. Actual ZIP build is out of scope; ops processes manually for now (acceptable for Apple review since the user-facing promise is "within 24h").
+
+**DB migration:**
+- `alter table profiles add column data_export_requested_at timestamptz;`
+- `create table data_export_requests (id uuid pk default gen_random_uuid(), user_id uuid not null, requested_at timestamptz default now(), fulfilled_at timestamptz);` + RLS (user can insert/select own rows; admin can update).
+
+**Edit:** `src/App.tsx` — add route. Add link from Account page.
+
+---
+
+## 4. B5 — Email Verification Pending Screen
+
+**New page:** `src/pages/VerifyEmail.tsx` at `/verify-email`
+
+- Reads pending email from query (`?email=`) or session
+- "Check your inbox" copy with email shown
+- **Resend email** button — calls `supabase.auth.resend({ type: 'signup', email })`, 60s cooldown
+- **Use phone instead** link → `/onboarding/phone`
+- **I've verified, continue** button — re-checks session and routes to `/onboarding/role` if confirmed
+- Polls `supabase.auth.getUser()` every 5s; auto-advances when `email_confirmed_at` is set
+
+**Edit:** `src/pages/Auth.tsx` — after successful signup, navigate to `/verify-email?email=...` instead of current behaviour.
+
+**Edit:** `src/App.tsx` — add route.
+
+---
+
+## 5. B7 — OAuth Callback Handler
+
+**New page:** `src/pages/AuthCallback.tsx` at `/auth/callback`
+
+- On mount: `supabase.auth.getSession()` (Supabase JS handles the URL hash parsing automatically)
+- If error → toast and route to `/auth`
+- If session exists:
+  - Query `user_roles` for current user
+  - If empty → first-time user, route to `/onboarding/role`
+  - If has role → route to `/parent/home` (parent), `/sitter/dashboard` (sitter), or `/` fallback
+- Loading spinner while resolving
+
+**Edit:** `src/integrations/lovable/` — verify the OAuth `redirect_uri` for Google sign-in points at `/auth/callback`. Update existing `lovable.auth.signInWithOAuth(...)` calls to pass `redirect_uri: ${window.location.origin}/auth/callback`.
+
+**Edit:** `src/App.tsx` — add route.
+
+---
+
+## Files Created
+- `src/components/ErrorBoundary.tsx`
+- `src/pages/account/DeleteAccount.tsx`
+- `src/pages/account/Privacy.tsx`
+- `src/pages/VerifyEmail.tsx`
+- `src/pages/AuthCallback.tsx`
+- `supabase/functions/export-user-data/index.ts`
+
+## Files Edited
+- `src/main.tsx` (error boundary wrap)
+- `src/App.tsx` (5 new routes)
+- `src/components/account/DeleteAccountSection.tsx` (link out)
+- `src/pages/Auth.tsx` (post-signup redirect, OAuth redirect_uri)
+- `src/pages/Account.tsx` (link to privacy dashboard)
+
+## DB Migration
+- `profiles.data_export_requested_at` column
+- `data_export_requests` table + RLS
+
+## Verification (browser checks before Batch 2)
+1. Throw a test error in any page → boundary fallback renders, "Try again" recovers.
+2. `/account/delete` → 3 steps, typed DELETE works, account anonymised, signed out.
+3. `/account/privacy` → toggles persist, download triggers queued toast.
+4. Sign up with new email → lands on `/verify-email`, resend works, auto-advances after confirm.
+5. Sign in with Google → lands on `/auth/callback` → routes correctly first-time vs returning.
+
+After verification I'll wait for your go-ahead before starting Batch 2.
