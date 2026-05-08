@@ -19,6 +19,7 @@ import { DisputeDialog } from "@/components/booking/DisputeDialog";
 import { ReceiptCard } from "@/components/booking/ReceiptCard";
 import { ParentRatingForm } from "@/components/booking/ParentRatingForm";
 import { useBookingDispute } from "@/hooks/useDisputes";
+import { PreSitReminder } from "@/components/booking/PreSitReminder";
 import { useParentReview } from "@/hooks/useParentReviews";
 import { XCircle, ShieldAlert } from "lucide-react";
 
