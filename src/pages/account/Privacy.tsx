@@ -50,7 +50,7 @@ export default function Privacy() {
           ...p,
           push_enabled: (np as any).push_enabled ?? p.push_enabled,
           sms_enabled: (np as any).sms_enabled ?? p.sms_enabled,
-          email_marketing: (np as any).email_marketing ?? p.email_marketing,
+          email_marketing: (np as any).marketing_enabled ?? p.email_marketing,
         }));
       }
       if ((prof as any)?.data_export_requested_at) {
@@ -66,10 +66,18 @@ export default function Privacy() {
     setSavingKey(key);
     setPrefs((p) => ({ ...p, [key]: value }));
     try {
-      // Best-effort: store on notification_prefs if present; ignore unknown columns.
-      await supabase
-        .from("notification_prefs" as any)
-        .upsert({ user_id: user.id, [key]: value } as any, { onConflict: "user_id" });
+      // share_with_friends is a UI-only toggle for now (no column).
+      if (key !== "share_with_friends") {
+        const colMap: Record<string, string> = {
+          email_marketing: "marketing_enabled",
+          sms_enabled: "sms_enabled",
+          push_enabled: "push_enabled",
+        };
+        const col = colMap[key];
+        await supabase
+          .from("notification_prefs" as any)
+          .upsert({ user_id: user.id, [col]: value } as any, { onConflict: "user_id" });
+      }
       toast({ title: "Preference saved" });
     } catch (e) {
       toast({ title: "Could not save", description: (e as Error).message, variant: "destructive" });
