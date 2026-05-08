@@ -123,10 +123,10 @@ const Auth = () => {
   const handleOAuth = async (provider: "google" | "apple") => {
     try {
       const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: `${window.location.origin}/account`,
+        redirect_uri: `${window.location.origin}/auth/callback`,
       });
       if (result.error) throw result.error;
-      if (!result.redirected) navigate("/account");
+      if (!result.redirected) navigate("/auth/callback");
     } catch (err: any) {
       toast({ title: "Sign-in error", description: err.message ?? "Try again", variant: "destructive" });
     }
