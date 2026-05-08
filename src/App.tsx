@@ -75,6 +75,10 @@ import DeleteAccount from "./pages/account/DeleteAccount.tsx";
 import Privacy_ from "./pages/account/Privacy.tsx";
 import VerifyEmail from "./pages/VerifyEmail.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";
+import BookingLive from "./pages/BookingLive.tsx";
+import BookingReview from "./pages/BookingReview.tsx";
+import BookingDispute from "./pages/BookingDispute.tsx";
+import JobPosted from "./pages/parent/JobPosted.tsx";
 import SitterJobDetail from "./pages/sitter/JobDetail.tsx";
 import SitterApplications from "./pages/sitter/Applications.tsx";
 import SitterRequests from "./pages/sitter/Requests.tsx";
@@ -176,6 +180,10 @@ const App = () => (
             <Route path="/sitter/apply/review" element={<SitterReview />} />
             <Route path="/sitter/apply/pending" element={<SitterPending />} />
             <Route path="/bookings/:id" element={<BookingDetail />} />
+            <Route path="/bookings/:id/live" element={<BookingLive />} />
+            <Route path="/bookings/:id/review" element={<BookingReview />} />
+            <Route path="/bookings/:id/dispute" element={<BookingDispute />} />
+            <Route path="/parent/post-job/:jobId/posted" element={<JobPosted />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/account/notifications" element={<NotificationPreferences />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -19,6 +19,7 @@ import { DisputeDialog } from "@/components/booking/DisputeDialog";
 import { ReceiptCard } from "@/components/booking/ReceiptCard";
 import { ParentRatingForm } from "@/components/booking/ParentRatingForm";
 import { useBookingDispute } from "@/hooks/useDisputes";
+import { PreSitReminder } from "@/components/booking/PreSitReminder";
 import { useParentReview } from "@/hooks/useParentReviews";
 import { XCircle, ShieldAlert } from "lucide-react";
 
@@ -224,6 +225,12 @@ export default function BookingDetail() {
             </div>
           )}
 
+          {b.status === "in_progress" && (
+            <Button asChild className="mt-3 w-full bg-success-green text-primary-foreground hover:bg-success-green/90">
+              <Link to={`/bookings/${b.id}/live`}>Open live sit</Link>
+            </Button>
+          )}
+
           {/* Sitter actions */}
           {isSitter && (
             <div className="mt-5 flex flex-wrap gap-2">
@@ -268,13 +275,17 @@ export default function BookingDetail() {
                 </Button>
               )}
               {isParent && !dispute && ["confirmed","in_progress","completed","cancelled"].includes(b.status) && (
-                <Button variant="ghost" className="text-slate-grey hover:text-pitch-black" onClick={() => setDisputeOpen(true)}>
-                  <ShieldAlert className="h-4 w-4" /> Report a problem
+                <Button asChild variant="ghost" className="text-slate-grey hover:text-pitch-black">
+                  <Link to={`/bookings/${b.id}/dispute`}>
+                    <ShieldAlert className="h-4 w-4" /> Report a problem
+                  </Link>
                 </Button>
               )}
             </div>
           )}
         </div>
+
+        <PreSitReminder bookingId={b.id} startAt={b.start_at} address={b.address} status={b.status} />
 
         <CancelBookingDialog
           open={cancelOpen}
