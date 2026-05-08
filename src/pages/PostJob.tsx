@@ -102,7 +102,7 @@ const PostJob = () => {
           .insert({ parent_id: user.id, ...payload }).select("id").single();
         if (error) throw error;
         toast({ title: "Job posted", description: "Sitters in your area are being notified." });
-        nav(`/parent/jobs/${inserted.id}/applicants`);
+        nav(`/parent/post-job/${inserted.id}/posted`);
       }
     } catch (e: any) {
       toast({ title: "Couldn't save job", description: e.message, variant: "destructive" });
