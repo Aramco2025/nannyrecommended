@@ -1,0 +1,1 @@
+ALTER TABLE public.bookings ADD COLUMN IF NOT EXISTS tip_aed numeric NOT NULL DEFAULT 0;

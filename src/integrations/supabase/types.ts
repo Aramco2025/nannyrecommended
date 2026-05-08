@@ -182,6 +182,7 @@ export type Database = {
           subtotal_aed: number
           taxi_cover_aed: number
           taxi_requested: boolean
+          tip_aed: number
           total_aed: number
           updated_at: string
         }
@@ -218,6 +219,7 @@ export type Database = {
           subtotal_aed: number
           taxi_cover_aed?: number
           taxi_requested?: boolean
+          tip_aed?: number
           total_aed: number
           updated_at?: string
         }
@@ -254,6 +256,7 @@ export type Database = {
           subtotal_aed?: number
           taxi_cover_aed?: number
           taxi_requested?: boolean
+          tip_aed?: number
           total_aed?: number
           updated_at?: string
         }
