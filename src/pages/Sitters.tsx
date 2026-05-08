@@ -414,6 +414,10 @@ const Sitters = () => {
 
             <AreaDensityIndicator area={null} visibleCount={visible.length} />
 
+            {!isLoading && visible.length > 0 && visible.length < 5 && activeCount === 0 && (
+              <NewInAreaCard count={visible.length} area="Dubai Marina" />
+            )}
+
             {isLoading ? (
               <div className="py-20 text-center text-sm text-slate-grey">Loading sitters…</div>
             ) : view === "map" ? (
