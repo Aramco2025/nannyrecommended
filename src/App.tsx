@@ -93,6 +93,9 @@ import SubscriptionReturn from "./pages/checkout/SubscriptionReturn.tsx";
 import Referrals from "./pages/Referrals.tsx";
 import { OfflineBanner } from "./components/OfflineBanner.tsx";
 import Status from "./pages/Status.tsx";
+import Splash from "./pages/Splash.tsx";
+import PreviewProfile from "./pages/sitter/PreviewProfile.tsx";
+import SittersFilters from "./pages/sitters/Filters.tsx";
 
 const queryClient = new QueryClient();
 
@@ -107,7 +110,11 @@ const App = () => (
           <Routes>
             <Route path="/status" element={<Status />} />
             <Route path="/" element={<Index />} />
+            <Route path="/splash" element={<Splash />} />
             <Route path="/sitters" element={<Sitters />} />
+            <Route path="/sitters/map" element={<Sitters />} />
+            <Route path="/sitters/filters" element={<SittersFilters />} />
+            <Route path="/sitter/profile/preview" element={<PreviewProfile />} />
             <Route path="/sitters/:id" element={<SitterProfile />} />
             <Route path="/sitters/:id/reviews" element={<SitterReviewsAll />} />
             <Route path="/book/:sitterId" element={<Booking />} />

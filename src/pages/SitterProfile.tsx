@@ -1,4 +1,5 @@
-import { Link, useParams, Navigate } from "react-router-dom";
+import { Link, useParams, Navigate, useSearchParams } from "react-router-dom";
+import { Eye } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useSitter } from "@/hooks/useSitters";
@@ -18,6 +19,8 @@ import { ReportConcernDialog } from "@/components/safety/ReportConcernDialog";
 
 const SitterProfile = () => {
   const { id } = useParams();
+  const [params] = useSearchParams();
+  const isPreview = params.get("preview") === "1";
   const { data: sitter, isLoading } = useSitter(id);
   const { data: reviewsData } = useSitterReviews(sitter?.id);
 
@@ -59,8 +62,27 @@ const SitterProfile = () => {
     <div className="min-h-screen bg-cream pb-28 lg:pb-0">
       <Header />
 
+      {isPreview && (
+        <div className="border-b border-pitch-black/10 bg-pitch-black text-pure-white">
+          <div className="container flex flex-col items-start gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 text-sm">
+              <Eye className="h-4 w-4" />
+              <span><strong>Preview mode</strong> — this is exactly how parents see your profile.</span>
+            </div>
+            <Link
+              to="/sitter/dashboard"
+              className="rounded-full bg-pure-white px-3 py-1 text-xs font-semibold text-pitch-black hover:bg-pure-white/90"
+            >
+              Exit preview
+            </Link>
+          </div>
+        </div>
+      )}
+
       <main className="container py-6 md:py-10">
-        <Link to="/sitters" className="text-sm text-slate-grey hover:text-pitch-black">← Back to sitters</Link>
+        <Link to={isPreview ? "/sitter/dashboard" : "/sitters"} className="text-sm text-slate-grey hover:text-pitch-black">
+          ← {isPreview ? "Back to dashboard" : "Back to sitters"}
+        </Link>
 
         <div className="mt-4 grid gap-10 lg:grid-cols-[1fr_380px]">
           {/* LEFT — content */}

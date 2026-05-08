@@ -13,7 +13,7 @@ import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
 } from "@/components/ui/accordion";
 import { Search, MapPin, List, X, SlidersHorizontal, Megaphone } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { PRICING_TIERS, SitterTier } from "@/lib/pricing/tiers";
 import {
   applyFilters, emptyFilters, FilterKey, LANGUAGES, LangKey, SitterFilters,
@@ -27,6 +27,7 @@ import { SittersMapView } from "@/components/sitters/SittersMapView";
 import { ConciergeCTA } from "@/components/payments/FamilyPlusGates";
 import { SavedSearchesSheet } from "@/components/sitters/SavedSearchesSheet";
 import { sortSitters, SORT_OPTIONS, type SortKey } from "@/lib/sitterRanking";
+import { NewInAreaCard } from "@/components/sitters/NewInAreaCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Section = { title: string; items: { key: FilterKey; label: string }[] };
@@ -98,7 +99,10 @@ const SECTIONS: Section[] = [
 ];
 
 const Sitters = () => {
-  const [view, setView] = useState<"list" | "map">("list");
+  const [params] = useSearchParams();
+  const location = useLocation();
+  const initialView = params.get("view") === "map" || location.pathname === "/sitters/map" ? "map" : "list";
+  const [view, setView] = useState<"list" | "map">(initialView);
   const [sort, setSort] = useState<SortKey>("best");
   const [tierFilter, setTierFilter] = useState<SitterTier | "any">("any");
   const [priceRange, setPriceRange] = useState<[number, number]>([35, 200]);
@@ -410,6 +414,10 @@ const Sitters = () => {
             </div>
 
             <AreaDensityIndicator area={null} visibleCount={visible.length} />
+
+            {!isLoading && visible.length > 0 && visible.length < 5 && activeCount === 0 && (
+              <NewInAreaCard count={visible.length} area="Dubai Marina" />
+            )}
 
             {isLoading ? (
               <div className="py-20 text-center text-sm text-slate-grey">Loading sitters…</div>
