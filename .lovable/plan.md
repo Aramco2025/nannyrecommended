@@ -1,117 +1,53 @@
-# Batch 1 — Apple Submission Blockers
+## Admin Data Browser — single screen to view all customer data
 
-Five screens/flows required before App Store submission. All other batches wait for verification.
+A new admin-only page at **`/admin/data`** with tabs for every customer data source. Restricted to users with the `admin` role (uses the existing `has_role` function — no new tables or policies needed).
 
----
+### Layout
 
-## 1. P3 — Global Error Boundary
+Left sidebar with categories, right pane shows a searchable, paginated table. Click any row → side drawer with full details + links to related records (e.g. user → their bookings, messages, children, ID docs).
 
-**New file:** `src/components/ErrorBoundary.tsx`
-- Class component with `componentDidCatch` / `getDerivedStateFromError`
-- Friendly fallback UI: brand-styled card, "Something went wrong" heading, short reassurance, "Try again" (resets state) and "Go home" (window.location = '/') buttons
-- Logs error to console (Sentry hook stub — add TODO; Sentry isn't wired yet, so use `console.error` and prepare a `reportError(err)` shim that can be swapped later)
-- Show error message + "Copy details" only in dev mode (`import.meta.env.DEV`)
+### Tabs (one per data source)
 
-**Edit:** `src/main.tsx` — wrap `<App />` with `<ErrorBoundary>`.
+| Tab | Source | Key columns shown | Row drawer shows |
+|---|---|---|---|
+| **Users** | `auth.users` + `profiles` | email, name, phone, role, joined, verified | Full profile + buttons: view bookings, messages, children, sitter app |
+| **Sitter Applications** | `sitter_applications` | name, status, submitted_at | Bio, experience, qualifications, references (JSON pretty-printed), **download ID doc**, **play intro video** |
+| **Sitter Profiles** | `sitters` | name, area, rate, tier, rating, active | Full profile incl. certifications, surcharges |
+| **Children** | `children` | parent name, child name, DOB, notes | — |
+| **Bookings** | `bookings` | parent, sitter, date, status, total | Full booking + linked messages |
+| **Messages** | `messages` | booking, sender, snippet, time | Full thread |
+| **Reviews** | `reviews` + `parent_reviews` | booking, rating, comment | — |
+| **Payments** | `charges`, `payment_methods`, `cash_out_requests`, `sitter_payouts` | user, amount, status, date | Stripe IDs + receipt link |
+| **Safety & Disputes** | `safety_reports`, `disputes` | reporter, target, category, status | Description + **download evidence files** |
+| **Storage Files** | `verification-docs` bucket | path, size, uploaded | Signed URL preview/download (ID docs + intro videos) |
+| **Data Export Requests** | `data_export_requests` | user, status, requested_at | Mark fulfilled |
 
----
+### Features
 
-## 2. N7 — Multi-step Delete Account Flow
+- **Global search** across email / name / phone (top bar)
+- **Filter chips** per tab (status, date range, role)
+- **CSV export** button per tab (downloads visible rows)
+- **Signed URLs** for `verification-docs` files (1-hour expiry) — generated on-demand so private bucket stays private
+- **Pagination** (50 rows/page) to handle the default 1000-row Supabase limit
+- **Read-only** — no edits/deletes from this screen (safer for v1; can add later)
 
-**New page:** `src/pages/account/DeleteAccount.tsx` at `/account/delete`
+### Access control
 
-Three steps in a single page (state machine):
-1. **Consequences** — explains: active bookings cancelled per policy, data anonymised after 30-day grace, profile/messages/reviews removed; lists what's kept (anonymised booking history for the other party). Continue / Cancel.
-2. **Final confirm** — type `DELETE` to enable button (reuse pattern from existing `DeleteAccountSection.tsx`).
-3. **Success** — "Account deleted, confirmation sent to {email}", auto sign-out and route to `/` after 5s.
+- Route guarded: redirects non-admins to `/`
+- All queries respect existing RLS — admins already have admin policies on every sensitive table
+- ID docs / videos served via short-lived signed URLs (never exposed permanently)
 
-Calls existing `delete-account` edge function (already supports anonymisation). No backend changes needed for v1; the "30-day grace" copy is policy-only since the function deletes immediately — flag this as a known gap to align later.
+### Technical bits
 
-**Edit:** `src/components/account/DeleteAccountSection.tsx` — replace inline modal with a Link to `/account/delete` (keeps the entry point, simplifies UX).
+- New page: `src/pages/admin/DataBrowser.tsx`
+- New components: `src/components/admin/DataTable.tsx`, `RowDrawer.tsx`, `StorageBrowser.tsx`
+- New hook: `src/hooks/useAdminData.ts` (one query per tab, react-query)
+- Edge function: `supabase/functions/admin-signed-url/index.ts` — verifies admin role then returns signed URL for any `verification-docs` path
+- Route added to `src/App.tsx`: `/admin/data` (also link from existing admin pages sidebar)
+- No DB migration needed — uses existing tables, policies, and `has_role()` function
 
-**Edit:** `src/App.tsx` — add route.
-
----
-
-## 3. N6 — Privacy & Data Dashboard
-
-**New page:** `src/pages/account/Privacy.tsx` at `/account/privacy`
-
-Sections:
-- **Data we hold** — static list with icons: profile, messages, bookings, payment refs (no card numbers), location (last city), device tokens.
-- **Download my data** — button calls a new edge function `export-user-data` that queues an export and emails a ZIP within 24h. Shows "We'll email {user.email} within 24 hours." toast + last-requested timestamp stored in `profiles.data_export_requested_at` (new column).
-- **Permissions & revocations** — toggles for: marketing emails, SMS notifications, push notifications, share profile with friends. Persists to existing `notification_prefs` where applicable; new fields added if missing.
-- **Delete my account** — link to `/account/delete`.
-
-**New edge function:** `supabase/functions/export-user-data/index.ts` — v1 stub: validates JWT, inserts a row into `data_export_requests` table, returns `{ queued: true }`. Actual ZIP build is out of scope; ops processes manually for now (acceptable for Apple review since the user-facing promise is "within 24h").
-
-**DB migration:**
-- `alter table profiles add column data_export_requested_at timestamptz;`
-- `create table data_export_requests (id uuid pk default gen_random_uuid(), user_id uuid not null, requested_at timestamptz default now(), fulfilled_at timestamptz);` + RLS (user can insert/select own rows; admin can update).
-
-**Edit:** `src/App.tsx` — add route. Add link from Account page.
-
----
-
-## 4. B5 — Email Verification Pending Screen
-
-**New page:** `src/pages/VerifyEmail.tsx` at `/verify-email`
-
-- Reads pending email from query (`?email=`) or session
-- "Check your inbox" copy with email shown
-- **Resend email** button — calls `supabase.auth.resend({ type: 'signup', email })`, 60s cooldown
-- **Use phone instead** link → `/onboarding/phone`
-- **I've verified, continue** button — re-checks session and routes to `/onboarding/role` if confirmed
-- Polls `supabase.auth.getUser()` every 5s; auto-advances when `email_confirmed_at` is set
-
-**Edit:** `src/pages/Auth.tsx` — after successful signup, navigate to `/verify-email?email=...` instead of current behaviour.
-
-**Edit:** `src/App.tsx` — add route.
-
----
-
-## 5. B7 — OAuth Callback Handler
-
-**New page:** `src/pages/AuthCallback.tsx` at `/auth/callback`
-
-- On mount: `supabase.auth.getSession()` (Supabase JS handles the URL hash parsing automatically)
-- If error → toast and route to `/auth`
-- If session exists:
-  - Query `user_roles` for current user
-  - If empty → first-time user, route to `/onboarding/role`
-  - If has role → route to `/parent/home` (parent), `/sitter/dashboard` (sitter), or `/` fallback
-- Loading spinner while resolving
-
-**Edit:** `src/integrations/lovable/` — verify the OAuth `redirect_uri` for Google sign-in points at `/auth/callback`. Update existing `lovable.auth.signInWithOAuth(...)` calls to pass `redirect_uri: ${window.location.origin}/auth/callback`.
-
-**Edit:** `src/App.tsx` — add route.
-
----
-
-## Files Created
-- `src/components/ErrorBoundary.tsx`
-- `src/pages/account/DeleteAccount.tsx`
-- `src/pages/account/Privacy.tsx`
-- `src/pages/VerifyEmail.tsx`
-- `src/pages/AuthCallback.tsx`
-- `supabase/functions/export-user-data/index.ts`
-
-## Files Edited
-- `src/main.tsx` (error boundary wrap)
-- `src/App.tsx` (5 new routes)
-- `src/components/account/DeleteAccountSection.tsx` (link out)
-- `src/pages/Auth.tsx` (post-signup redirect, OAuth redirect_uri)
-- `src/pages/Account.tsx` (link to privacy dashboard)
-
-## DB Migration
-- `profiles.data_export_requested_at` column
-- `data_export_requests` table + RLS
-
-## Verification (browser checks before Batch 2)
-1. Throw a test error in any page → boundary fallback renders, "Try again" recovers.
-2. `/account/delete` → 3 steps, typed DELETE works, account anonymised, signed out.
-3. `/account/privacy` → toggles persist, download triggers queued toast.
-4. Sign up with new email → lands on `/verify-email`, resend works, auto-advances after confirm.
-5. Sign in with Google → lands on `/auth/callback` → routes correctly first-time vs returning.
-
-After verification I'll wait for your go-ahead before starting Batch 2.
+### Out of scope (can add later)
+- Inline editing / deleting records
+- Bulk actions (delete user, refund booking)
+- Audit log of admin views
+- Email/notification sending from the screen
