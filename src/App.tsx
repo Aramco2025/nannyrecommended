@@ -99,6 +99,7 @@ import SittersFilters from "./pages/sitters/Filters.tsx";
 import SitterCalculator from "./pages/sitter/Calculator.tsx";
 import PaymentMethods from "./pages/account/PaymentMethods.tsx";
 import Redirect from "./components/Redirect.tsx";
+import AdminDataBrowser from "./pages/admin/DataBrowser.tsx";
 
 const queryClient = new QueryClient();
 
@@ -200,6 +201,7 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin/bookings" element={<AdminBookings />} />
             <Route path="/admin/disputes" element={<AdminDisputes />} />
+            <Route path="/admin/data" element={<AdminDataBrowser />} />
             <Route path="/checkout/booking-return" element={<BookingReturn />} />
             <Route path="/checkout/subscription-return" element={<SubscriptionReturn />} />
             {/* Route aliases */}
