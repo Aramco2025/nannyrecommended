@@ -100,6 +100,7 @@ import SitterCalculator from "./pages/sitter/Calculator.tsx";
 import PaymentMethods from "./pages/account/PaymentMethods.tsx";
 import Redirect from "./components/Redirect.tsx";
 import AdminDataBrowser from "./pages/admin/DataBrowser.tsx";
+import Membership from "./pages/Membership.tsx";
 
 const queryClient = new QueryClient();
 
@@ -123,6 +124,7 @@ const App = () => (
             <Route path="/sitters/:id/reviews" element={<SitterReviewsAll />} />
             <Route path="/book/:sitterId" element={<Booking />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/membership" element={<Membership />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/sitter/signup" element={<SitterSignup />} />
             <Route path="/sitter/dashboard" element={<SitterDashboard />} />

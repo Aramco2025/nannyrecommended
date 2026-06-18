@@ -10,6 +10,7 @@ import { RoleSwitcher } from "@/components/RoleSwitcher";
 
 const guestLinks = [
   { to: "/sitters", label: "Find a sitter" },
+  { to: "/membership", label: "Membership" },
   { to: "/pricing", label: "Pricing" },
   { to: "/how-it-works", label: "How it works" },
 ];

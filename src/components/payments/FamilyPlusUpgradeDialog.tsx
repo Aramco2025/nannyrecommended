@@ -66,7 +66,7 @@ export function FamilyPlusUpgradeDialog({
                 className={`rounded-2xl border p-4 text-left transition ${plan === "monthly" ? "border-salmon bg-salmon-soft/30" : "border-cream-deep"}`}
               >
                 <div className="text-xs uppercase tracking-wider text-slate-grey">Monthly</div>
-                <div className="mt-1 font-display text-2xl font-bold">AED 39</div>
+                <div className="mt-1 font-display text-2xl font-bold">AED 29</div>
                 <div className="text-xs text-slate-grey">per month, cancel any time</div>
               </button>
               <button
@@ -76,8 +76,8 @@ export function FamilyPlusUpgradeDialog({
               >
                 <span className="absolute right-2 top-2 rounded-full bg-success-green px-2 py-0.5 text-[10px] font-bold uppercase text-pure-white">Save 17%</span>
                 <div className="text-xs uppercase tracking-wider text-slate-grey">Yearly</div>
-                <div className="mt-1 font-display text-2xl font-bold">AED 390</div>
-                <div className="text-xs text-slate-grey">AED 32.50/mo billed annually</div>
+                <div className="mt-1 font-display text-2xl font-bold">AED 290</div>
+                <div className="text-xs text-slate-grey">AED 24/mo billed annually</div>
               </button>
             </div>
             <Button
