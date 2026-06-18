@@ -11,7 +11,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 
 export default function Membership() {
   const { user } = useAuth();
-  const { isActive } = useSubscription();
+  const { isFamilyPlus: isActive } = useSubscription();
   const [plusOpen, setPlusOpen] = useState(false);
   const [boostOpen, setBoostOpen] = useState(false);
   const [vettingOpen, setVettingOpen] = useState(false);
